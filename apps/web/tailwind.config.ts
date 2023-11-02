@@ -1,4 +1,7 @@
 /** @type {import('tailwindcss').Config} */
+
+import defaultTheme from "tailwindcss/defaultTheme";
+
 module.exports = {
   darkMode: ["class"],
   content: [
@@ -8,14 +11,10 @@ module.exports = {
     "./src/**/*.{ts,tsx}",
   ],
   theme: {
-    container: {
-      center: true,
-      padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
-    },
     extend: {
+      borderRadius: {
+        DEFAULT: defaultTheme.borderRadius.md,
+      },
       colors: {
         whiteAlpha: {
           50: "rgba(255, 255, 255, 0.04)",

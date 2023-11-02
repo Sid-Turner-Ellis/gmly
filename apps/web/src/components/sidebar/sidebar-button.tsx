@@ -18,8 +18,9 @@ export const SidebarButton = ({
   return (
     <div
       className={cn(
-        "flex items-center gap-4 p-4 transition cursor-pointer group rounded-xl hover:bg-slate-50/20",
+        "flex items-center gap-5 p-2 transition cursor-pointer group rounded-lg border border-solid border-bg-light bg-bg-light",
         {
+          "hover:border-white/20": !isActive,
           "bg-whiteAlpha-100": isActive,
         },
         buttonClassName
@@ -34,7 +35,7 @@ export const SidebarButton = ({
           textClassName
         )}
       />
-      <Text className={textClassName}>{label}</Text>
+      <p className={cn("text-text text-md ", textClassName)}>{label}</p>
     </div>
   );
 };

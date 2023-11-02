@@ -9,7 +9,9 @@ export type IconType =
   | "tournament"
   | "exchange"
   | "settings"
-  | "profile";
+  | "bell"
+  | "profile"
+  | "search";
 
 type IconProps = {
   icon: IconType;
@@ -212,6 +214,74 @@ const ICON_MAP: Record<
       />
     </svg>
   ),
+  bell: ({ boxSize, prefix }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      xmlnsXlink="http://www.w3.org/1999/xlink"
+      viewBox="0 0 16 16"
+      fill="none"
+      {...getWidthAndHeight({
+        size: boxSize,
+        width: 16,
+        height: 16,
+      })}
+    >
+      <mask
+        id={`${prefix}-b`}
+        width={16}
+        height={16}
+        x={0}
+        y={0}
+        maskUnits="userSpaceOnUse"
+        style={{
+          maskType: "alpha",
+        }}
+      >
+        <path fill={`url(#${prefix}-a)`} d="M0 0h16v16H0z" />
+      </mask>
+      <g mask={`url(#${prefix}-b)`}>
+        <path fill="currentColor" d="M0 0h16v16H0z" opacity={1} />
+      </g>
+      <defs>
+        <pattern
+          id={`${prefix}-a`}
+          width={1}
+          height={1}
+          patternContentUnits="objectBoundingBox"
+        >
+          <use xlinkHref={`#${prefix}-c`} transform="scale(.01)" />
+        </pattern>
+        <image
+          xlinkHref="data:image/png;base64,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"
+          id={`${prefix}-c`}
+          width={100}
+          height={100}
+        />
+      </defs>
+    </svg>
+  ),
+  search: ({ boxSize, prefix }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 16 17"
+      {...getWidthAndHeight({
+        size: boxSize,
+        width: 16,
+        height: 17,
+      })}
+    >
+      <g
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        opacity={1}
+      >
+        <path d="M7.11 12.944a5.333 5.333 0 1 0 0-10.666 5.333 5.333 0 0 0 0 10.666ZM14 14.5l-2.9-2.9" />
+      </g>
+    </svg>
+  ),
 };
 
 export const Icon = ({ size = 28, className, icon }: IconProps) => {
@@ -219,7 +289,7 @@ export const Icon = ({ size = 28, className, icon }: IconProps) => {
 
   const Component = useMemo(() => ICON_MAP[icon], [icon]);
   return (
-    <div className={"text-icon group-hover:text-icon-hover"}>
+    <div className={"text-icon group-hover:text-icon-hover transition-all"}>
       <div className={cn(className)}>
         <Component boxSize={size} prefix={prefix} />
       </div>

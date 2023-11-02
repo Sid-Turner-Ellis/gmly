@@ -27,11 +27,11 @@ export const Sidebar = ({ className }: PropsWithChildren<SidebarProps>) => {
     >
       <div className="flex items-center gap-6 align-bottom ">
         <img src="/logo.png" className="w-12" />
-        <h2 className="text-text-heading">Gamerly</h2>
+        <h2 className="text-2xl text-text-heading">Gamerly</h2>
       </div>
 
       <nav className="flex flex-col justify-between mt-10 grow">
-        <ul>
+        <ul className="flex flex-col gap-3">
           <li>
             <Link href="/">
               <SidebarButton
