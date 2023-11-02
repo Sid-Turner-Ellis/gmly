@@ -2,26 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    --color-primary: #6c48ff;
+    --color-primary-dark: #593ada;
+    --color-bg: #1a1c20;
+    --color-bg-light: #272a30;
+    --color-bg-dark: #23252b;
+    --color-bg-purple: #2a254d;
+    --color-heading: #fff;
+    --color-text: #f1f1f1;
+    --color-gray-5: #f7fafc;
+    --color-gray-10: #4f575b;
+    --color-icon: #939597;
+    --color-icon-hover: #ffffff;
+    --color-success: #48ffc8;
+    --color-error: #dd364d;
+    --color-warning: #35b0fc;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+@layer base {
+  body {
+  }
+
+  h1,
+  h2,
+  h1 {
+    @apply text-4xl font-extrabold lg:text-5xl;
+  }
+
+  h2 {
+    @apply text-3xl font-semibold;
+  }
+
+  h3 {
+    @apply text-2xl font-semibold;
+  }
+
+  p {
+  }
+}
+
+@layer components {
+  .btn-blue {
+    @apply px-4 py-2 font-semibold text-white bg-blue-500 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75;
+  }
 }
