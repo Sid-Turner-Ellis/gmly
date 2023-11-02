@@ -19,12 +19,7 @@ export const Sidebar = ({ className }: PropsWithChildren<SidebarProps>) => {
   const route = pathname.split("/")[1] || "home";
 
   return (
-    <div
-      className={cn(
-        "flex flex-col bg-bg-light max-h-screen min-h-screen h-screen",
-        className
-      )}
-    >
+    <div className={cn("flex flex-col bg-bg-light h-full", className)}>
       <div className="flex items-center gap-6 align-bottom ">
         <img src="/logo.png" className="w-12" />
         <h2 className="text-2xl text-text-heading">Gamerly</h2>
@@ -65,7 +60,7 @@ export const Sidebar = ({ className }: PropsWithChildren<SidebarProps>) => {
         </ul>
 
         <ul>
-          <li>
+          <li className="mb-3">
             <SidebarButton label={"Settings"} icon="settings" />
           </li>
           <li>

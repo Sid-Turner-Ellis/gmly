@@ -18,7 +18,7 @@ export const SiteLayout = ({ children }: { children: ReactNode }) => {
   }, [pathname]);
 
   return (
-    <div className="flex max-h-screen min-h-screen overflow-hidden bg-bg">
+    <div className="flex h-full overflow-hidden bg-bg">
       <aside>
         <Sidebar
           className={cn("bg-bg-light w-72 max-w-full px-4 py-6", {
