@@ -2,6 +2,8 @@
 
 import defaultTheme from "tailwindcss/defaultTheme";
 
+// TODO: Create a script to get the correct node_modules path (find the closest node_modules folder with flowbite)
+
 module.exports = {
   darkMode: ["class"],
   content: [
@@ -9,6 +11,8 @@ module.exports = {
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
+    "../../node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}",
+    "./node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
     extend: {
@@ -59,5 +63,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("flowbite/plugin")],
 };

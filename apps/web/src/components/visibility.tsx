@@ -1,8 +1,7 @@
 import { cn } from "@/utils/cn";
 import { ClassValue } from "clsx";
 import { ReactNode, useMemo } from "react";
-
-// TODO: Investigate why [display:block] is not working when dynamically generated
+import { twMerge } from "tailwind-merge";
 
 type Breakpoint = "base" | "sm" | "md" | "lg" | "xl" | "2xl";
 
@@ -37,5 +36,6 @@ export const Visibility = ({
           }`,
     [bpValue, isShow, isAboveType]
   );
+
   return <div className={cn(classes, className)}>{children}</div>;
 };
