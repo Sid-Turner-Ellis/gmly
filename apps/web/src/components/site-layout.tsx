@@ -8,6 +8,8 @@ import { Button } from "./button";
 import { Icon } from "./icon";
 import { twMerge } from "tailwind-merge";
 
+const pageWidthClasses = "px-14";
+
 export const SiteLayout = ({ children }: { children: ReactNode }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isBigScreen = useTailwindBreakpoint("lg", { fallback: true });
@@ -39,7 +41,12 @@ export const SiteLayout = ({ children }: { children: ReactNode }) => {
             }
           )}
         />
-        <div className="sticky top-0 z-10 flex justify-between w-full px-6 py-6 lg:justify-end bg-bg">
+        <div
+          className={cn(
+            "sticky top-0 z-10 flex justify-between w-full py-6 lg:justify-end bg-bg",
+            pageWidthClasses
+          )}
+        >
           <div className="flex items-center gap-6 lg:hidden">
             <div
               onClick={() => setIsSidebarOpen(true)}
@@ -74,7 +81,7 @@ export const SiteLayout = ({ children }: { children: ReactNode }) => {
             />
           </div>
         </div>
-        <main className="px-6">{children}</main>
+        <main className={pageWidthClasses}>{children}</main>
       </div>
     </div>
   );
