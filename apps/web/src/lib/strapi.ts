@@ -46,7 +46,7 @@ type StrapiResponse<T, M = Record<string, unknown>> = {
   meta: M & Record<string, unknown>;
 };
 
-export class Strapi {
+class Strapi {
   private _api: AxiosInstance;
 
   constructor() {
@@ -60,11 +60,11 @@ export class Strapi {
     });
 
     this._api.interceptors.request.use((config) => {
-      console.log("request made", config);
+      // console.log("request made", config);
       return config;
     });
     this._api.interceptors.response.use((config) => {
-      console.log("response recieved", config);
+      // console.log("response recieved", config);
       return config;
     });
   }
@@ -128,3 +128,5 @@ export class Strapi {
     });
   }
 }
+
+export const strapiApi = new Strapi();
