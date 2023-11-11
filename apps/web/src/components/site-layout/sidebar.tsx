@@ -19,10 +19,10 @@ export const Sidebar = ({ className }: PropsWithChildren<SidebarProps>) => {
   const route = pathname.split("/")[1] || "home";
 
   return (
-    <div className={cn("flex flex-col bg-bg-light h-full", className)}>
+    <div className={cn("flex flex-col bg-brand-navy-light h-full", className)}>
       <div className="flex items-center gap-6 align-bottom ">
         <img src="/logo.png" className="w-12" />
-        <h2 className="text-2xl text-text-heading">Gamerly</h2>
+        <h2 className="text-2xl text-brand-white">Gamerly</h2>
       </div>
 
       <nav className="flex flex-col justify-between mt-10 grow">
@@ -61,14 +61,20 @@ export const Sidebar = ({ className }: PropsWithChildren<SidebarProps>) => {
 
         <ul>
           <li className="mb-3">
-            <SidebarButton label={"Settings"} icon="settings" />
+            <Link href="/settings">
+              <SidebarButton
+                label={"Settings"}
+                icon="settings"
+                isActive={route === "settings"}
+              />
+            </Link>
           </li>
           <li>
             <SidebarButton
               label="Profile"
               icon="profile"
-              textClassName="text-text"
-              buttonClassName="bg-primary hover:bg-primary-dark"
+              textClassName="text-brand-white"
+              buttonClassName="bg-brand-primary hover:bg-brand-primary-dark"
             />
           </li>
         </ul>

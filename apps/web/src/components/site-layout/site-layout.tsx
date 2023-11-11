@@ -21,11 +21,11 @@ export const SiteLayout = ({ children }: { children: ReactNode }) => {
   }, [pathname]);
 
   return (
-    <div className="flex h-full overflow-hidden bg-bg">
+    <div className="relative z-0 flex h-full overflow-hidden bg-brand-navy">
       <aside>
         <Sidebar
-          className={cn("bg-bg-light w-72 max-w-full px-4 py-6", {
-            "fixed z-30 right-full transition-all duration-200": !isBigScreen,
+          className={cn("bg-brand-navy-light w-72 max-w-full px-4 py-6", {
+            "fixed z-30 right-full transition-all": !isBigScreen,
             "translate-x-full": !isBigScreen && isSidebarOpen,
           })}
         />
@@ -43,10 +43,10 @@ export const SiteLayout = ({ children }: { children: ReactNode }) => {
           )}
         />
         <Header
-          className={pageWidthClasses}
+          className={cn(pageWidthClasses, "z-10")}
           openSidebar={() => setIsSidebarOpen(true)}
         />
-        <main className={pageWidthClasses}>{children}</main>
+        <main className={cn(pageWidthClasses, "z-0")}>{children}</main>
       </div>
     </div>
   );

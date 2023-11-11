@@ -3,9 +3,9 @@ import {
   QueryClient,
   QueryClientProvider as QCProvider,
   QueryCache,
-} from "react-query";
+} from "@tanstack/react-query";
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   queryCache: new QueryCache({
     onError: (error) => console.log(error),
   }),

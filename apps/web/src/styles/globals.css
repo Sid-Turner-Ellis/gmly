@@ -4,6 +4,7 @@
 
 @layer base {
   :root {
+    /* Colors as defined in the styleguide */
     --color-primary: #6c48ff;
     --color-primary-dark: #593ada;
     --color-bg: #1a1c20;
@@ -16,12 +17,28 @@
     --color-gray-10: #4f575b;
     --color-icon: #939597;
     --color-icon-hover: #ffffff;
-    --color-success: #48ffc8;
-    --color-error: #dd364d;
-    --color-warning: #35b0fc;
+
+    /* Brand colours */
+    --brand-color-primary: #6c48ff;
+    --brand-color-primary-dark: #593ada;
+    --brand-color-white: #fff;
+    --brand-color-gray: #939597;
+    --brand-color-navy: #1a1c20;
+    --brand-color-navy-accent-light: #33373e;
+    --brand-color-navy-accent-dark: #08090a;
+    --brand-color-navy-light: #272a30;
+    --brand-color-navy-light-accent-light: #3d414b;
+
+    --brand-color-success: #48ffc8;
+    --brand-color-success-light: #234942;
+    --brand-color-error: #dd364d;
+    --brand-color-error-light: #412129;
+    --brand-color-warning: #dd7c36;
+    --brand-color-warning-light: #412f24;
   }
 }
 
+/* Global styles, easy to override */
 @layer base {
   html {
     height: 100%;
@@ -33,27 +50,11 @@
   #__next {
     height: 100%;
   }
-
-  h1,
-  h2,
-  h1 {
-    @apply text-4xl font-extrabold lg:text-5xl;
-  }
-
-  h2 {
-    @apply text-3xl font-semibold;
-  }
-
-  h3 {
-    @apply text-2xl font-semibold;
-  }
-
-  p {
-  }
 }
 
+/* Component styles, hard to override */
 @layer components {
-  .btn-blue {
-    @apply px-4 py-2 font-semibold text-white bg-blue-500 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75;
+  .btn {
+    @apply inline-flex items-center justify-center gap-3 px-4 py-2 border-2 border-transparent rounded;
   }
 }

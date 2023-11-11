@@ -1,3 +1,6 @@
+import { tokenStore } from "@/providers/token-provider";
+import { isServer } from "@/utils/is-server";
+import { StrapiError } from "@/utils/strapi-error";
 import axios, {
   AxiosError,
   AxiosInstance,
@@ -6,16 +9,6 @@ import axios, {
   Method,
 } from "axios";
 import QueryString from "qs";
-
-type StrapiError = {
-  data: null;
-  error: {
-    status: number;
-    name: string;
-    message: string;
-    details: Record<string, unknown>;
-  };
-};
 
 type StrapiBaseRequestParams = {
   fields?: Array<string>;
@@ -35,10 +28,12 @@ type StrapiFindRequestParams = StrapiBaseRequestParams & {
 };
 
 type PaginationMeta = {
-  page: number;
-  pageSize: number;
-  pageCount: number;
-  total: number;
+  pagination: {
+    page: number;
+    pageSize: number;
+    pageCount: number;
+    total: number;
+  };
 };
 
 type StrapiResponse<T, M = Record<string, unknown>> = {
@@ -60,11 +55,20 @@ class Strapi {
     });
 
     this._api.interceptors.request.use((config) => {
-      // console.log("request made", config);
+      const token = isServer()
+        ? process.env.API_TOKEN
+        : tokenStore.getState().token;
+
+      if (isServer()) {
+        config.headers.Authorization = `Bearer ${process.env.API_TOKEN}`;
+      } else {
+        const token = tokenStore.getState().token;
+        config.headers["x-custom-auth"] = token;
+      }
+
       return config;
     });
     this._api.interceptors.response.use((config) => {
-      // console.log("response recieved", config);
       return config;
     });
   }
@@ -124,6 +128,29 @@ class Strapi {
     params?: StrapiBaseRequestParams
   ): Promise<StrapiResponse<T>> {
     return this.request<StrapiResponse<T>>("GET", `/${contentType}/${id}`, {
+      params,
+    });
+  }
+
+  public create<T>(
+    contentType: string,
+    data: AxiosRequestConfig["data"],
+    params?: StrapiBaseRequestParams
+  ): Promise<StrapiResponse<T>> {
+    return this.request<StrapiResponse<T>>("post", `/${contentType}`, {
+      data: { data },
+      params,
+    });
+  }
+
+  public update<T>(
+    contentType: string,
+    id: string | number,
+    data: AxiosRequestConfig["data"],
+    params?: StrapiBaseRequestParams
+  ): Promise<StrapiResponse<T>> {
+    return this.request<StrapiResponse<T>>("put", `/${contentType}/${id}`, {
+      data: { data },
       params,
     });
   }

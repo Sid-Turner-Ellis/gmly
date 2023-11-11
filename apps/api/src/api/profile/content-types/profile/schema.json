@@ -1,0 +1,43 @@
+{
+  "kind": "collectionType",
+  "collectionName": "profiles",
+  "info": {
+    "singularName": "profile",
+    "pluralName": "profiles",
+    "displayName": "Profile",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "wallet_address": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "region": {
+      "type": "enumeration",
+      "enum": [
+        "Europe",
+        "NA",
+        "Asia",
+        "Oceania"
+      ],
+      "required": false
+    },
+    "username": {
+      "type": "string",
+      "unique": true,
+      "maxLength": 20
+    },
+    "avatar": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": false
+    }
+  }
+}

@@ -17,6 +17,8 @@
     "@strapi/plugin-i18n": "4.15.0",
     "@strapi/plugin-users-permissions": "4.15.0",
     "@strapi/strapi": "4.15.0",
+    "@thirdweb-dev/auth": "^4.1.3",
+    "@types/jsonwebtoken": "^9.0.5",
     "better-sqlite3": "8.6.0",
     "strapi-plugin-schemas-to-ts": "^1.1.10"
   },

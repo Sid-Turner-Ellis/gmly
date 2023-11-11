@@ -18,7 +18,7 @@ export const SidebarButton = ({
   return (
     <div
       className={cn(
-        "flex items-center gap-5 p-2 transition cursor-pointer group rounded-lg border border-solid border-bg-light bg-bg-light",
+        "flex items-center gap-5 p-3 transition cursor-pointer group rounded-lg border border-solid border-brand-navy-light bg-brand-navy-light",
         {
           "hover:border-white/20": !isActive,
           "bg-whiteAlpha-100": isActive,
@@ -29,13 +29,22 @@ export const SidebarButton = ({
       <Icon
         icon={icon}
         className={cn(
+          "transition group-hover:text-brand-white text-brand-gray",
           {
-            "text-icon-hover": isActive,
+            "text-brand-white": isActive,
           },
           textClassName
         )}
       />
-      <p className={cn("text-text text-md ", textClassName)}>{label}</p>
+      <Text
+        className={cn(
+          "group-hover:text-brand-white transition",
+          isActive && "text-brand-white",
+          textClassName
+        )}
+      >
+        {label}
+      </Text>
     </div>
   );
 };

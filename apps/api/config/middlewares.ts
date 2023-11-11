@@ -5,6 +5,7 @@ export default [
     name: "strapi::cors",
     config: {
       origin: ["*"],
+      headers: ["x-custom-auth", "Content-Type", "Authorization", "Accept"],
     },
   },
   "strapi::poweredBy",
@@ -14,4 +15,5 @@ export default [
   "strapi::session",
   "strapi::favicon",
   "strapi::public",
+  "global::authenticated-wallet",
 ];

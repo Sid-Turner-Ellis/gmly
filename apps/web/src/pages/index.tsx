@@ -1,10 +1,12 @@
 import { GameCard } from "@/components/game-card";
 
 import { GamesService } from "@/services/games";
+import { useUser } from "@thirdweb-dev/react";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
 import * as React from "react";
 import { useState } from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export const getStaticProps = async (context: GetStaticProps) => {
   try {
@@ -28,7 +30,7 @@ export default function Home({
   });
 
   return (
-    <div>
+    <div className="z-[999]">
       {data && (
         <div className="flex flex-wrap gap-8">
           {data.data.map((game) => (

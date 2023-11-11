@@ -2,6 +2,15 @@ import { ThirdwebAuth } from "@thirdweb-dev/auth/next";
 import { PrivateKeyWallet } from "@thirdweb-dev/auth/evm";
 import { getCookie } from "cookies-next";
 import { NextRequest } from "next/server";
+import { ProfileResponse, ProfilesService } from "@/services/profiles";
+import { StrapiError } from "@/utils/strapi-error";
+import { AuthenticatedUser } from "@/hooks/use-auth";
+/**
+ * TODO: think about removing the auth server from web and moving it to api. It would
+ * be a case of setting up the endpoints and using the methods on the auth class:
+ *
+ * https://github.com/thirdweb-dev/js/blob/8d1b8a47e6d2262ef7e326ff561a30f401cb9834/packages/auth/src/core/auth.ts
+ */
 
 // These values can be found: https://github.com/thirdweb-dev/js/blob/main/packages/auth/src/constants/index.ts
 const THIRDWEB_AUTH_COOKIE_PREFIX = `thirdweb_auth`;
@@ -35,14 +44,45 @@ export const { ThirdwebAuthHandler, getUser } = ThirdwebAuth({
   },
   cookieOptions: {},
   callbacks: {
+    async onLogin(address, req) {},
     async onUser({ address, session }, req) {
       const nextRequest = req as NextRequest;
       const token = getTokenFromCookie(nextRequest);
 
-      // get the users details
+      let profile: AuthenticatedUser["data"]["profile"];
+
+      try {
+        const profileResponse = await ProfilesService.getProfile(address);
+        const { username, wallet_address, region } = profileResponse.attributes;
+
+        profile = {
+          id: profileResponse.id,
+          username,
+          wallet_address,
+          region,
+        };
+      } catch (error) {
+        const isProfileNotFound =
+          StrapiError.isStrapiError(error) && error.error.status === 404;
+
+        if (isProfileNotFound) {
+          const newProfileResponse =
+            await ProfilesService.createProfile(address);
+
+          profile = {
+            id: newProfileResponse.id,
+            wallet_address: address,
+            region: null,
+            username: null,
+          };
+        } else {
+          throw error;
+        }
+      }
 
       return {
         token: token || null,
+        profile,
       };
     },
   },

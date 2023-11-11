@@ -11,6 +11,11 @@ export type IconType =
   | "settings"
   | "bell"
   | "profile"
+  | "chevron-down"
+  | "tool"
+  | "flag"
+  | "thumb"
+  | "coins"
   | "search";
 
 type IconProps = {
@@ -214,6 +219,26 @@ const ICON_MAP: Record<
       />
     </svg>
   ),
+  "chevron-down": ({ boxSize }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 10 6"
+      {...getWidthAndHeight({
+        size: boxSize,
+        width: 10,
+        height: 6,
+      })}
+    >
+      <path
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="m1 1 4 4 4-4"
+      />
+    </svg>
+  ),
   bell: ({ boxSize, prefix }) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -282,14 +307,108 @@ const ICON_MAP: Record<
       </g>
     </svg>
   ),
+  flag: ({ boxSize }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 16 16"
+      {...getWidthAndHeight({
+        size: boxSize,
+        width: 16,
+        height: 16,
+      })}
+    >
+      <g
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        opacity={1}
+      >
+        <path d="M2.667 10s.666-.667 2.666-.667 3.334 1.334 5.334 1.334c2 0 2.666-.667 2.666-.667V2s-.666.667-2.666.667-3.334-1.334-5.334-1.334c-2 0-2.666.667-2.666.667v8ZM2.667 14.667V10" />
+      </g>
+    </svg>
+  ),
+
+  thumb: ({ boxSize }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      {...getWidthAndHeight({
+        size: boxSize,
+        width: 24,
+        height: 24,
+      })}
+    >
+      <path
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="m7 11 4-9a3 3 0 0 1 3 3v4h5.66a2 2 0 0 1 2 2.3l-1.38 9a2 2 0 0 1-2 1.7H7m0-11v11m0-11H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h3"
+      />
+    </svg>
+  ),
+  tool: ({ boxSize }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 21 21"
+      {...getWidthAndHeight({
+        size: boxSize,
+        width: 21,
+        height: 21,
+      })}
+    >
+      <path
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M12.7 5.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.121 2.121 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76-.01.01Z"
+      />
+    </svg>
+  ),
+  coins: ({ boxSize, prefix }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      xmlnsXlink="http://www.w3.org/1999/xlink"
+      fill="none"
+      viewBox="0 0 16 16"
+      {...getWidthAndHeight({
+        size: boxSize,
+        width: 16,
+        height: 16,
+      })}
+    >
+      <path fill={`url(#${prefix}-a)`} d="M0 0h16v16H0z" />
+      <defs>
+        <pattern
+          id={prefix + "-a"}
+          width={1}
+          height={1}
+          patternContentUnits="objectBoundingBox"
+        >
+          <use xlinkHref={`#${prefix}-b`} transform="scale(.01)" />
+        </pattern>
+        <image
+          xlinkHref="data:image/png;base64,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"
+          id={prefix + "-b"}
+          width={100}
+          height={100}
+        />
+      </defs>
+    </svg>
+  ),
 };
 
 export const Icon = ({ size = 28, className, icon }: IconProps) => {
   const prefix = useId();
-
   const Component = useMemo(() => ICON_MAP[icon], [icon]);
+
   return (
-    <div className={"text-icon group-hover:text-icon-hover transition-all"}>
+    <div>
       <div className={cn(className)}>
         <Component boxSize={size} prefix={prefix} />
       </div>

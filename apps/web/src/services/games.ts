@@ -27,20 +27,15 @@ type GameResponse = {
 
 export class GamesService {
   static async getGames(page = 1) {
-    try {
-      const gamesResponse = await strapiApi.find<GameResponse>("games", {
-        sort: "title:asc",
-        populate: "*",
-        pagination: {
-          page,
-          pageSize: 25,
-        },
-      });
+    const gamesResponse = await strapiApi.find<GameResponse>("games", {
+      sort: "title:asc",
+      populate: "*",
+      pagination: {
+        page,
+        pageSize: 25,
+      },
+    });
 
-      return gamesResponse;
-    } catch (error) {
-      console.log(error);
-      throw new Error("Error fetching games");
-    }
+    return gamesResponse;
   }
 }
