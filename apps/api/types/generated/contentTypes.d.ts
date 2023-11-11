@@ -721,6 +721,12 @@ export interface ApiProfileProfile extends Schema.CollectionType {
         maxLength: 20;
       }>;
     avatar: Attribute.Media;
+    wager_mode: Attribute.Boolean &
+      Attribute.Required &
+      Attribute.DefaultTo<false>;
+    trust_mode: Attribute.Boolean &
+      Attribute.Required &
+      Attribute.DefaultTo<false>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<

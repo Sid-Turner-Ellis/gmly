@@ -182,7 +182,7 @@ export const RegistrationModal = () => {
                       <div className="absolute inset-y-0 left-0 flex items-center pl-3 ">
                         <Icon icon="flag" size={20} />
                       </div>
-                      <div className={cn("h-full  text-white pl-[30px]")}>
+                      <div className={cn("h-full  text-brand-white pl-[30px]")}>
                         <Text className={cn({ "text-brand-white": !!region })}>
                           {region ?? "Region"}
                         </Text>

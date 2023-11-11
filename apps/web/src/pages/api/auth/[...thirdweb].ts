@@ -53,27 +53,33 @@ export const { ThirdwebAuthHandler, getUser } = ThirdwebAuth({
 
       try {
         const profileResponse = await ProfilesService.getProfile(address);
-        const { username, wallet_address, region } = profileResponse.attributes;
+        const { username, wallet_address, region, wager_mode, trust_mode } =
+          profileResponse.attributes;
 
         profile = {
           id: profileResponse.id,
           username,
           wallet_address,
           region,
+          wager_mode,
+          trust_mode,
         };
       } catch (error) {
         const isProfileNotFound =
           StrapiError.isStrapiError(error) && error.error.status === 404;
 
         if (isProfileNotFound) {
-          const newProfileResponse =
-            await ProfilesService.createProfile(address);
+          const newProfileResponse = await ProfilesService.createProfile(
+            address
+          );
 
           profile = {
             id: newProfileResponse.id,
             wallet_address: address,
             region: null,
             username: null,
+            wager_mode: false,
+            trust_mode: false,
           };
         } else {
           throw error;

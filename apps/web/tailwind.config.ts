@@ -1,12 +1,11 @@
-/** @type {import('tailwindcss').Config} */
-
+import type { Config } from "tailwindcss";
 import defaultTheme from "tailwindcss/defaultTheme";
 
 // Typescript asChild - https://www.radix-ui.com/primitives/docs/guides/styling#extending-a-primitive
 
 // TODO: Create a script to get the correct node_modules path (find the closest node_modules folder with flowbite)
 
-module.exports = {
+export default {
   darkMode: ["class"],
   mode: "jit",
   content: [
@@ -23,14 +22,15 @@ module.exports = {
       borderRadius: {
         DEFAULT: defaultTheme.borderRadius.lg,
       },
+
       zIndex: {
-        dropdown: 1000,
-        sticky: 1020,
-        banner: 1030,
-        overlay: 1040,
-        modal: 1050,
-        popover: 1060,
-        tooltip: 1070,
+        dropdown: "1000",
+        sticky: "1020",
+        banner: "1030",
+        overlay: "1040",
+        modal: "1050",
+        popover: "1060",
+        tooltip: "1070",
       },
 
       transitionDuration: {
@@ -41,38 +41,38 @@ module.exports = {
       colors: {
         brand: {
           primary: {
-            DEFAULT: "var(--brand-color-primary)",
-            dark: "var(--brand-color-primary-dark)",
+            DEFAULT: "#6c48ff",
+            dark: "#593ada",
           },
           white: {
-            DEFAULT: "var(--brand-color-white)",
+            DEFAULT: "#ebebeb",
           },
           gray: {
-            DEFAULT: "var(--brand-color-gray)",
+            DEFAULT: "#939597",
           },
 
           navy: {
-            DEFAULT: "var(--brand-color-navy)",
-            "accent-dark": "var(--brand-color-navy-accent-dark)",
-            "accent-light": "var(--brand-color-navy-accent-light)",
+            DEFAULT: "#1a1c20",
+            "accent-dark": "#08090a",
+            "accent-light": "#33373e",
 
             light: {
-              DEFAULT: "var(--brand-color-navy-light)",
-              "accent-light": "var(--brand-color-navy-light-accent-light)",
+              DEFAULT: "#272a30",
+              "accent-light": "#3d414b",
             },
           },
           status: {
             success: {
-              DEFAULT: "var(--brand-color-success)",
-              light: "var(--brand-color-success-light)",
+              DEFAULT: "#48ffc8",
+              light: "#234942",
             },
             error: {
-              DEFAULT: "var(--brand-color-error)",
-              light: "var(--brand-color-error-light)",
+              DEFAULT: "#dd364d",
+              light: "#412129",
             },
             warning: {
-              DEFAULT: "var(--brand-color-warning)",
-              light: "var(--brand-color-warning-light)",
+              DEFAULT: "#dd7c36",
+              light: "#412f24",
             },
           },
         },
@@ -89,20 +89,22 @@ module.exports = {
           900: "rgba(255, 255, 255, 0.92)",
         },
       },
-
       // Animations
       keyframes: {
         overlayShow: {
-          from: { opacity: 0 },
-          to: { opacity: 1 },
+          from: { opacity: "0" },
+          to: { opacity: "1" },
         },
         contentShow: {
-          from: { opacity: 0, transform: "translate(-50%, -48%) scale(0.96)" },
-          to: { opacity: 1, transform: "translate(-50%, -50%) scale(1)" },
+          from: {
+            opacity: "0",
+            transform: "translate(-50%, -48%) scale(0.96)",
+          },
+          to: { opacity: "1", transform: "translate(-50%, -50%) scale(1)" },
         },
         hide: {
-          from: { opacity: 1 },
-          to: { opacity: 0 },
+          from: { opacity: "1" },
+          to: { opacity: "0" },
         },
         slideIn: {
           from: {
@@ -130,4 +132,4 @@ module.exports = {
     require("autoprefixer"),
     require("tailwindcss"),
   ],
-};
+} satisfies Config;

@@ -5,10 +5,9 @@ import { ClassValue } from "clsx";
 import { ReactNode, useMemo, useRef } from "react";
 
 const variants = {
-  h1: "text-4xl font-bold text-brand-white",
+  h1: "text-4xl font-bold text-brand-white mb-12",
   h2: "text-3xl font-bold text-brand-white",
-  h3: "text-2xl font-bold text-brand-white",
-  h4: "text-xl font-bold text-brand-white",
+  h3: "text-2xl font-bold text-brand-white mb-5",
 };
 
 type HeadingProps = {

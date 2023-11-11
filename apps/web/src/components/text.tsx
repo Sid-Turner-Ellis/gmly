@@ -1,11 +1,10 @@
-// const variant
-
 import { cn } from "@/utils/cn";
 import { ClassValue } from "clsx";
 import { ReactNode, useMemo, useRef } from "react";
 
 export const textVariantClassnames = {
-  p: "text-lg text-brand-gray",
+  p: "text-md text-brand-gray",
+  label: "text-md text-brand-white font-bold",
 };
 
 type TextProps = {

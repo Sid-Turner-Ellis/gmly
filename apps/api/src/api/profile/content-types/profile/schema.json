@@ -33,11 +33,22 @@
       "maxLength": 20
     },
     "avatar": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images"
-      ],
-      "type": "media",
-      "multiple": false
+      ]
+    },
+    "wager_mode": {
+      "type": "boolean",
+      "default": false,
+      "required": true
+    },
+    "trust_mode": {
+      "type": "boolean",
+      "default": false,
+      "required": true
     }
   }
 }

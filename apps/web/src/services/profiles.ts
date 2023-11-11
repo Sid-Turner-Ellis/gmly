@@ -10,6 +10,8 @@ export type ProfileResponse = {
     wallet_address: string;
     region: Regions | null;
     username: string | null;
+    wager_mode: boolean;
+    trust_mode: boolean;
   };
 };
 
@@ -49,6 +51,8 @@ export class ProfilesService {
     profileId: number;
     username?: string;
     region?: Regions;
+    wager_mode?: boolean;
+    trust_mode?: boolean;
   }) {
     // await new Promise((resolve) => setTimeout(resolve, 4000));
 

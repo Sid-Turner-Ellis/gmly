@@ -9,7 +9,7 @@ export const ProfileButtons = ({}: ProfileButtonsProps) => {
   const fakeUrl = "";
   const username = user?.data?.profile?.username ?? "User";
   return (
-    <div className="flex gap-3 relative z-0">
+    <div className="relative z-0 flex gap-3">
       <Button
         title="150 USDC"
         className="border-brand-primary hover:border-brand-primary-dark text-brand-white"
@@ -20,7 +20,7 @@ export const ProfileButtons = ({}: ProfileButtonsProps) => {
           variant="secondary"
           title={username ?? "Profile"}
           icon={
-            <Avatar.Root className="inline-flex h-full w-full select-none items-center justify-center overflow-hidden rounded-full">
+            <Avatar.Root className="inline-flex items-center justify-center w-full h-full overflow-hidden rounded-full select-none">
               <Avatar.Image
                 className="h-full w-full rounded-[inherit] object-cover"
                 src={fakeUrl}
@@ -30,8 +30,8 @@ export const ProfileButtons = ({}: ProfileButtonsProps) => {
                 className="flex text-black bg-pink-400  text-[13px] font-medium h-full w-full relative"
                 delayMs={600}
               >
-                <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                  {username[0]}
+                <span className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+                  {username[0].toUpperCase()}
                 </span>
               </Avatar.Fallback>
             </Avatar.Root>

@@ -13,10 +13,21 @@ export default factories.createCoreController(
   ({ strapi }) => ({
     async update(ctx) {
       const id = ctx.params.id;
+      const fieldsToUpdate = Object.keys(ctx.request.body.data);
 
-      const { wallet_address } = await strapi
+      if (fieldsToUpdate.includes("wallet_address")) {
+        ctx.badRequest("Cannot update wallet address");
+        return;
+      }
+
+      const { wallet_address, username } = await strapi
         .service("api::profile.profile")
         .findOne(id);
+
+      if (fieldsToUpdate.includes("username") && username) {
+        ctx.badRequest("Cannot update username if already set");
+        return;
+      }
 
       if (wallet_address !== ctx.state.wallet_address) {
         throw new errors.UnauthorizedError();

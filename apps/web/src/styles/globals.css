@@ -4,37 +4,7 @@
 
 @layer base {
   :root {
-    /* Colors as defined in the styleguide */
-    --color-primary: #6c48ff;
-    --color-primary-dark: #593ada;
-    --color-bg: #1a1c20;
-    --color-bg-light: #272a30;
-    --color-bg-dark: #23252b;
-    --color-bg-purple: #2a254d;
-    --color-heading: #fff;
-    --color-text: #f1f1f1;
-    --color-gray-5: #f7fafc;
-    --color-gray-10: #4f575b;
-    --color-icon: #939597;
-    --color-icon-hover: #ffffff;
-
-    /* Brand colours */
-    --brand-color-primary: #6c48ff;
-    --brand-color-primary-dark: #593ada;
-    --brand-color-white: #fff;
-    --brand-color-gray: #939597;
-    --brand-color-navy: #1a1c20;
-    --brand-color-navy-accent-light: #33373e;
-    --brand-color-navy-accent-dark: #08090a;
-    --brand-color-navy-light: #272a30;
-    --brand-color-navy-light-accent-light: #3d414b;
-
-    --brand-color-success: #48ffc8;
-    --brand-color-success-light: #234942;
-    --brand-color-error: #dd364d;
-    --brand-color-error-light: #412129;
-    --brand-color-warning: #dd7c36;
-    --brand-color-warning-light: #412f24;
+    --brand-color-primary: theme("colors.brand.primary.DEFAULT");
   }
 }
 
