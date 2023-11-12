@@ -2,7 +2,7 @@
 
 import { cn } from "@/utils/cn";
 import { ClassValue } from "clsx";
-import { ReactNode, useMemo, useRef } from "react";
+import { HTMLAttributes, ReactNode, forwardRef, useMemo, useRef } from "react";
 
 const variants = {
   h1: "text-4xl font-bold text-brand-white mb-12",
@@ -12,10 +12,25 @@ const variants = {
 
 type HeadingProps = {
   variant: keyof typeof variants;
-} & { className?: ClassValue; children: ReactNode };
+} & {
+  className?: ClassValue;
+  children: ReactNode;
+} & HTMLAttributes<HTMLHeadingElement>;
 
-export const Heading = ({ variant, children, className }: HeadingProps) => {
-  const Tag = useMemo(() => variant, [variant]);
+export const Heading = forwardRef<HTMLHeadingElement, HeadingProps>(
+  ({ variant, className, children, ...attributes }, ref) => {
+    const Tag = useMemo(() => variant, [variant]);
 
-  return <Tag className={cn(variants[variant], className)}>{children}</Tag>;
-};
+    return (
+      <Tag
+        ref={ref}
+        className={cn(variants[variant], className)}
+        {...attributes}
+      >
+        {children}
+      </Tag>
+    );
+  }
+);
+
+Heading.displayName = "Heading";

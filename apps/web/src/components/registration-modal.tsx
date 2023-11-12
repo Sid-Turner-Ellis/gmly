@@ -75,7 +75,6 @@ export const RegistrationModal = () => {
     setError,
     formState: { errors },
   } = useForm<FormInputs>();
-  console.log(errors);
 
   const onSubmit: SubmitHandler<FormInputs> = async ({ username }) => {
     if (!region && !hasRegion) {

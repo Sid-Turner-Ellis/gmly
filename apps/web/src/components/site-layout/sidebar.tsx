@@ -70,12 +70,14 @@ export const Sidebar = ({ className }: PropsWithChildren<SidebarProps>) => {
             </Link>
           </li>
           <li>
-            <SidebarButton
-              label="Profile"
-              icon="profile"
-              textClassName="text-brand-white"
-              buttonClassName="bg-brand-primary hover:bg-brand-primary-dark"
-            />
+            <Link href="/profile">
+              <SidebarButton
+                label="Profile"
+                icon="profile"
+                textClassName="text-brand-white"
+                buttonClassName="bg-brand-primary hover:bg-brand-primary-dark"
+              />
+            </Link>
           </li>
         </ul>
       </nav>

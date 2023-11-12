@@ -13,12 +13,12 @@ import { useToast } from "@/providers/toast-provider";
 export default function Page() {
   const { user } = useAuth();
 
-  const initialTrustMode = user?.data.profile.trust_mode ?? false;
   const queryClient = useQueryClient();
   const { addToast } = useToast();
 
   const wagerMode = user?.data.profile.wager_mode ?? false;
   const trustMode = user?.data.profile.trust_mode ?? false;
+
   const { mutate, isError, reset } = useMutation(
     ProfilesService.updateProfile,
     {
@@ -74,18 +74,11 @@ export default function Page() {
 
   const setMode = (mode: "trust" | "wager", value: boolean) => {
     if (!user) return;
-    addToast({
-      type: "error",
-      message: "Something went wrong. Please try again later.",
-    });
-
     mutate({
       profileId: user?.data.profile.id ?? 0,
       ...(mode === "trust" ? { trust_mode: value } : { wager_mode: value }),
     });
   };
-
-  console.log(user, wagerMode, trustMode);
 
   return (
     <div>

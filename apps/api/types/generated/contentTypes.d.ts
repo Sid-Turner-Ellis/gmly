@@ -727,6 +727,7 @@ export interface ApiProfileProfile extends Schema.CollectionType {
     trust_mode: Attribute.Boolean &
       Attribute.Required &
       Attribute.DefaultTo<false>;
+    bio: Attribute.Text;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<

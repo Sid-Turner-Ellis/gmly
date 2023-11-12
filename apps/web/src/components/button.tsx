@@ -6,7 +6,7 @@ import { Text } from "./text";
 import { cva, VariantProps } from "class-variance-authority";
 
 const buttonVariants = cva(
-  "cursor-pointer inline-flex items-center justify-center gap-3 px-4 py-2 border-2 border-transparent rounded transition",
+  "cursor-pointer inline-flex items-center justify-center gap-3 border-2 border-transparent rounded transition",
   {
     variants: {
       variant: {
@@ -19,9 +19,17 @@ const buttonVariants = cva(
         true: "opacity-70 pointer-events-none",
         false: "",
       },
+
+      size: {
+        sm: "text-sm px-4 py-1",
+        md: "text-base px-4 py-2 ",
+        lg: "text-lg",
+      },
     },
     // Purposefully empty so that by default we can extend with custom styles
-    defaultVariants: {},
+    defaultVariants: {
+      size: "md",
+    },
     compoundVariants: [{}],
   }
 );
@@ -41,11 +49,12 @@ export const Button = ({
   icon,
   variant,
   className,
+  size,
 }: ButtonPropsnew) => {
   return (
     <button
       onClick={onClick}
-      className={cn(buttonVariants({ variant, disabled }), className)}
+      className={cn(buttonVariants({ variant, disabled, size }), className)}
     >
       {icon && typeof icon === "string" && (
         <Icon size={20} icon={icon as IconType} />

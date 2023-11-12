@@ -53,8 +53,16 @@ export const { ThirdwebAuthHandler, getUser } = ThirdwebAuth({
 
       try {
         const profileResponse = await ProfilesService.getProfile(address);
-        const { username, wallet_address, region, wager_mode, trust_mode } =
-          profileResponse.attributes;
+        const {
+          username,
+          wallet_address,
+          region,
+          wager_mode,
+          trust_mode,
+          bio,
+          createdAt,
+          avatar,
+        } = profileResponse.attributes;
 
         profile = {
           id: profileResponse.id,
@@ -63,6 +71,9 @@ export const { ThirdwebAuthHandler, getUser } = ThirdwebAuth({
           region,
           wager_mode,
           trust_mode,
+          createdAt,
+          bio,
+          avatar,
         };
       } catch (error) {
         const isProfileNotFound =
@@ -80,6 +91,9 @@ export const { ThirdwebAuthHandler, getUser } = ThirdwebAuth({
             username: null,
             wager_mode: false,
             trust_mode: false,
+            createdAt: newProfileResponse.attributes.createdAt,
+            bio: null,
+            avatar: null,
           };
         } else {
           throw error;

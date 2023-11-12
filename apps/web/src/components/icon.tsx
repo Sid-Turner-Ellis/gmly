@@ -15,6 +15,7 @@ export type IconType =
   | "tool"
   | "flag"
   | "thumb"
+  | "pencil"
   | "coins"
   | "search";
 
@@ -399,6 +400,27 @@ const ICON_MAP: Record<
           height={100}
         />
       </defs>
+    </svg>
+  ),
+
+  pencil: ({ boxSize }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 22 22"
+      {...getWidthAndHeight({
+        size: boxSize,
+        width: 22,
+        height: 22,
+      })}
+    >
+      <path
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={1.5}
+        d="M16 2a2.827 2.827 0 1 1 4 4L6.5 19.5 1 21l1.5-5.5L16 2Z"
+      />
     </svg>
   ),
 };

@@ -53,7 +53,6 @@ export const useAuth = (guard?: boolean) => {
         `.${THIRDWEB_CONNECT_BUTTON_CLASSNAME}`
       );
 
-      console.log(thirdWebButton);
       if (thirdWebButton) {
         (thirdWebButton as HTMLElement).click();
       }

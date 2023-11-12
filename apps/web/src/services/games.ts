@@ -1,4 +1,5 @@
 import { strapiApi } from "@/lib/strapi";
+import { StrapiImage } from "@/types";
 import QueryString from "qs";
 
 // TODO: If I can't use the GameResponse type for the other API requests then set the strapi.find type not to
@@ -12,16 +13,7 @@ type GameResponse = {
   id: number;
   attributes: {
     title: string;
-    card_image: {
-      data: {
-        attributes: {
-          url: string;
-          width: number;
-          height: number;
-          formats: {};
-        };
-      };
-    };
+    card_image: StrapiImage;
   };
 };
 

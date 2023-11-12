@@ -46,7 +46,7 @@ class Strapi {
 
   constructor() {
     this._api = axios.create({
-      baseURL: `${process.env.NEXT_PUBLIC_API_URL}/api`,
+      baseURL: `https://${process.env.NEXT_PUBLIC_STRAPI_HOSTNAME}/api`,
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",

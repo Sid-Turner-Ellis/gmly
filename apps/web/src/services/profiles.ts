@@ -1,4 +1,5 @@
 import { strapiApi } from "@/lib/strapi";
+import { StrapiImage } from "@/types";
 import { StrapiError } from "@/utils/strapi-error";
 
 // TODO: Consider updating the strapi service so that we don't deal with profileIDs but rather addresses
@@ -12,8 +13,13 @@ export type ProfileResponse = {
     username: string | null;
     wager_mode: boolean;
     trust_mode: boolean;
+    createdAt: string; // ISO 8601
+    bio: string | null;
+    avatar: StrapiImage | null;
   };
 };
+
+const populate = ["avatar"];
 
 export class ProfilesService {
   static async getProfile(address: string) {
@@ -21,6 +27,7 @@ export class ProfilesService {
       filters: {
         wallet_address: address,
       },
+      populate,
     });
 
     if (profileResponse.meta.pagination.total === 0) {
@@ -52,15 +59,17 @@ export class ProfilesService {
     username?: string;
     region?: Regions;
     wager_mode?: boolean;
+    avatar?: number;
+    bio?: string;
     trust_mode?: boolean;
   }) {
-    // await new Promise((resolve) => setTimeout(resolve, 4000));
-
-    // throw new Error("get fucked");
     const profileResponse = await strapiApi.update<ProfileResponse>(
       "profiles",
       profileId,
-      updateProps
+      updateProps,
+      {
+        populate,
+      }
     );
 
     return profileResponse.data;

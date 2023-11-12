@@ -1,6 +1,6 @@
 import { cn } from "@/utils/cn";
 import { ClassValue } from "clsx";
-import { ReactNode, useMemo, useRef } from "react";
+import { HTMLAttributes, ReactNode, forwardRef, useMemo, useRef } from "react";
 
 export const textVariantClassnames = {
   p: "text-md text-brand-gray",
@@ -9,18 +9,27 @@ export const textVariantClassnames = {
 
 type TextProps = {
   variant?: keyof typeof textVariantClassnames;
-} & { className?: ClassValue; children: ReactNode };
+} & {
+  className?: ClassValue;
+  children: ReactNode;
+} & HTMLAttributes<HTMLParagraphElement>;
 
-export const Text = ({ variant = "p", children, className }: TextProps) => {
-  return (
-    <p
-      className={cn(
-        "text-brand-gray",
-        textVariantClassnames[variant],
-        className
-      )}
-    >
-      {children}
-    </p>
-  );
-};
+export const Text = forwardRef<HTMLHeadingElement, TextProps>(
+  ({ variant = "p", className, children, ...attributes }, ref) => {
+    return (
+      <p
+        ref={ref}
+        className={cn(
+          "text-brand-gray",
+          textVariantClassnames[variant],
+          className
+        )}
+        {...attributes}
+      >
+        {children}
+      </p>
+    );
+  }
+);
+
+Text.displayName = "Text";
