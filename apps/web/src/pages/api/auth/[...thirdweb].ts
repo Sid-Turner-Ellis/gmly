@@ -2,7 +2,10 @@ import { ThirdwebAuth } from "@thirdweb-dev/auth/next";
 import { PrivateKeyWallet } from "@thirdweb-dev/auth/evm";
 import { getCookie } from "cookies-next";
 import { NextRequest } from "next/server";
-import { ProfileResponse, ProfilesService } from "@/services/profiles";
+import {
+  ProfileResponse,
+  ProfilesService,
+} from "@/features/profile/profiles-service";
 import { StrapiError } from "@/utils/strapi-error";
 import { AuthenticatedUser } from "@/hooks/use-auth";
 /**
@@ -80,9 +83,8 @@ export const { ThirdwebAuthHandler, getUser } = ThirdwebAuth({
           StrapiError.isStrapiError(error) && error.error.status === 404;
 
         if (isProfileNotFound) {
-          const newProfileResponse = await ProfilesService.createProfile(
-            address
-          );
+          const newProfileResponse =
+            await ProfilesService.createProfile(address);
 
           profile = {
             id: newProfileResponse.id,

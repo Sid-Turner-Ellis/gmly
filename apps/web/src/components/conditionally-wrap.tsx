@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 
 type ConditionallyWrap = {
-  condition: boolean;
+  condition: boolean | undefined;
   children: ReactNode;
   Wrapper: React.FC<any>;
 };

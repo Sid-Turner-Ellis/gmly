@@ -5,7 +5,7 @@ import { tailwind } from "@/lib/tailwind";
 import { useEffect, useState } from "react";
 import * as Separator from "@radix-ui/react-separator";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ProfilesService } from "@/services/profiles";
+import { ProfilesService } from "@/features/profile/profiles-service";
 import { AuthenticatedUser, useAuth } from "@/hooks/use-auth";
 import { produce } from "immer";
 import { useToast } from "@/providers/toast-provider";

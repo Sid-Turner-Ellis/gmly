@@ -1,5 +1,5 @@
 import { THIRDWEB_CONNECT_BUTTON_CLASSNAME } from "@/components/site-layout/header";
-import { ProfileResponse } from "@/services/profiles";
+import { ProfileResponse } from "@/features/profile/profiles-service";
 import {
   UserWithData,
   useDisconnect,
@@ -29,23 +29,28 @@ const isAuthenticatedUser = (d: unknown): d is AuthenticatedUser => {
   );
 };
 
-export const useAuth = (guard?: boolean) => {
-  const { user: untypedUser, isLoggedIn, isLoading } = useUser();
-  const { logout: thirdWebLogout } = useLogout();
-  const router = useRouter();
-  const disconnectWallet = useDisconnect();
-  const user = isAuthenticatedUser(untypedUser) ? untypedUser : null;
-  const completedRegistration =
-    user?.data.profile.username && user?.data.profile.region;
+export const useAuth = () => {
+  {
+    const { user: untypedUser, isLoading } = useUser();
+    const { logout: thirdWebLogout } = useLogout();
+    const router = useRouter();
+    const disconnectWallet = useDisconnect();
+    const user = isAuthenticatedUser(untypedUser) ? untypedUser : null;
+    const authStatus = isLoading
+      ? "loading"
+      : user
+      ? "authenticated"
+      : "unauthenticated";
+    const completedRegistration =
+      user?.data.profile.username && user?.data.profile.region;
 
-  const logout = () => {
-    thirdWebLogout();
-    disconnectWallet();
-    router.replace("/");
-  };
+    const logout = () => {
+      thirdWebLogout();
+      disconnectWallet();
+      router.replace("/");
+    };
 
-  useEffect(() => {
-    if (guard && !isLoggedIn) {
+    const signIn = () => {
       router.replace("/");
 
       // Redirect home and open the connect button modal
@@ -56,14 +61,15 @@ export const useAuth = (guard?: boolean) => {
       if (thirdWebButton) {
         (thirdWebButton as HTMLElement).click();
       }
-    }
-  }, [user]);
+    };
 
-  return {
-    user,
-    isLoggedIn,
-    isLoading,
-    logout,
-    completedRegistration,
-  } as const;
+    return {
+      user,
+      isUserLoading: isLoading,
+      logout,
+      completedRegistration,
+      signIn,
+      authStatus,
+    } as const;
+  }
 };

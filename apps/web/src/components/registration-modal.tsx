@@ -4,7 +4,11 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { cn } from "@/utils/cn";
 import { Icon } from "./icon";
 import * as SelectPrimitive from "@radix-ui/react-select";
-import { ProfileResponse, ProfilesService, Regions } from "@/services/profiles";
+import {
+  ProfileResponse,
+  ProfilesService,
+  Regions,
+} from "@/features/profile/profiles-service";
 import { Button } from "./button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRegistrationModal } from "@/providers/registration-modal-provider";
