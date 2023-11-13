@@ -36,6 +36,7 @@ export const useAuth = () => {
     const router = useRouter();
     const disconnectWallet = useDisconnect();
     const user = isAuthenticatedUser(untypedUser) ? untypedUser : null;
+    // const authStatus = "loading";
     const authStatus = isLoading
       ? "loading"
       : user

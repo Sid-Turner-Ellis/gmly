@@ -9,9 +9,10 @@ import { ProfilesService } from "@/features/profile/profiles-service";
 import { AuthenticatedUser, useAuth } from "@/hooks/use-auth";
 import { produce } from "immer";
 import { useToast } from "@/providers/toast-provider";
+import { Skeleton } from "@/components/skeleton";
 
 export default function Page() {
-  const { user } = useAuth();
+  const { user, authStatus, signIn } = useAuth();
 
   const queryClient = useQueryClient();
   const { addToast } = useToast();
@@ -80,47 +81,63 @@ export default function Page() {
     });
   };
 
+  if (authStatus === "unauthenticated") {
+    signIn();
+    return null;
+  }
+
   return (
     <div>
       <Heading variant="h1">Settings</Heading>
-      <div className="max-w-4xl p-4 rounded bg-brand-navy-light">
-        <Heading variant="h3">Match settings</Heading>
+      {authStatus === "loading" && <Skeleton className="w-full h-[300px]" />}
+      {authStatus === "authenticated" && (
+        <div className="max-w-4xl p-4 rounded bg-brand-navy-light">
+          <>
+            <Heading variant="h3">Match settings</Heading>
+            <div className="flex items-center justify-between gap-8">
+              <div>
+                <Text variant="label" className="mb-1">
+                  Wager mode
+                </Text>
+                <Text variant="p">
+                  Enabling this setting confirms that you know the risks that
+                  apply when wagering your crypo against other teams and
+                  players.
+                </Text>
+              </div>
+              <div className="grow">
+                <Switch
+                  value={wagerMode}
+                  setValue={(v) => setMode("wager", v)}
+                />
+              </div>
+            </div>
 
-        <div className="flex items-center justify-between gap-8">
-          <div>
-            <Text variant="label" className="mb-1">
-              Wager mode
-            </Text>
-            <Text variant="p">
-              Enabling this setting confirms that you know the risks that apply
-              when wagering your crypo against other teams and players.
-            </Text>
-          </div>
-          <div className="grow">
-            <Switch value={wagerMode} setValue={(v) => setMode("wager", v)} />
-          </div>
+            <Separator.Root className="bg-brand-navy-light-accent-light data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px my-[15px]" />
+
+            <div className="flex items-center justify-between gap-8">
+              <div>
+                <Text variant="label" className="mb-1">
+                  Automatically allow team leaders to create and accept wager
+                  matches
+                </Text>
+                <Text variant="p">
+                  Allow leaders and co-leaders of any team you join to have the
+                  ability to place you in wager matches without your permission.
+                  It is important that you trust the members of your team before
+                  joining when this is enabled.
+                </Text>
+              </div>
+              <div className="grow">
+                <Switch
+                  value={trustMode}
+                  setValue={(v) => setMode("trust", v)}
+                />
+              </div>
+            </div>
+          </>
         </div>
-
-        <Separator.Root className="bg-brand-navy-light-accent-light data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px my-[15px]" />
-
-        <div className="flex items-center justify-between gap-8">
-          <div>
-            <Text variant="label" className="mb-1">
-              Automatically allow team leaders to create and accept wager
-              matches
-            </Text>
-            <Text variant="p">
-              Allow leaders and co-leaders of any team you join to have the
-              ability to place you in wager matches without your permission. It
-              is important that you trust the members of your team before
-              joining when this is enabled.
-            </Text>
-          </div>
-          <div className="grow">
-            <Switch value={trustMode} setValue={(v) => setMode("trust", v)} />
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
