@@ -63,7 +63,7 @@ export default function Page() {
 
   return (
     <div>
-      <ErrorPage type="somethingWentWrong" />
+      <ErrorPage type="notFound" />
     </div>
   );
   // return (

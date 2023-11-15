@@ -139,8 +139,11 @@ export const RegistrationModal = () => {
                   defaultValue={user?.data?.profile.username ?? ""}
                   {...register("username", {
                     validate: (value) => {
-                      if (!hasUsername && value.length === 0) {
-                        return "Username is required";
+                      if (!hasUsername) {
+                        if (value.length === 0) return "Username is required";
+                        if (!/^[a-zA-Z0-9]+$/.test(value)) {
+                          return "Username can only contain letters and numbers";
+                        }
                       }
                     },
                   })}

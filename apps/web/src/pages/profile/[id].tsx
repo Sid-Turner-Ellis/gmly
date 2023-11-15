@@ -22,8 +22,8 @@ export default function ProfileIdPage() {
       return profileResponse.data;
     },
     {
-      refetchOnWindowFocus: false,
       retry: false,
+      enabled: !!profileId,
     }
   );
 

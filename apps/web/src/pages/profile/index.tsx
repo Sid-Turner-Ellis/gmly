@@ -7,17 +7,17 @@ import { useMemo } from "react";
 export default function ProfileIndexPage() {
   const { user, signIn, authStatus } = useAuth();
 
-  if (authStatus === "unauthenticated") {
-    signIn();
-    return null;
-  }
-
   const profile = useMemo(() => {
     if (user) {
       const { id, ...attributes } = user?.data.profile;
       return { id, attributes };
     }
   }, [user]);
+
+  if (authStatus === "unauthenticated") {
+    signIn();
+    return null;
+  }
 
   return (
     <div className="relative z-0">

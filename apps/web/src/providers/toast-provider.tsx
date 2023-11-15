@@ -34,14 +34,14 @@ const BasicToastComponent = ({ type, message }: BasicToast) => {
     <div
       key={Math.random()}
       className={cn(
-        "flex gap-6 items-center justify-center border border-solid p-6 rounded text-red-500",
+        "flex gap-3 items-center justify-center border border-solid p-4 rounded text-red-500",
         variantTextClasses[type]
       )}
     >
       <div className={cn(type === "error" && "rotate-180")}>
-        <Icon icon={icon} className={cn(variantIconClasses[type])} />
+        <Icon size={20} icon={icon} className={cn(variantIconClasses[type])} />
       </div>
-      <Text variant="p" className="font-semibold text-brand-white">
+      <Text variant="p" className="font-medium text-brand-white">
         {message}
       </Text>
     </div>

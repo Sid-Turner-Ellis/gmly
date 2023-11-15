@@ -89,7 +89,7 @@ export const GlobalSearchBar = () => {
     const baseRoute =
       result.collection_type === "games" ? "/battles" : "/profile";
 
-    router.push(`${baseRoute}/${result.slug}`);
+    router.replace(`${baseRoute}/${result.slug}`);
     setQuery("");
     setIsOpen(false);
   };
@@ -116,8 +116,12 @@ export const GlobalSearchBar = () => {
           {shouldShowLoader && !isLoading && (
             <GlobalSearchBarItemLayout
               Left={<Skeleton className="absolute inset-0 bg-brand-navy" />}
-              Middle={<Skeleton className="w-56 h-3 bg-brand-navy" />}
-              Right={<Skeleton className="w-16 h-3 bg-brand-navy" />}
+              Middle={
+                <Skeleton className="h-3 w-14 xs:w-28 md:w-56 bg-brand-navy" />
+              }
+              Right={
+                <Skeleton className="w-8 h-3 xs:w-10 md:w-16 bg-brand-navy" />
+              }
             />
           )}
           {data?.map((searchResult, i) => (
@@ -142,18 +146,30 @@ export const GlobalSearchBar = () => {
             <>
               <GlobalSearchBarItemLayout
                 Left={<Skeleton className="absolute inset-0 bg-brand-navy" />}
-                Middle={<Skeleton className="w-56 h-3 bg-brand-navy" />}
-                Right={<Skeleton className="w-16 h-3 bg-brand-navy" />}
+                Middle={
+                  <Skeleton className="h-3 w-14 xs:w-28 md:w-56 bg-brand-navy" />
+                }
+                Right={
+                  <Skeleton className="w-8 h-3 xs:w-10 md:w-16 bg-brand-navy" />
+                }
               />
               <GlobalSearchBarItemLayout
                 Left={<Skeleton className="absolute inset-0 bg-brand-navy" />}
-                Middle={<Skeleton className="w-40 h-3 bg-brand-navy" />}
-                Right={<Skeleton className="h-3 w-28 bg-brand-navy" />}
+                Middle={
+                  <Skeleton className="h-3 w-14 xs:w-28 md:w-56 bg-brand-navy" />
+                }
+                Right={
+                  <Skeleton className="w-8 h-3 xs:w-10 md:w-16 bg-brand-navy" />
+                }
               />
               <GlobalSearchBarItemLayout
                 Left={<Skeleton className="absolute inset-0 bg-brand-navy" />}
-                Middle={<Skeleton className="w-56 h-3 bg-brand-navy" />}
-                Right={<Skeleton className="w-16 h-3 bg-brand-navy" />}
+                Middle={
+                  <Skeleton className="h-3 w-14 xs:w-28 md:w-56 bg-brand-navy" />
+                }
+                Right={
+                  <Skeleton className="w-8 h-3 xs:w-10 md:w-16 bg-brand-navy" />
+                }
               />
             </>
           )}

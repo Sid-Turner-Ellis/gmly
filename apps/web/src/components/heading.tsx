@@ -7,7 +7,7 @@ import { ConditionallyWrap } from "./conditionally-wrap";
 const variants = {
   h1: "text-4xl font-bold text-brand-white mb-12",
   h2: "text-3xl font-bold text-brand-white",
-  h3: "text-2xl font-bold text-brand-white mb-5",
+  h3: "text-xl font-semibold text-brand-white mb-3",
 };
 
 type HeadingProps = {

@@ -21,8 +21,8 @@ const buttonVariants = cva(
       },
 
       size: {
-        sm: "text-sm px-4 py-1",
-        md: "text-base px-4 py-2 ",
+        sm: "text-sm px-[4px] py-[2px]",
+        md: "text-sm px-[12px] py-[10px] ",
         lg: "text-lg",
       },
     },
@@ -57,10 +57,10 @@ export const Button = ({
       className={cn(buttonVariants({ variant, disabled, size }), className)}
     >
       {icon && typeof icon === "string" && (
-        <Icon size={20} icon={icon as IconType} />
+        <Icon size={16} icon={icon as IconType} />
       )}
       {icon && typeof icon !== "string" && (
-        <div className="w-[20px] h-[20px] max-w-[20px] max-h-[20px]">
+        <div className="w-[16px] h-[16px] max-w-[16px] max-h-[16px]">
           {icon}
         </div>
       )}

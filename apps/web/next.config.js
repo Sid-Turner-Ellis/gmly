@@ -8,6 +8,22 @@ const nextConfig = {
         hostname: process.env.NEXT_PUBLIC_STRAPI_HOSTNAME,
       },
       {
+        protocol: "http",
+        hostname: process.env.NEXT_PUBLIC_STRAPI_HOSTNAME,
+      },
+      {
+        protocol: "http",
+        hostname: "0.0.0.0",
+      },
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+      },
+      {
         protocol: "https",
         hostname: "plus.unsplash.com",
       },

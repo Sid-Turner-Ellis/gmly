@@ -1,24 +1,27 @@
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "../button";
 import * as Avatar from "@radix-ui/react-avatar";
+import { useTailwindBreakpoint } from "@/hooks/use-tailwind-breakpoint";
 
 type ProfileButtonsProps = {};
 
 export const ProfileButtons = ({}: ProfileButtonsProps) => {
   const { user } = useAuth();
+  const isDesktop = useTailwindBreakpoint("md");
   const fakeUrl = "";
   const username = user?.data?.profile?.username ?? "User";
   return (
-    <div className="relative z-0 flex gap-3">
+    <div className="relative z-0 flex h-full gap-2 lg:gap-3">
       <Button
-        title="150 USDC"
-        className="border-brand-primary hover:border-brand-primary-dark text-brand-white"
+        title={isDesktop ? "150 USDC" : undefined}
+        className="h-full border-brand-primary hover:border-brand-primary-dark text-brand-white"
         icon="coins"
       />
-      <div>
+      <div className="h-full">
         <Button
           variant="secondary"
-          title={username ?? "Profile"}
+          title={isDesktop ? username ?? "Profile" : undefined}
+          className="h-full"
           icon={
             <Avatar.Root className="inline-flex items-center justify-center w-full h-full overflow-hidden rounded-full select-none">
               <Avatar.Image

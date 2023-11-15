@@ -6,7 +6,7 @@ import {
 } from "@/types";
 
 const addUrl = (url: string) =>
-  `https://${process.env.NEXT_PUBLIC_STRAPI_HOSTNAME}${url}`;
+  `${process.env.NEXT_PUBLIC_STRAPI_PROTOCOL}://${process.env.NEXT_PUBLIC_STRAPI_HOSTNAME}${url}`;
 
 export const resolveStrapiImage = (
   image: StrapiImage | StrapiImageResponse | null,

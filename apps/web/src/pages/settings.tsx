@@ -91,7 +91,7 @@ export default function SettingsPage() {
       <Heading variant="h1">Settings</Heading>
       {authStatus === "loading" && <Skeleton className="w-full h-[300px]" />}
       {authStatus === "authenticated" && (
-        <div className="max-w-4xl p-4 rounded bg-brand-navy-light">
+        <div className="max-w-3xl p-4 rounded bg-brand-navy-light">
           <>
             <Heading variant="h3">Match settings</Heading>
             <div className="flex items-center justify-between gap-8">

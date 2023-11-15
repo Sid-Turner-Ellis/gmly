@@ -4,8 +4,8 @@ import { HTMLAttributes, ReactNode, forwardRef, useMemo, useRef } from "react";
 import { Skeleton } from "./skeleton";
 
 export const textVariantClassnames = {
-  p: "text-md text-brand-gray",
-  label: "text-md text-brand-white font-bold",
+  p: "text-sm text-brand-gray",
+  label: "text-sm text-brand-white font-semibold",
 };
 
 type TextProps = {

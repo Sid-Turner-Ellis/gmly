@@ -9,7 +9,7 @@ import { Icon } from "../icon";
 import { twMerge } from "tailwind-merge";
 import { Header } from "./header";
 
-const pageWidthClasses = "px-14";
+const pageWidthClasses = "px-6 lg:pl-10 lg:pr-16";
 
 export const SiteLayout = ({ children }: { children: ReactNode }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -24,7 +24,7 @@ export const SiteLayout = ({ children }: { children: ReactNode }) => {
     <div className="relative z-0 flex h-full overflow-hidden bg-brand-navy">
       <aside>
         <Sidebar
-          className={cn("bg-brand-navy-light w-72 max-w-full px-4 py-6", {
+          className={cn("bg-brand-navy-light w-60 max-w-full px-4 py-6", {
             "fixed z-30 right-full transition-all": !isBigScreen,
             "translate-x-full": !isBigScreen && isSidebarOpen,
           })}

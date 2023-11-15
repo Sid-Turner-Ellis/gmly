@@ -36,7 +36,7 @@
 //           {data.data.map((game) => (
 //             <GameCard
 //               key={game.id}
-//               url={`https://${process.env.NEXT_PUBLIC_STRAPI_HOSTNAME}${game.attributes.card_image.data.attributes.url}`}
+//               url={`${process.env.NEXT_PUBLIC_STRAPI_PROTOCOL}://${process.env.NEXT_PUBLIC_STRAPI_HOSTNAME}${game.attributes.card_image.data.attributes.url}`}
 //             />
 //           ))}
 //         </div>
@@ -46,14 +46,5 @@
 // }
 
 export default function IndexPage() {
-  return (
-    <div
-      onClick={() => {
-        throw new Error("shiet");
-      }}
-    >
-      {" "}
-      inex{" "}
-    </div>
-  );
+  return <div onClick={() => {}}> index </div>;
 }

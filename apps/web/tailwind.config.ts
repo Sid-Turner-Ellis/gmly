@@ -16,9 +16,10 @@ export default {
   ],
   theme: {
     extend: {
-      fontSize: {
-        p: defaultTheme.fontSize.xl,
+      screens: {
+        xs: "460px",
       },
+
       borderRadius: {
         DEFAULT: defaultTheme.borderRadius.lg,
       },
@@ -34,7 +35,7 @@ export default {
       },
 
       transitionDuration: {
-        DEFAULT: "100ms",
+        DEFAULT: "150ms",
       },
       transitionProperty: {},
 

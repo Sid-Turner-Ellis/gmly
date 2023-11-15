@@ -1,6 +1,13 @@
 import { useToast } from "@/providers/toast-provider";
-import { Dispatch, useEffect, useState } from "react";
-import Uppy from "@uppy/core";
+import { Dispatch, useEffect, useMemo, useState } from "react";
+import Uppy, {
+  ErrorCallback,
+  FileProgress,
+  SuccessResponse,
+  UploadProgressCallback,
+  UploadSuccessCallback,
+  UppyFile,
+} from "@uppy/core";
 import XHR from "@uppy/xhr-upload";
 import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
 import { Text } from "@/components/text";
@@ -21,7 +28,7 @@ export type ProfileImageProps = {
 };
 
 const uppy = new Uppy().use(XHR, {
-  endpoint: `https://${process.env.NEXT_PUBLIC_STRAPI_HOSTNAME}/api/upload`,
+  endpoint: `${process.env.NEXT_PUBLIC_STRAPI_PROTOCOL}://${process.env.NEXT_PUBLIC_STRAPI_HOSTNAME}/api/upload`,
   formData: true,
   fieldName: "files", // Strapi expects the file field to be called "files"
 });
@@ -49,23 +56,23 @@ export const ProfileImage = ({
   }, [imageFile]);
 
   useEffect(() => {
-    uppy.on("error", (error) => {
+    const onError: ErrorCallback = () => {
       setImageUpload({ status: "idle", detail: 0 });
       setImageFile(null);
       addToast({
         type: "error",
         message: "Image failed to upload",
       });
-    });
+    };
 
-    uppy.on("upload-progress", (file, progress) => {
+    const onUploadProgress: UploadProgressCallback<any> = (file, progress) => {
       setImageUpload({
         status: "uploading",
         detail: (progress.bytesUploaded / progress.bytesTotal) * 100,
       });
-    });
+    };
 
-    uppy.on("upload-success", (file, response) => {
+    const onUploadSuccess: UploadSuccessCallback<any> = (file, response) => {
       if (response.status === 200) {
         const imageId = response.body[0].id;
         setImageUpload({
@@ -83,18 +90,32 @@ export const ProfileImage = ({
           message: "Something went wrong",
         });
       }
-    });
+
+      return file;
+    };
+
+    uppy.on("error", onError);
+    uppy.on("upload-progress", onUploadProgress);
+    uppy.on("upload-success", onUploadSuccess);
+
+    return () => {
+      uppy.off("error", onError);
+      uppy.off("upload-progress", onUploadProgress);
+      uppy.off("upload-success", onUploadSuccess);
+    };
   }, []);
+
+  const objectUrl = useMemo(() => {
+    if (imageFile) {
+      return URL.createObjectURL(imageFile);
+    }
+  }, [imageFile]);
 
   return (
     <div className="relative w-full h-full overflow-hidden rounded shadow-md group">
       <Image
         alt="profile image"
-        src={
-          imageFile
-            ? URL.createObjectURL(imageFile)
-            : resolveStrapiImage(avatar)
-        }
+        src={objectUrl ?? resolveStrapiImage(avatar)}
       />
       {isEditMode && (
         <div className="absolute transition rounded cursor-pointer -inset-1 bg-brand-navy-accent-dark/60 hover:bg-brand-navy-accent-dark/70">
@@ -108,6 +129,7 @@ export const ProfileImage = ({
           </Text>
           <input
             type="file"
+            accept="image/jpeg, image/png"
             onChange={(e) =>
               setImageFile(e.target.files ? e.target.files[0] : null)
             }

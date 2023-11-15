@@ -23,7 +23,15 @@ const populate = ["avatar"];
 
 export class ProfilesService {
   static async getProfileById(profileId: number) {
-    return strapiApi.findOne<ProfileResponse>("profiles", profileId, {});
+    const profileResponse = await strapiApi.findOne<ProfileResponse>(
+      "profiles",
+      profileId,
+      {
+        populate,
+      }
+    );
+
+    return profileResponse;
   }
   static async getProfile(address: string) {
     const profileResponse = await strapiApi.find<ProfileResponse>("profiles", {

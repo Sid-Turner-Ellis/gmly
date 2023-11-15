@@ -16,6 +16,7 @@ import {
 import { ProfileButtons } from "./profile-buttons";
 import { useAuth } from "@/hooks/use-auth";
 import { GlobalSearchBar } from "../../features/global-search/components/global-search-bar";
+import { useTailwindBreakpoint } from "@/hooks/use-tailwind-breakpoint";
 
 type HeaderProps = {
   openSidebar: () => void;
@@ -26,10 +27,9 @@ export const THIRDWEB_CONNECT_BUTTON_CLASSNAME =
   "gamerly-thirdweb-connect-button";
 
 export const Header = ({ openSidebar, className }: HeaderProps) => {
-  const { user, isUserLoading, logout } = useAuth();
+  const { user, logout } = useAuth();
   const shouldShowProfileButtons =
     user && user.data?.profile.username && user.data.profile.region;
-
   const handleOnConnect = async () => {
     const thirdwebButton = document.querySelector(
       `.${THIRDWEB_CONNECT_BUTTON_CLASSNAME}`
@@ -48,19 +48,23 @@ export const Header = ({ openSidebar, className }: HeaderProps) => {
       <div className="flex items-center gap-6 lg:hidden">
         <div
           onClick={openSidebar}
-          className="flex flex-col w-10 gap-1.5 cursor-pointer"
+          className="flex flex-col w-8 gap-1.5 cursor-pointer"
         >
           {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="w-full h-[3px] rounded bg-white/70" />
           ))}
         </div>
-        <img src="/logo.png" className="object-contain w-12" />
+        <img src="/logo.png" className="hidden object-contain w-12 lg:block" />
       </div>
-      <div className="inline-flex gap-3">
-        <div className="relative hidden h-full lg:block w-96">
+      <div className="inline-flex gap-2 lg:gap-3">
+        <div className="relative w-40 h-full xs:w-56 md:w-96">
           <GlobalSearchBar />
         </div>
-        <Button variant="secondary" icon="bell" className="h-full px-4" />
+        <Button
+          variant="secondary"
+          icon="bell"
+          className="hidden h-full px-3 lg:block"
+        />
 
         {!shouldShowProfileButtons && (
           <>

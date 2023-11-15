@@ -17,8 +17,9 @@ export const SidebarButton = ({
 }) => {
   return (
     <div
+      data-active={isActive}
       className={cn(
-        "flex items-center gap-5 p-3 transition cursor-pointer group rounded-lg border border-solid border-brand-navy-light bg-brand-navy-light",
+        "flex items-center gap-4 p-2 transition-all cursor-pointer group rounded-lg border-[1.5px] border-solid border-brand-navy-light bg-brand-navy-light",
         {
           "hover:border-white/20": !isActive,
           "bg-whiteAlpha-100": isActive,
@@ -28,6 +29,7 @@ export const SidebarButton = ({
     >
       <Icon
         icon={icon}
+        size={24}
         className={cn(
           "transition group-hover:text-brand-white text-brand-gray",
           {
@@ -38,7 +40,7 @@ export const SidebarButton = ({
       />
       <Text
         className={cn(
-          "group-hover:text-brand-white transition",
+          "group-hover:text-brand-white transition font-medium",
           isActive && "text-brand-white",
           textClassName
         )}

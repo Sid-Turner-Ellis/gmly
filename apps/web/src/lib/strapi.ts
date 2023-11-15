@@ -10,6 +10,8 @@ import axios, {
 } from "axios";
 import QueryString from "qs";
 
+// process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
+
 type StrapiBaseRequestParams = {
   fields?: Array<string>;
   populate?: string | Array<string> | Record<string, unknown>;
@@ -46,7 +48,7 @@ class Strapi {
 
   constructor() {
     this._api = axios.create({
-      baseURL: `https://${process.env.NEXT_PUBLIC_STRAPI_HOSTNAME}/api`,
+      baseURL: `${process.env.NEXT_PUBLIC_STRAPI_PROTOCOL}://${process.env.NEXT_PUBLIC_STRAPI_HOSTNAME}/api`,
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",

@@ -75,7 +75,8 @@ export const Sidebar = ({ className }: PropsWithChildren<SidebarProps>) => {
                 label="Profile"
                 icon="profile"
                 textClassName="text-brand-white"
-                buttonClassName="bg-brand-primary hover:bg-brand-primary-dark"
+                buttonClassName="bg-brand-primary hover:bg-brand-primary-dark data-[active=true]:bg-brand-primary-dark data-[active=true]:border-brand-primary"
+                isActive={route === "profile"}
               />
             </Link>
           </li>

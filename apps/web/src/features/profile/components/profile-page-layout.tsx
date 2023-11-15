@@ -13,12 +13,12 @@ export const ProfilePageLayout = ({
   LeftBottom: ReactNode;
 }) => (
   <div className="relative z-0">
-    <div className="flex gap-6">
-      <div className="w-52">
+    <div className="flex gap-0 sm:gap-4 md:gap-6">
+      <div className="w-40">
         <AspectRatio.Root ratio={1}>{Right}</AspectRatio.Root>
       </div>
       <div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1">
           <div className="">{LeftTop}</div>
           <div className="mb-0">{LeftMiddle}</div>
           <div className="max-w-[550px]">{LeftBottom}</div>
