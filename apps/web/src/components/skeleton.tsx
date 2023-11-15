@@ -27,7 +27,7 @@ export const Skeleton = ({
       {...props}
     >
       {type === "image" && (
-        <div className="flex justify-center items-center h-full w-full">
+        <div className="flex items-center justify-center w-full h-full">
           <svg
             className="w-10 h-10 text-brand-navy-light-accent-light"
             aria-hidden="true"

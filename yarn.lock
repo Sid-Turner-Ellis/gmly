@@ -2218,7 +2218,7 @@
     "@radix-ui/react-use-previous" "1.0.1"
     "@radix-ui/react-visually-hidden" "1.0.3"
 
-"@radix-ui/react-popover@^1.0.6":
+"@radix-ui/react-popover@^1.0.6", "@radix-ui/react-popover@^1.0.7":
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/@radix-ui/react-popover/-/react-popover-1.0.7.tgz#23eb7e3327330cb75ec7b4092d685398c1654e3c"
   integrity sha512-shtvVnlsxT6faMnK/a7n0wptwBD23xc1Z5mdrtKLwVEfsEMXodS0r5s0/g5P0hX//EKYZS2sxUjqfzlg52ZSnQ==
@@ -3430,6 +3430,18 @@
   version "4.15.0"
   resolved "https://registry.yarnpkg.com/@strapi/utils/-/utils-4.15.0.tgz#1f4cf0343b7dbc91afa0907dd5afb732b1c7efed"
   integrity sha512-8X7YNGpL7OdJOF3Sx3gnnvIt+omKPiZqoqCvLIfVxbpt1o597cmaVaBHeCWAYBkd9xqmdnalvtGmEjMtjS+ILw==
+  dependencies:
+    "@sindresorhus/slugify" "1.1.0"
+    date-fns "2.30.0"
+    http-errors "1.8.1"
+    lodash "4.17.21"
+    p-map "4.0.0"
+    yup "0.32.9"
+
+"@strapi/utils@^4.13.7":
+  version "4.15.4"
+  resolved "https://registry.yarnpkg.com/@strapi/utils/-/utils-4.15.4.tgz#4f8b0f064f866bc2175cff63ea4a16d221b351d2"
+  integrity sha512-w6dURdVraSoVkfZiU4enkJlrAJ0XxW/ma+SSsQJQuYjvyqg2wCndqhkjOnCu9mHZ701IbkYqRhF5jpm8gVEoDg==
   dependencies:
     "@sindresorhus/slugify" "1.1.0"
     date-fns "2.30.0"
@@ -6482,7 +6494,7 @@ cross-env@^7.0.3:
   dependencies:
     cross-spawn "^7.0.1"
 
-cross-fetch@^3.1.4:
+cross-fetch@^3.1.4, cross-fetch@^3.1.6:
   version "3.1.8"
   resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.1.8.tgz#0327eba65fd68a7d119f8fb2bf9334a1a7956f82"
   integrity sha512-cvA+JwZoU0Xq+h6WkMvAUqPEYy92Obet6UdKLfW60qn99ftItKjB5T+BkyWOFWe2pUyfQ+IJHmpOTznqk1M6Kg==
@@ -10855,6 +10867,20 @@ media-typer@0.3.0:
   resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
   integrity sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ==
 
+meilisearch@^0.34.2:
+  version "0.34.2"
+  resolved "https://registry.yarnpkg.com/meilisearch/-/meilisearch-0.34.2.tgz#005adc44e23a451b91d0426856e1ad3eab6c1138"
+  integrity sha512-bbiq8pr+3yyOLU+9qdnNX7CEUQCFNs13Vgrne1iNXVnnRxj9aPRpWP8Kh8o0mdQ2tVKJKGZ7MN5rCGm6qvu52A==
+  dependencies:
+    cross-fetch "^3.1.6"
+
+meilisearch@^0.35.0:
+  version "0.35.0"
+  resolved "https://registry.yarnpkg.com/meilisearch/-/meilisearch-0.35.0.tgz#c94d5f266e39ad5ed5a666782e729805a4e8a956"
+  integrity sha512-gF1I6K5/Wpe7BWfjBnG+o19y/FIpJ9HbN+byON6CB9U3uE7qc6GvwUbjKOllh7LKXQVVxH/kCu7Jn0ODCUwqbQ==
+  dependencies:
+    cross-fetch "^3.1.6"
+
 memfs@^3.4.1, memfs@^3.4.3:
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/memfs/-/memfs-3.6.0.tgz#d7a2110f86f79dd950a8b6df6d57bc984aa185f6"
@@ -13801,6 +13827,14 @@ std-env@^3.0.1:
   version "3.4.3"
   resolved "https://registry.yarnpkg.com/std-env/-/std-env-3.4.3.tgz#326f11db518db751c83fd58574f449b7c3060910"
   integrity sha512-f9aPhy8fYBuMN+sNfakZV18U39PbalgjXG3lLB9WkaYTxijru61wb57V9wxxNthXM5Sd88ETBWi29qLAsHO52Q==
+
+strapi-plugin-meilisearch@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/strapi-plugin-meilisearch/-/strapi-plugin-meilisearch-0.10.0.tgz#44f5650d177abafa8a77e7bddd9b4afcfd7f4539"
+  integrity sha512-6VLoMW4MOnPt+O/AinwtUCWkjDqd2qw6IJh57og+Jlow3ksnw6BzbkfEAlo8QK0Do0+j5vjnoeBdRN8rGxLEqQ==
+  dependencies:
+    "@strapi/utils" "^4.13.7"
+    meilisearch "^0.34.2"
 
 strapi-plugin-schemas-to-ts@^1.1.10:
   version "1.1.10"

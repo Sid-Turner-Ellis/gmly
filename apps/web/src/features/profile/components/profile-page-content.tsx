@@ -8,7 +8,7 @@ import { useOptimisticMutation } from "@/hooks/use-optimistic-mutation";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 import { useToast } from "@/providers/toast-provider";
 import { cn } from "@/utils/cn";
-import { parseStrapiImage } from "@/utils/parse-strapi-image";
+import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
 import * as AspectRatio from "@radix-ui/react-aspect-ratio";
 import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";

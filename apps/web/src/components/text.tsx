@@ -34,6 +34,7 @@ export const Text = forwardRef<HTMLParagraphElement, TextProps>(
           {Array.from({ length: resolvedSkeleton.numberOfLines }).map(
             (_, i) => (
               <Skeleton
+                key={i}
                 className={cn(
                   "h-3 w-full inline-block",
                   resolvedSkeleton.numberOfLines > 0 && "mb-2 block",

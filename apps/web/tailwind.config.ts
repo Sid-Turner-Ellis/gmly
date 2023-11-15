@@ -34,7 +34,7 @@ export default {
       },
 
       transitionDuration: {
-        DEFAULT: "200ms",
+        DEFAULT: "100ms",
       },
       transitionProperty: {},
 

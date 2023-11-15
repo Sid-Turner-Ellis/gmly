@@ -690,7 +690,6 @@ export interface ApiGameGame extends Schema.CollectionType {
   };
   attributes: {
     title: Attribute.String & Attribute.Required;
-    auth_only: Attribute.String & Attribute.Required;
     card_image: Attribute.Media & Attribute.Required;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;

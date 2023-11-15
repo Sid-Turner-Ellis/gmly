@@ -16,17 +16,13 @@
       "type": "string",
       "required": true
     },
-    "auth_only": {
-      "type": "string",
-      "required": true
-    },
     "card_image": {
-      "allowedTypes": [
-        "images"
-      ],
       "type": "media",
       "multiple": false,
-      "required": true
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
     }
   }
 }

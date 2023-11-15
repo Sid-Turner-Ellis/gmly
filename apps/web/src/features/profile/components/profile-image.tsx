@@ -4,9 +4,9 @@ import Uppy from "@uppy/core";
 import XHR from "@uppy/xhr-upload";
 import * as AspectRatio from "@radix-ui/react-aspect-ratio";
 import Image from "next/image";
-import { parseStrapiImage } from "@/utils/parse-strapi-image";
+import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
 import { Text } from "@/components/text";
-import { StrapiImage } from "@/types";
+import { StrapiImageResponse } from "@/types";
 import { Skeleton } from "@/components/skeleton";
 
 export type ImageUpload = {
@@ -18,7 +18,7 @@ export type ProfileImageProps = {
   isEditMode: boolean;
   imageUpload: ImageUpload;
   setImageUpload: Dispatch<ImageUpload>;
-  avatar: StrapiImage | null;
+  avatar: StrapiImageResponse | null;
 };
 
 const uppy = new Uppy().use(XHR, {
@@ -89,14 +89,14 @@ export const ProfileImage = ({
   }, []);
 
   return (
-    <div className="overflow-hidden relative rounded shadow-md group w-full h-full">
+    <div className="relative w-full h-full overflow-hidden rounded shadow-md group">
       <Image
         className="object-cover"
         alt="profile image"
         src={
           imageFile
             ? URL.createObjectURL(imageFile)
-            : parseStrapiImage(avatar).url
+            : resolveStrapiImage(avatar)
         }
         onLoadingComplete={() => setNextImageLoaded(true)}
         fill={true}

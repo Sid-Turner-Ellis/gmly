@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Modal } from "./modal";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { cn } from "@/utils/cn";
@@ -17,6 +17,7 @@ import { useToast } from "@/providers/toast-provider";
 import { StrapiError } from "@/utils/strapi-error";
 import { Text, textVariantClassnames } from "./text";
 import { AuthenticatedUser, useAuth } from "@/hooks/use-auth";
+import { InputLayout } from "./input-layout";
 
 type FormInputs = {
   username: string;
@@ -33,6 +34,7 @@ export const RegistrationModal = () => {
   const { addToast } = useToast();
   const [region, setRegion] = useState<Regions | null>(null);
   const queryClient = useQueryClient();
+  const selectRef = useRef<HTMLDivElement>(null);
   const { mutate, isLoading, isSuccess, isError } = useMutation(
     ProfilesService.updateProfile,
     {
@@ -127,14 +129,10 @@ export const RegistrationModal = () => {
           </>
         }
       >
-        <div className="flex flex-col gap-4 text-brand-gray">
+        <div className="flex flex-col gap-4">
           {!hasUsername && (
             <div>
-              <div className="relative h-12">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                  <Icon icon="profile" size={20} />
-                </div>
-
+              <InputLayout icon="profile" error={errors?.username?.message}>
                 <input
                   autoComplete="off"
                   type="text"
@@ -151,17 +149,12 @@ export const RegistrationModal = () => {
                   aria-invalid={errors.username ? "true" : "false"}
                   className={cn(
                     textVariantClassnames.p,
-                    "h-full py-2 placeholder:text-brand-gray pl-[40px] pr-4 transition-all rounded bg-brand-navy-light border-2  border-brand-navy-light focus:border-black outline-none focus:outline-none w-full text-brand-white",
+                    "h-full bg-transparent placeholder:text-brand-gray outline-none focus:outline-none w-full text-brand-white",
                     errors.username &&
                       "border-brand-status-error focus:border-brand-status-error"
                   )}
                 />
-              </div>
-              {errors.username && (
-                <span className="block mt-2 text-brand-status-error">
-                  {errors.username.message}
-                </span>
-              )}
+              </InputLayout>
             </div>
           )}
 
@@ -173,34 +166,31 @@ export const RegistrationModal = () => {
                   setRegion(v as Regions);
                 }}
               >
-                <SelectPrimitive.Trigger asChild>
-                  <button
-                    className={cn(
-                      "relative py-2  h-12 gap-12 px-4 flex justify-between align-middle transition-all border-2 border-brand-navy-light rounded outline-none bg-brand-navy-light focus:border-black focus:outline-none w-full cursor-default",
-                      false &&
-                        "border-brand-status-error focus:border-brand-status-error"
-                    )}
+                <SelectPrimitive.Trigger
+                  className="w-full outline-none focus:outline-none"
+                  onFocus={() => {
+                    selectRef.current?.focus();
+                  }}
+                  onBlur={() => {
+                    selectRef.current?.blur();
+                  }}
+                  asChild
+                >
+                  <InputLayout
+                    icon="flag"
+                    error={errors?.region?.message}
+                    ref={selectRef}
+                    tabIndex={-1}
                   >
-                    <div>
-                      <div className="absolute inset-y-0 left-0 flex items-center pl-3 ">
-                        <Icon icon="flag" size={20} />
-                      </div>
-                      <div className={cn("h-full  text-brand-white pl-[30px]")}>
-                        <Text className={cn({ "text-brand-white": !!region })}>
-                          {region ?? "Region"}
-                        </Text>
-                      </div>
-                    </div>
-                    <div className="self-center">
+                    <div className="flex items-center justify-between">
+                      <Text className={cn({ "text-brand-white": !!region })}>
+                        {region ?? "Region"}
+                      </Text>
+
                       <Icon icon="chevron-down" size={12} />
                     </div>
-                  </button>
+                  </InputLayout>
                 </SelectPrimitive.Trigger>
-                {errors.region && (
-                  <span className="block mt-2 text-brand-status-error">
-                    {errors.region.message}
-                  </span>
-                )}
 
                 <SelectPrimitive.Portal>
                   <SelectPrimitive.Content

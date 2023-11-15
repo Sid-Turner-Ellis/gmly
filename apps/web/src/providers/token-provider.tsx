@@ -37,11 +37,11 @@ export const useToken = () => {
 };
 
 export const TokenProvider = ({ children }: { children: ReactNode }) => {
-  const { user, isLoggedIn, isLoading } = useAuth();
+  const { user, isUserLoading } = useAuth();
   const { token, setToken, setIsLoading } = useStore(tokenStore);
 
   useEffect(() => {
-    if (isLoading) {
+    if (isUserLoading) {
       setIsLoading(true);
       return;
     }
@@ -55,7 +55,7 @@ export const TokenProvider = ({ children }: { children: ReactNode }) => {
     }
 
     setIsLoading(false);
-  }, [user, isLoading]);
+  }, [user, isUserLoading]);
 
   return <>{children}</>;
 };

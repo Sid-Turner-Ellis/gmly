@@ -1,5 +1,5 @@
 import { strapiApi } from "@/lib/strapi";
-import { StrapiImage } from "@/types";
+import { StrapiImageResponse } from "@/types";
 import { StrapiError } from "@/utils/strapi-error";
 
 // TODO: Consider updating the strapi service so that we don't deal with profileIDs but rather addresses
@@ -15,7 +15,7 @@ export type ProfileResponse = {
     trust_mode: boolean;
     createdAt: string; // ISO 8601
     bio: string | null;
-    avatar: StrapiImage | null;
+    avatar: StrapiImageResponse | null;
   };
 };
 
