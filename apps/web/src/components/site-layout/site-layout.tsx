@@ -46,7 +46,7 @@ export const SiteLayout = ({ children }: { children: ReactNode }) => {
           className={cn(pageWidthClasses, "z-10")}
           openSidebar={() => setIsSidebarOpen(true)}
         />
-        <main className={cn(pageWidthClasses, "z-0")}>{children}</main>
+        <main className={cn(pageWidthClasses, "z-0 mt-6")}>{children}</main>
       </div>
     </div>
   );

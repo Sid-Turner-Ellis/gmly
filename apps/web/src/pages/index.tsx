@@ -45,6 +45,6 @@
 //   );
 // }
 
-export default function Page() {
+export default function IndexPage() {
   return <div> index </div>;
 }

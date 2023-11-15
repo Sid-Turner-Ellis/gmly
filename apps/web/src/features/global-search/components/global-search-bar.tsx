@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import { meilisearchClient } from "@/lib/meilisearch";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 import { StrapiImage } from "@/types";
-import Image from "next/image";
 import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
 import { Text } from "../../../components/text";
 import { cn } from "@/utils/cn";
@@ -12,6 +11,8 @@ import { Skeleton } from "../../../components/skeleton";
 import { GlobalIndexHit } from "../types";
 import { GlobalSearchBarItemLayout } from "./global-search-bar-item-layout";
 import { useKeyPress } from "@/hooks/use-key-press";
+import { useRouter } from "next/router";
+import { Image } from "@/components/image";
 
 const globalIndex = meilisearchClient.index<GlobalIndexHit>("global");
 
@@ -21,6 +22,7 @@ export const GlobalSearchBar = () => {
   const [query, setQuery] = useState("");
   const [shouldShowLoader, setShouldShowLoader] = useState(false);
   const [cursor, setCursor] = useState(0);
+  const router = useRouter();
 
   const { data, isLoading, isError, isPreviousData, isFetching } = useQuery(
     ["search", "global", query],
@@ -84,6 +86,10 @@ export const GlobalSearchBar = () => {
   );
 
   const onSearchResultClick = (result: GlobalIndexHit) => {
+    const baseRoute =
+      result.collection_type === "games" ? "/battles" : "/profiles";
+
+    router.push(`${baseRoute}/${result.slug}`);
     setQuery("");
     setIsOpen(false);
   };
@@ -122,8 +128,6 @@ export const GlobalSearchBar = () => {
                 <Image
                   src={resolveStrapiImage(searchResult.image)}
                   alt={`${searchResult.collection_type}:${searchResult.name}`}
-                  fill={true}
-                  className="object-cover"
                 />
               }
               Middle={searchResult.name}

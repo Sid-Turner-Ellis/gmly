@@ -1,5 +1,6 @@
 import { strapiApi } from "@/lib/strapi";
 import { StrapiImageResponse } from "@/types";
+import { StrapiError } from "@/utils/strapi-error";
 import QueryString from "qs";
 
 // TODO: If I can't use the GameResponse type for the other API requests then set the strapi.find type not to
@@ -9,11 +10,13 @@ import QueryString from "qs";
 
 // TODO: Stop using a class and use separate files e.g. games/getGames.ts as it will make types less annoying
 
-type GameResponse = {
+export type GameResponse = {
   id: number;
   attributes: {
     title: string;
     card_image: StrapiImageResponse;
+    cover_image: StrapiImageResponse;
+    slug: string;
   };
 };
 
@@ -24,10 +27,28 @@ export class GamesService {
       populate: "*",
       pagination: {
         page,
-        pageSize: 25,
+        pageSize: 1,
       },
     });
 
     return gamesResponse;
+  }
+
+  static async getGameBySlug(slug: string) {
+    const gameResponse = await strapiApi.find<GameResponse>("games", {
+      filters: {
+        slug,
+      },
+      populate: "*",
+    });
+
+    const game = gameResponse.data[0];
+    if (!game) {
+      throw new StrapiError(404, {
+        name: "NotFound",
+      });
+    }
+
+    return game;
   }
 }

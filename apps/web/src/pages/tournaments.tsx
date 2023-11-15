@@ -1,3 +1,3 @@
-export default function BattlesPage() {
+export default function TournamentsPage() {
   return <div> you are on the tournaments page</div>;
 }

@@ -5,4 +5,5 @@ export type GlobalIndexHit = {
   collection_type: "profiles" | "games";
   image: StrapiImage;
   id: number;
+  slug: string | number;
 };

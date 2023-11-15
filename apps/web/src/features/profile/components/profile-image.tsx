@@ -2,12 +2,11 @@ import { useToast } from "@/providers/toast-provider";
 import { Dispatch, useEffect, useState } from "react";
 import Uppy from "@uppy/core";
 import XHR from "@uppy/xhr-upload";
-import * as AspectRatio from "@radix-ui/react-aspect-ratio";
-import Image from "next/image";
 import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
 import { Text } from "@/components/text";
 import { StrapiImageResponse } from "@/types";
 import { Skeleton } from "@/components/skeleton";
+import { Image } from "@/components/image";
 
 export type ImageUpload = {
   status: "idle" | "uploading" | "complete";
@@ -35,10 +34,9 @@ export const ProfileImage = ({
 }: ProfileImageProps) => {
   const { addToast } = useToast();
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [nextImageLoaded, setNextImageLoaded] = useState(false);
+
   useEffect(() => {
     if (imageFile) {
-      setNextImageLoaded(false);
       uppy.cancelAll();
       setImageUpload({ status: "uploading", detail: 0 });
       uppy.addFile({
@@ -91,17 +89,13 @@ export const ProfileImage = ({
   return (
     <div className="relative w-full h-full overflow-hidden rounded shadow-md group">
       <Image
-        className="object-cover"
         alt="profile image"
         src={
           imageFile
             ? URL.createObjectURL(imageFile)
             : resolveStrapiImage(avatar)
         }
-        onLoadingComplete={() => setNextImageLoaded(true)}
-        fill={true}
       />
-      {!nextImageLoaded && <Skeleton type="image" className="w-full h-full" />}
       {isEditMode && (
         <div className="absolute transition rounded cursor-pointer -inset-1 bg-brand-navy-accent-dark/60 hover:bg-brand-navy-accent-dark/70">
           <Text

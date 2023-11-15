@@ -691,6 +691,8 @@ export interface ApiGameGame extends Schema.CollectionType {
   attributes: {
     title: Attribute.String & Attribute.Required;
     card_image: Attribute.Media & Attribute.Required;
+    cover_image: Attribute.Media & Attribute.Required;
+    slug: Attribute.String & Attribute.Required & Attribute.Unique;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<'api::game.game', 'oneToOne', 'admin::user'> &

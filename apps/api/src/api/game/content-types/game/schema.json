@@ -23,6 +23,20 @@
       "allowedTypes": [
         "images"
       ]
+    },
+    "cover_image": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "slug": {
+      "type": "string",
+      "regex": "^[a-zA-Z0-9_-]+$",
+      "unique": true,
+      "required": true
     }
   }
 }

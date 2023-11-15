@@ -41,6 +41,7 @@ export default {
             collection_type: "games",
             name: entry.title,
             image: entry.card_image,
+            slug: entry.slug,
           };
         },
       },
@@ -60,6 +61,7 @@ export default {
             collection_type: "profiles",
             name: entry.username,
             image: entry.avatar,
+            slug: entry.id,
           };
         },
       },

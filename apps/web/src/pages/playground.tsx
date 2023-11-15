@@ -12,6 +12,7 @@ import { useToast } from "@/providers/toast-provider";
 import { MeiliSearch } from "meilisearch";
 import { set } from "react-hook-form";
 import { useDebounce } from "@/hooks/use-debounce";
+import { Image } from "@/components/image";
 
 /**
  * Facets are like tags
@@ -47,57 +48,22 @@ export const getServerSideProps = async () => {
   };
 };
 
-const client = new MeiliSearch({
-  host: "http://127.0.0.1:7700",
-  apiKey: "1388e149bf06841115849028ab1559d5c955dfd5e93f5288f7cae000cb53f8fc",
-});
-const index = client.index("global");
-
 export default function Page() {
-  const [query, setQuery] = useState("");
-  const { data, isLoading, isError, isPreviousData, isFetching } = useQuery(
-    ["search", "index-name", query],
-    async () => {
-      return index.search(query, {
-        attributesToSearchOn: ["name"],
-      });
-    },
-    {
-      enabled: !!query,
-      staleTime: 1000 * 60,
-      keepPreviousData: true,
-    }
+  const [index, setIndex] = useState(0);
+  const urls = [
+    "https://picsum.photos/203/303",
+    "https://picsum.photos/303/303",
+    "https://picsum.photos/403/303",
+    "https://picsum.photos/503/303",
+    "https://picsum.photos/603/303",
+    "https://picsum.photos/703/303",
+  ];
+  return (
+    <div>
+      <button onClick={() => setIndex((p) => p + 1)}> increase url </button>
+      <div className="h-56 w-80">
+        <Image src={urls[index]} alt="shit" />
+      </div>
+    </div>
   );
-
-  /**
-   * isLoading is when there is no data in the cache
-   * isFetching is when there is no data in the cache AND when there is data in the cache but it is being refreshed
-   *
-   * So there are two concepts here:
-   * 1. Stale time - the amount of time before refetching the cache
-   * 2. Cache time - time before the ting deletes from the cache
-   *
-   * ------
-   * for backspace we should not show the loading state. Actually yeah we should
-   * If it's refetching then we should show the loading state. Regardless of whether its showing the previous data or not
-   *
-   *
-   * - fetching and there are results:
-   *  - Show results
-   *  - if isFetching is true then show little loader
-   *
-   * The problem with showing the previous results is that if you add "Y" it will show the previous values that should now be filtered for
-   * - if isFetching is true
-   * - we should filter the previous data to match the current query
-   * e.g.
-   * {hits.map(h => isPreviousData ? filter the data by the term)}
-   */
-
-  const handleOnChange = (e: any) => {
-    setQuery(e.target.value);
-  };
-
-  console.log({ isPreviousData, isFetching, isLoading, data, isError });
-
-  return <></>;
 }

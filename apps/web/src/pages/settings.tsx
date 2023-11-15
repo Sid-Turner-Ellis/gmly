@@ -11,7 +11,7 @@ import { produce } from "immer";
 import { useToast } from "@/providers/toast-provider";
 import { Skeleton } from "@/components/skeleton";
 
-export default function Page() {
+export default function SettingsPage() {
   const { user, authStatus, signIn } = useAuth();
 
   const queryClient = useQueryClient();

@@ -5,7 +5,7 @@ type GameCardProps = {
 };
 
 export const GameCard = ({ url }: GameCardProps) => (
-  <div className="cursor-pointer overflow-hidden h-auto rounded-xl shadow-md aspect-[175/220] max-w-[210px]">
+  <div className="cursor-pointer overflow-hidden h-auto rounded-xl shadow-md aspect-[4/5] max-w-[210px]">
     {/* <Image
       width={50}
       height={50}
