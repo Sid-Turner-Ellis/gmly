@@ -158,7 +158,10 @@ export const GlobalSearchBar = () => {
             </>
           )}
           {!!query.length && !shouldShowLoader && !data?.length && (
-            <GlobalSearchBarItemLayout Middle="No results found" />
+            <GlobalSearchBarItemLayout
+              Left={<Image src="/pakistani-man.gif" alt="No results found" />}
+              Middle="No results found"
+            />
           )}
         </div>
       )}

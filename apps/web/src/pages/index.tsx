@@ -46,5 +46,14 @@
 // }
 
 export default function IndexPage() {
-  return <div> index </div>;
+  return (
+    <div
+      onClick={() => {
+        throw new Error("shiet");
+      }}
+    >
+      {" "}
+      inex{" "}
+    </div>
+  );
 }

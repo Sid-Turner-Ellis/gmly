@@ -12,7 +12,9 @@ import { useToast } from "@/providers/toast-provider";
 import { MeiliSearch } from "meilisearch";
 import { set } from "react-hook-form";
 import { useDebounce } from "@/hooks/use-debounce";
+import NextImage from "next/image";
 import { Image } from "@/components/image";
+import { ErrorPage } from "@/components/error-page";
 
 /**
  * Facets are like tags
@@ -58,12 +60,18 @@ export default function Page() {
     "https://picsum.photos/603/303",
     "https://picsum.photos/703/303",
   ];
+
   return (
     <div>
-      <button onClick={() => setIndex((p) => p + 1)}> increase url </button>
-      <div className="h-56 w-80">
-        <Image src={urls[index]} alt="shit" />
-      </div>
+      <ErrorPage type="somethingWentWrong" />
     </div>
   );
+  // return (
+  //   <div>
+  //     <button onClick={() => setIndex((p) => p + 1)}> increase url </button>
+  //     <div className="h-56 w-80">
+  //       <NextImage src={urls[index]} alt="shit" />
+  //     </div>
+  //   </div>
+  // );
 }

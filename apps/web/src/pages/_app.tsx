@@ -10,6 +10,7 @@ import { RegistrationModal } from "@/components/registration-modal";
 import { RegistrationModalProvider } from "@/providers/registration-modal-provider";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ToastProvider } from "@/providers/toast-provider";
+import { ErrorBoundary } from "@/components/error-boundary";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -23,7 +24,9 @@ export default function App({ Component, pageProps }: AppProps) {
             >
               <ReactQueryDevtools />
               <RegistrationModalProvider>
-                <Component {...pageProps} />
+                <ErrorBoundary>
+                  <Component {...pageProps} />
+                </ErrorBoundary>
               </RegistrationModalProvider>
             </ConditionallyWrap>
           </ToastProvider>

@@ -1,3 +1,4 @@
+import { ErrorPage } from "@/components/error-page";
 import { Heading } from "@/components/heading";
 import { ProfilePageContent } from "@/features/profile/components/profile-page-content";
 import { ProfilePageSkeleton } from "@/features/profile/components/profile-page-skeleton";
@@ -25,6 +26,10 @@ export default function ProfileIdPage() {
       retry: false,
     }
   );
+
+  if (isError) {
+    return <ErrorPage type="notFound" />;
+  }
 
   return (
     <div className="relative z-0">
