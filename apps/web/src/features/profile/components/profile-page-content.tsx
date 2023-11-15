@@ -15,20 +15,21 @@ import Image from "next/image";
 import { useEffect, useReducer, useRef, useState } from "react";
 import Uppy from "@uppy/core";
 import XHR from "@uppy/xhr-upload";
-import { ProfilesService } from "../profiles-service";
+import { ProfileResponse, ProfilesService } from "../profiles-service";
 import { ProfilePageLayout } from "./profile-page-layout";
 import { ImageUpload, ProfileImage, ProfileImageProps } from "./profile-image";
 import { ProfileBio } from "./profile-bio";
 
 export const ProfilePageContent = ({
-  user: {
-    data: {
-      profile: { username, bio, avatar, createdAt, id },
-    },
+  profile: {
+    id,
+    attributes: { username, bio, avatar, createdAt },
   },
 }: {
-  user: AuthenticatedUser;
+  profile: ProfileResponse;
 }) => {
+  const { user } = useAuth();
+  const isOwnProfile = user?.data.profile.id === id;
   const [isEditMode, setIsEditMode] = useState(false);
   const { addToast } = useToast();
   const bioRef = useRef<HTMLParagraphElement>(null);
@@ -69,9 +70,9 @@ export const ProfilePageContent = ({
   }, [isEditMode]);
 
   const handleOnClick = () => {
-    if (imageUpload.status === "uploading") {
-      return;
-    }
+    if (!isOwnProfile) return;
+    if (imageUpload.status === "uploading") return;
+
     const text = bioRef.current?.textContent ?? undefined;
     const imageId =
       imageUpload.status === "complete" ? imageUpload.detail : undefined;
@@ -105,7 +106,7 @@ export const ProfilePageContent = ({
         />
       }
       LeftTop={
-        <div className="flex items-center gap-4 mb-1 px-3">
+        <div className="flex items-center gap-4 px-3 mb-1">
           <Heading
             variant="h1"
             className={
@@ -114,18 +115,20 @@ export const ProfilePageContent = ({
           >
             {username}
           </Heading>
-          <Button
-            disabled={imageUpload.status === "uploading"}
-            onClick={handleOnClick}
-            title={isEditMode ? "Save" : "Edit"}
-            size="sm"
-            variant={isEditMode ? "primary" : "secondary"}
-            className="duration-75"
-          />
+          {isOwnProfile && (
+            <Button
+              disabled={imageUpload.status === "uploading"}
+              onClick={handleOnClick}
+              title={isEditMode ? "Save" : "Edit"}
+              size="sm"
+              variant={isEditMode ? "primary" : "secondary"}
+              className="duration-75"
+            />
+          )}
         </div>
       }
       LeftMiddle={
-        <Text variant="p" className="cursor-default px-3">
+        <Text variant="p" className="px-3 cursor-default">
           Player since {playerSince}
         </Text>
       }

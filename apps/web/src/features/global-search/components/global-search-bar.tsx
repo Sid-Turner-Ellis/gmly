@@ -87,7 +87,7 @@ export const GlobalSearchBar = () => {
 
   const onSearchResultClick = (result: GlobalIndexHit) => {
     const baseRoute =
-      result.collection_type === "games" ? "/battles" : "/profiles";
+      result.collection_type === "games" ? "/battles" : "/profile";
 
     router.push(`${baseRoute}/${result.slug}`);
     setQuery("");
