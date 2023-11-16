@@ -5,6 +5,7 @@
 @layer base {
   :root {
     --brand-color-primary: theme("colors.brand.primary.DEFAULT");
+    --brand-color-navy: theme("colors.brand.navy.DEFAULT");
   }
 }
 

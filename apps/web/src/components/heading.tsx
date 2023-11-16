@@ -5,8 +5,8 @@ import { Skeleton } from "./skeleton";
 import { ConditionallyWrap } from "./conditionally-wrap";
 
 const variants = {
-  h1: "text-4xl font-bold text-brand-white mb-12 font-grotesque",
-  h2: "text-3xl font-bold text-brand-white font-grotesque",
+  h1: "text-4xl font-bold text-brand-white mb-10 font-grotesque",
+  h2: "text-2xl font-bold text-brand-white font-grotesque",
   h3: "text-xl font-semibold text-brand-white mb-3 font-grotesque",
 };
 

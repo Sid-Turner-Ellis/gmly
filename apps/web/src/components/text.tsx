@@ -12,41 +12,15 @@ type TextProps = {
   variant?: keyof typeof textVariantClassnames;
 } & {
   className?: ClassValue;
-  skeleton?: {
-    isLoading: boolean;
-    numberOfLines?: number;
-    className?: ClassValue;
-  };
   children: ReactNode;
 } & HTMLAttributes<HTMLParagraphElement>;
 
-export const Text = forwardRef<HTMLParagraphElement, TextProps>(
-  ({ variant = "p", className, children, skeleton, ...attributes }, ref) => {
-    const resolvedSkeleton = {
-      isLoading: skeleton?.isLoading ?? false,
-      numberOfLines: skeleton?.numberOfLines ?? 1,
-      className: skeleton?.className ?? "",
-    };
+export const TextSkeleton = ({ className }: { className?: ClassValue }) => {
+  return <Skeleton className={cn("h-3.5", className)} />;
+};
 
-    if (resolvedSkeleton.isLoading) {
-      return (
-        <div>
-          {Array.from({ length: resolvedSkeleton.numberOfLines }).map(
-            (_, i) => (
-              <Skeleton
-                key={i}
-                className={cn(
-                  "h-3 w-full inline-block",
-                  resolvedSkeleton.numberOfLines > 0 && "mb-2 block",
-                  className,
-                  resolvedSkeleton.className
-                )}
-              />
-            )
-          )}
-        </div>
-      );
-    }
+export const Text = forwardRef<HTMLParagraphElement, TextProps>(
+  ({ variant = "p", className, children, ...attributes }, ref) => {
     return (
       <p
         ref={ref}

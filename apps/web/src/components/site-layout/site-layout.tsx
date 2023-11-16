@@ -21,7 +21,10 @@ export const SiteLayout = ({ children }: { children: ReactNode }) => {
   }, [pathname]);
 
   return (
-    <div className="relative z-0 flex h-full overflow-hidden bg-brand-navy">
+    <div
+      id="site-layout"
+      className="relative z-0 flex h-full overflow-hidden bg-brand-navy"
+    >
       <aside>
         <Sidebar
           className={cn("bg-brand-navy-light w-60 max-w-full px-4 py-6", {
@@ -46,7 +49,9 @@ export const SiteLayout = ({ children }: { children: ReactNode }) => {
           className={cn(pageWidthClasses, "z-10")}
           openSidebar={() => setIsSidebarOpen(true)}
         />
-        <main className={cn(pageWidthClasses, "z-0 mt-6")}>{children}</main>
+        <main className={cn(pageWidthClasses, "z-0 mt-6 overflow-hidden")}>
+          {children}
+        </main>
       </div>
     </div>
   );

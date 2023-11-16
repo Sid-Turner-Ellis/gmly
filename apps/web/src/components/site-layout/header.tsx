@@ -30,6 +30,8 @@ export const Header = ({ openSidebar, className }: HeaderProps) => {
   const { user, logout } = useAuth();
   const shouldShowProfileButtons =
     user && user.data?.profile.username && user.data.profile.region;
+  const isDesktop = useTailwindBreakpoint("md");
+
   const handleOnConnect = async () => {
     const thirdwebButton = document.querySelector(
       `.${THIRDWEB_CONNECT_BUTTON_CLASSNAME}`
@@ -48,7 +50,7 @@ export const Header = ({ openSidebar, className }: HeaderProps) => {
       <div className="flex items-center gap-6 lg:hidden">
         <div
           onClick={openSidebar}
-          className="flex flex-col w-8 gap-1.5 cursor-pointer"
+          className="flex flex-col w-7 gap-1.5 cursor-pointer"
         >
           {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="w-full h-[3px] rounded bg-white/70" />
@@ -68,12 +70,18 @@ export const Header = ({ openSidebar, className }: HeaderProps) => {
 
         {!shouldShowProfileButtons && (
           <>
-            <div className="hidden lg:block">
-              <Button title="Exchange" icon="exchange" variant="primary" />
-            </div>
+            <Button
+              title={isDesktop ? "Exchange" : undefined}
+              icon="exchange"
+              variant="primary"
+            />
 
             <div className="relative" onClick={handleOnConnect}>
-              <Button title="Connect" icon="profile" variant="secondary" />
+              <Button
+                title={isDesktop ? "Connect" : undefined}
+                icon="profile"
+                variant="secondary"
+              />
               <ConnectWallet
                 modalSize="compact"
                 className={`!hidden ${THIRDWEB_CONNECT_BUTTON_CLASSNAME}`}

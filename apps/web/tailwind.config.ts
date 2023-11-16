@@ -122,6 +122,15 @@ export default {
           from: { transform: "translateX(var(--radix-toast-swipe-end-x))" },
           to: { transform: "translateX(calc(100% + var(--viewport-padding)))" },
         },
+
+        pulse: {
+          "0%, 100%": {
+            opacity: "1",
+          },
+          "50%": {
+            opacity: "0.65",
+          },
+        },
       },
 
       animation: {

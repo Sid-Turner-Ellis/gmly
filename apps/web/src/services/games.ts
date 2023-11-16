@@ -27,7 +27,7 @@ export class GamesService {
       populate: "*",
       pagination: {
         page,
-        pageSize: 1,
+        pageSize: 4,
       },
     });
 
