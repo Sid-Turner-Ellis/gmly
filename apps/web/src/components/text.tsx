@@ -4,8 +4,8 @@ import { HTMLAttributes, ReactNode, forwardRef, useMemo, useRef } from "react";
 import { Skeleton } from "./skeleton";
 
 export const textVariantClassnames = {
-  p: "text-sm text-brand-gray",
-  label: "text-sm text-brand-white font-semibold",
+  p: "text-sm text-brand-gray font-inter",
+  label: "text-sm text-brand-white font-inter font-semibold",
 };
 
 type TextProps = {
@@ -50,11 +50,7 @@ export const Text = forwardRef<HTMLParagraphElement, TextProps>(
     return (
       <p
         ref={ref}
-        className={cn(
-          "text-brand-gray",
-          textVariantClassnames[variant],
-          className
-        )}
+        className={cn(textVariantClassnames[variant], className)}
         {...attributes}
       >
         {children}

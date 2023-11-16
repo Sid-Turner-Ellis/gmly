@@ -15,6 +15,7 @@ import { useDebounce } from "@/hooks/use-debounce";
 import NextImage from "next/image";
 import { Image } from "@/components/image";
 import { ErrorPage } from "@/components/error-page";
+import { Modal } from "@/components/modal";
 
 /**
  * Facets are like tags
@@ -60,10 +61,23 @@ export default function Page() {
     "https://picsum.photos/603/303",
     "https://picsum.photos/703/303",
   ];
+  const [isOpen, setIsOpen] = useState(false);
+  useEffect(() => {
+    setIsOpen(true);
+  }, []);
 
   return (
     <div>
-      <ErrorPage type="notFound" />
+      <h1 className="text-4xl text-white font-grotesque">hello mate</h1>
+      <Modal title="hello boi" isOpen={isOpen} setIsOpen={setIsOpen}>
+        <div>
+          <Heading variant="h2">holloooo</Heading>
+          <h1 className="text-4xl text-white font-grotesque">hello mate</h1>
+          <Text className={"font-grotesque text-3xl text-white"}>
+            hello mate
+          </Text>
+        </div>
+      </Modal>
     </div>
   );
   // return (

@@ -207,7 +207,10 @@ export const RegistrationModal = () => {
                         <SelectPrimitive.Item
                           value={region}
                           key={region}
-                          className="w-full gap-12 px-4 py-2 border-2 border-transparent transition-all bg-brand-navy-light  data-[highlighted]:outline-none data-[highlighted]:bg-white/5 outline-none text-brand-white"
+                          className={cn(
+                            textVariantClassnames.p,
+                            "w-full gap-12 px-4 py-2 border-2 border-transparent transition-all bg-brand-navy-light  data-[highlighted]:outline-none data-[highlighted]:bg-white/5 outline-none text-brand-white"
+                          )}
                         >
                           <SelectPrimitive.ItemText>
                             {region}

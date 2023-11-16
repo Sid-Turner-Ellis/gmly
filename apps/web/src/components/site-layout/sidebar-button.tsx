@@ -40,7 +40,7 @@ export const SidebarButton = ({
       />
       <Text
         className={cn(
-          "group-hover:text-brand-white transition font-medium",
+          "group-hover:text-brand-white transition font-grotesque font-medium",
           isActive && "text-brand-white",
           textClassName
         )}

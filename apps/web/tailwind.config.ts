@@ -20,6 +20,11 @@ export default {
         xs: "460px",
       },
 
+      fontFamily: {
+        grotesque: "var(--font-grotesque)",
+        inter: "var(--font-inter)",
+      },
+
       borderRadius: {
         DEFAULT: defaultTheme.borderRadius.lg,
       },

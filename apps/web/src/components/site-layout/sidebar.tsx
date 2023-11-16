@@ -20,9 +20,11 @@ export const Sidebar = ({ className }: PropsWithChildren<SidebarProps>) => {
 
   return (
     <div className={cn("flex flex-col bg-brand-navy-light h-full", className)}>
-      <div className="flex items-center gap-6 align-bottom ">
+      <div className="flex items-center gap-5 align-bottom ">
         <img src="/logo.png" className="w-12" />
-        <h2 className="text-2xl text-brand-white">Gamerly</h2>
+        <h2 className="text-2xl font-medium font-grotesque text-brand-white">
+          Gamerly
+        </h2>
       </div>
 
       <nav className="flex flex-col justify-between mt-10 grow">
