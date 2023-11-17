@@ -22,10 +22,6 @@ export default function BattlesIndexPage() {
     {}
   );
 
-  if (isError) {
-    return <ErrorPage type="somethingWentWrong" />;
-  }
-
   useEffect(() => {
     setSuperficiallyLoading(true);
     let timer = setTimeout(() => {
@@ -36,6 +32,10 @@ export default function BattlesIndexPage() {
       clearTimeout(timer);
     };
   }, [sort]);
+
+  if (isError) {
+    return <ErrorPage type="somethingWentWrong" />;
+  }
 
   return (
     <div>

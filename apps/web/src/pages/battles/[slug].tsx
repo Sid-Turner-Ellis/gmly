@@ -9,7 +9,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const games: GameResponse[] = [];
 
   const recursivelyFetchGames = async (page: number = 1) => {
-    const response = await GamesService.getGames();
+    const response = await GamesService.getGames(1);
 
     games.push(...response.data);
 

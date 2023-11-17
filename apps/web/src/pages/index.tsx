@@ -12,6 +12,7 @@ import { Text } from "@/components/text";
 import { Button } from "@/components/button";
 import { useRouter } from "next/router";
 import { GradientCircle } from "@/components/gradient-circle";
+import { Icon } from "@/components/icon";
 
 export default function Home({}) {
   const router = useRouter();

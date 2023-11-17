@@ -11,18 +11,18 @@ const gridClassNames =
 export const GamesGridSkeleton = ({ rows }: { rows?: number }) => (
   <div className={gridClassNames}>
     {Array.from({ length: rows ?? 1 }).map((_, i) => (
-      <>
-        <GameCardSkeleton />
-        <div className="hidden w-full h-full xs:block">
+      <div className="contents" key={i}>
+        <GameCardSkeleton key={`first:${i}`} />
+        <div className="hidden w-full h-full xs:block" key={`second:${i}`}>
           <GameCardSkeleton />
         </div>
-        <div className="hidden w-full h-full md:block">
+        <div className="hidden w-full h-full md:block" key={`third:${i}`}>
           <GameCardSkeleton />
         </div>
-        <div className="hidden w-full h-full lg:block">
+        <div className="hidden w-full h-full lg:block" key={`fourth:${i}`}>
           <GameCardSkeleton />
         </div>
-      </>
+      </div>
     ))}
   </div>
 );
@@ -30,7 +30,7 @@ export const GamesGrid = ({ games }: GamesGrid) => {
   return (
     <div className={gridClassNames}>
       {games.map((game) => (
-        <GameCard game={game} />
+        <GameCard key={game.id} game={game} />
       ))}
     </div>
   );

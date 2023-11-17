@@ -17,6 +17,7 @@ export type IconType =
   | "thumb"
   | "pencil"
   | "coins"
+  | "usdc"
   | "search";
 
 type IconProps = {
@@ -421,6 +422,54 @@ const ICON_MAP: Record<
         strokeWidth={1.5}
         d="M16 2a2.827 2.827 0 1 1 4 4L6.5 19.5 1 21l1.5-5.5L16 2Z"
       />
+    </svg>
+  ),
+  usdc: ({ boxSize, prefix }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      xmlSpace="preserve"
+      id={`${prefix}_Layer`}
+      fill="currentColor"
+      stroke="currentColor"
+      strokeWidth={1.6}
+      viewBox="-3.2 -3.2 38.4 38.4"
+      {...getWidthAndHeight({ size: boxSize, width: 38.4, height: 38.4 })}
+    >
+      <g id={`${prefix}_SVGRepo_iconCarrier`}>
+        <style>
+          {
+            ".st1{fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10}"
+          }
+        </style>
+        <g id={`${prefix}_USDC_usd_coin`}>
+          <g id={`${prefix}_XMLID_2`}>
+            <circle
+              id={`${prefix}_XMLID_174`}
+              cx={16}
+              cy={16}
+              r={14.5}
+              className="st1"
+            />
+            <path
+              id={`${prefix}_XMLID_72`}
+              d="M12.5 18.5v.22c0 1.26 1.02 2.28 2.28 2.28h2.44c1.26 0 2.28-1.02 2.28-2.28h0c0-1.02-.67-1.91-1.65-2.19l-3.69-1.05a2.271 2.271 0 0 1-1.65-2.19h0c0-1.26 1.02-2.28 2.28-2.28h2.44c1.26 0 2.28 1.02 2.28 2.28v.22"
+              className="st1"
+            />
+            <path id={`${prefix}_XMLID_3`} d="M16 23v-2" className="st1" />
+            <path id={`${prefix}_XMLID_4`} d="M16 11V9" className="st1" />
+            <path
+              id={`${prefix}_XMLID_7`}
+              d="M12.5 6.11c-4.08 1.44-7 5.32-7 9.89s2.92 8.45 7 9.89"
+              className="st1"
+            />
+            <path
+              id={`${prefix}_XMLID_6`}
+              d="M19.5 25.89c4.08-1.44 7-5.32 7-9.89s-2.92-8.45-7-9.89"
+              className="st1"
+            />
+          </g>
+        </g>
+      </g>
     </svg>
   ),
 };

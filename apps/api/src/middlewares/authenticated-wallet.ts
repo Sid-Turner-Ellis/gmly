@@ -6,6 +6,8 @@ const wallet = new PrivateKeyWallet(
   process.env.THIRDWEB_AUTH_PRIVATE_KEY || ""
 );
 
+// Per engineering: we have a verify function in the auth sdk. You need both addresses (backend wallet address and the user wallet address)
+
 export default (config, { strapi }: { strapi: Strapi }) => {
   return async (ctx, next) => {
     try {

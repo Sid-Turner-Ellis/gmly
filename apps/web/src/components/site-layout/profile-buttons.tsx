@@ -15,7 +15,7 @@ export const ProfileButtons = ({}: ProfileButtonsProps) => {
       <Button
         title={isDesktop ? "150 USDC" : undefined}
         className="h-full border-brand-primary hover:border-brand-primary-dark text-brand-white"
-        icon="coins"
+        icon="usdc"
       />
       <div className="h-full">
         <Button

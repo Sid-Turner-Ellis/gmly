@@ -6,7 +6,6 @@ import { ThirdwebProvider } from "@/providers/thirdweb-provider";
 import { TokenProvider } from "@/providers/token-provider";
 import React from "react";
 import { ConditionallyWrap } from "@/components/conditionally-wrap";
-import { RegistrationModal } from "@/components/registration-modal";
 import { RegistrationModalProvider } from "@/providers/registration-modal-provider";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ToastProvider } from "@/providers/toast-provider";
@@ -35,7 +34,9 @@ export default function App({ Component, pageProps }: AppProps) {
                 condition={!pageProps.hideSidebar}
                 Wrapper={SiteLayout}
               >
-                <ReactQueryDevtools />
+                {process.env.NODE_ENV === "development" && (
+                  <ReactQueryDevtools />
+                )}
                 <RegistrationModalProvider>
                   <ErrorBoundary>
                     <Component {...pageProps} />
