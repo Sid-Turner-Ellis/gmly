@@ -11,17 +11,18 @@ import { Heading } from "@/components/heading";
 import { Text } from "@/components/text";
 import { Button } from "@/components/button";
 import { useRouter } from "next/router";
+import { GradientCircle } from "@/components/gradient-circle";
 
 export default function Home({}) {
   const router = useRouter();
   const { data, isLoading } = useQuery(
     ["games", 1],
-    () => GamesService.getGames(),
+    () => GamesService.getGames(1),
     {}
   );
 
   return (
-    <div className="max-w-3xl lg:mt-16 lg:ml-16">
+    <div className="lg:mt-16">
       <div className="flex flex-col gap-8">
         <Heading variant="h1" className="mb-1">
           Your esports app for web3
@@ -65,9 +66,10 @@ export default function Home({}) {
             </>
           )}
           {data?.data &&
-            data.data.map((game) => <GameCard key={game.id} game={game} />)}
+            data.data
+              .slice(0, 4)
+              .map((game) => <GameCard key={game.id} game={game} />)}
         </div>
-
         <Button
           className="self-end -mt-4"
           title="+ 12 more games"
@@ -76,9 +78,7 @@ export default function Home({}) {
           size="sm"
         />
       </div>
-      <div className="absolute top-[20%] left-0 w-screen h-full -z-10">
-        <div className="blur-lg rounded-full absolute -inset-32 bg-[radial-gradient(at_center,var(--brand-color-primary)_0%,_var(--brand-color-navy)_65%)] opacity-40" />
-      </div>
+      <GradientCircle />
     </div>
   );
 }

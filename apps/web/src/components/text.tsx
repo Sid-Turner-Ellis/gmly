@@ -16,7 +16,7 @@ type TextProps = {
 } & HTMLAttributes<HTMLParagraphElement>;
 
 export const TextSkeleton = ({ className }: { className?: ClassValue }) => {
-  return <Skeleton className={cn("h-3.5", className)} />;
+  return <Skeleton className={cn("h-3", className)} />;
 };
 
 export const Text = forwardRef<HTMLParagraphElement, TextProps>(

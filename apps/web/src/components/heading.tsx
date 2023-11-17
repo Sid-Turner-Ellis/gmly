@@ -3,53 +3,33 @@ import { ClassValue } from "clsx";
 import { HTMLAttributes, ReactNode, forwardRef, useMemo, useRef } from "react";
 import { Skeleton } from "./skeleton";
 import { ConditionallyWrap } from "./conditionally-wrap";
+import { VariantProps, cva } from "class-variance-authority";
 
-const variants = {
-  h1: "text-4xl font-bold text-brand-white mb-10 font-grotesque",
-  h2: "text-2xl font-bold text-brand-white font-grotesque",
-  h3: "text-xl font-semibold text-brand-white mb-3 font-grotesque",
-};
+export const headingVariants = cva("text-brand-white font-grotesque", {
+  variants: {
+    variant: {
+      h1: "text-4xl font-bold mb-10",
+      h2: "text-2xl font-bold mb-0",
+      h3: "text-xl font-semibold mb-3",
+    },
+  },
+});
 
 type HeadingProps = {
-  variant: keyof typeof variants;
-} & {
   className?: ClassValue;
-  skeletonClassName?: ClassValue;
   children?: ReactNode;
-  isLoading?: boolean;
-  loadingText?: string;
-} & HTMLAttributes<HTMLHeadingElement>;
+} & HTMLAttributes<HTMLHeadingElement> &
+  VariantProps<typeof headingVariants>;
 
 export const Heading = forwardRef<HTMLHeadingElement, HeadingProps>(
-  (
-    {
-      variant,
-      className,
-      isLoading,
-      skeletonClassName,
-      children,
-      ...attributes
-    },
-    ref
-  ) => {
-    const Tag = useMemo(() => variant, [variant]);
-
-    if (isLoading) {
-      return (
-        <Skeleton
-          className={cn(
-            "h-12 w-full inline-block",
-            className,
-            skeletonClassName
-          )}
-        />
-      );
-    }
+  ({ variant, className, children, ...attributes }, ref) => {
+    const resolvedVariant = variant ?? "h1";
+    const Tag = useMemo(() => resolvedVariant, [resolvedVariant]);
 
     return (
       <Tag
         ref={ref}
-        className={cn(variants[variant], className)}
+        className={cn(headingVariants({ variant }), className)}
         {...attributes}
       >
         {children}

@@ -9,7 +9,7 @@ import { Icon } from "../icon";
 import { twMerge } from "tailwind-merge";
 import { Header } from "./header";
 
-const pageWidthClasses = "px-6 lg:pl-10 lg:pr-16";
+const sharedPageWidthClasses = "px-6 lg:pl-10 lg:pr-16";
 
 export const SiteLayout = ({ children }: { children: ReactNode }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -46,10 +46,15 @@ export const SiteLayout = ({ children }: { children: ReactNode }) => {
           )}
         />
         <Header
-          className={cn(pageWidthClasses, "z-10")}
+          className={cn(sharedPageWidthClasses, "z-10")}
           openSidebar={() => setIsSidebarOpen(true)}
         />
-        <main className={cn(pageWidthClasses, "z-0 mt-6 overflow-hidden")}>
+        <main
+          className={cn(
+            sharedPageWidthClasses,
+            "z-0 mt-6 overflow-hidden pb-18 max-w-5xl mx-auto"
+          )}
+        >
           {children}
         </main>
       </div>

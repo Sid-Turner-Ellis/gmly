@@ -1,23 +1,19 @@
 import { strapiApi } from "@/lib/strapi";
-import { StrapiImageResponse } from "@/types";
+import { StrapiEntity, StrapiImageResponse } from "@/types";
 import { StrapiError } from "@/utils/strapi-error";
 
 // TODO: Consider updating the strapi service so that we don't deal with profileIDs but rather addresses
 export type Regions = "Europe" | "NA" | "Asia" | "Oceania";
 
-export type ProfileResponse = {
-  id: number;
-  attributes: {
-    wallet_address: string;
-    region: Regions | null;
-    username: string | null;
-    wager_mode: boolean;
-    trust_mode: boolean;
-    createdAt: string; // ISO 8601
-    bio: string | null;
-    avatar: StrapiImageResponse | null;
-  };
-};
+export type ProfileResponse = StrapiEntity<{
+  wallet_address: string;
+  region: Regions | null;
+  username: string | null;
+  wager_mode: boolean;
+  trust_mode: boolean;
+  bio: string | null;
+  avatar: StrapiImageResponse | null;
+}>;
 
 const populate = ["avatar"];
 

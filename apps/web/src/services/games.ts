@@ -1,5 +1,5 @@
 import { strapiApi } from "@/lib/strapi";
-import { StrapiImageResponse } from "@/types";
+import { StrapiEntity, StrapiImageResponse } from "@/types";
 import { StrapiError } from "@/utils/strapi-error";
 import QueryString from "qs";
 
@@ -10,24 +10,22 @@ import QueryString from "qs";
 
 // TODO: Stop using a class and use separate files e.g. games/getGames.ts as it will make types less annoying
 
-export type GameResponse = {
-  id: number;
-  attributes: {
-    title: string;
-    card_image: StrapiImageResponse;
-    cover_image: StrapiImageResponse;
-    slug: string;
-  };
-};
+export type GameResponse = StrapiEntity<{
+  title: string;
+  card_image: StrapiImageResponse;
+  cover_image: StrapiImageResponse;
+  slug: string;
+}>;
 
+export type GetGamesSort = "date" | "title";
 export class GamesService {
-  static async getGames(page = 1) {
+  static async getGames(page: number, sort?: GetGamesSort) {
     const gamesResponse = await strapiApi.find<GameResponse>("games", {
-      sort: "title:asc",
+      sort: sort === "date" ? "createdAt:asc" : "title:asc",
       populate: "*",
       pagination: {
         page,
-        pageSize: 4,
+        pageSize: 25,
       },
     });
 

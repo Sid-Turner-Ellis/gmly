@@ -40,7 +40,7 @@ export const GameCard = ({ game }: GameCardProps) => (
         src={resolveStrapiImage(game.attributes.card_image)}
         alt={game.attributes.title}
       />
-      <Text className={"text-brand-white font-medium"}>
+      <Text className={"text-brand-white font-semibold font-grotesque"}>
         {game.attributes.title}
       </Text>
     </GameCardLayout>

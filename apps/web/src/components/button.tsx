@@ -35,7 +35,7 @@ const buttonVariants = cva(
 );
 
 // TODO: start accepting html attributes
-type ButtonPropsnew = {
+type ButtonProps = {
   className?: ClassValue;
   icon?: IconType | ReactNode;
   title?: string;
@@ -50,7 +50,7 @@ export const Button = ({
   variant,
   className,
   size,
-}: ButtonPropsnew) => {
+}: ButtonProps) => {
   return (
     <button
       onClick={onClick}

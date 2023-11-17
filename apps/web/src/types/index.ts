@@ -38,3 +38,10 @@ export const isStrapiImage = (i: unknown): i is StrapiImage => {
     typeof image?.url === "string"
   );
 };
+
+export type StrapiEntity<T extends Record<string, any>> = {
+  id: number;
+  attributes: T & {
+    createdAt: string; // ISO 8601
+  };
+};
