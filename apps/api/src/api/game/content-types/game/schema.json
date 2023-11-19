@@ -37,6 +37,18 @@
       "regex": "^[a-zA-Z0-9_-]+$",
       "unique": true,
       "required": true
+    },
+    "game_modes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::game-mode.game-mode",
+      "mappedBy": "game"
+    },
+    "teams": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::team.team",
+      "mappedBy": "game"
     }
   }
 }

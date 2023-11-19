@@ -693,11 +693,51 @@ export interface ApiGameGame extends Schema.CollectionType {
     card_image: Attribute.Media & Attribute.Required;
     cover_image: Attribute.Media & Attribute.Required;
     slug: Attribute.String & Attribute.Required & Attribute.Unique;
+    game_modes: Attribute.Relation<
+      'api::game.game',
+      'oneToMany',
+      'api::game-mode.game-mode'
+    >;
+    teams: Attribute.Relation<'api::game.game', 'oneToMany', 'api::team.team'>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<'api::game.game', 'oneToOne', 'admin::user'> &
       Attribute.Private;
     updatedBy: Attribute.Relation<'api::game.game', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+  };
+}
+
+export interface ApiGameModeGameMode extends Schema.CollectionType {
+  collectionName: 'game_modes';
+  info: {
+    singularName: 'game-mode';
+    pluralName: 'game-modes';
+    displayName: 'Game Mode';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    game: Attribute.Relation<
+      'api::game-mode.game-mode',
+      'manyToOne',
+      'api::game.game'
+    >;
+    title: Attribute.String & Attribute.Required;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::game-mode.game-mode',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::game-mode.game-mode',
+      'oneToOne',
+      'admin::user'
+    > &
       Attribute.Private;
   };
 }
@@ -746,6 +786,64 @@ export interface ApiProfileProfile extends Schema.CollectionType {
   };
 }
 
+export interface ApiTeamTeam extends Schema.CollectionType {
+  collectionName: 'teams';
+  info: {
+    singularName: 'team';
+    pluralName: 'teams';
+    displayName: 'Team';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    image: Attribute.Media;
+    game: Attribute.Relation<'api::team.team', 'manyToOne', 'api::game.game'>;
+    name: Attribute.String & Attribute.Required;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::team.team', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::team.team', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+  };
+}
+
+export interface ApiTeamProfileTeamProfile extends Schema.CollectionType {
+  collectionName: 'team_profiles';
+  info: {
+    singularName: 'team-profile';
+    pluralName: 'team-profiles';
+    displayName: 'Team Profile';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    is_pending: Attribute.Boolean &
+      Attribute.Required &
+      Attribute.DefaultTo<true>;
+    role: Attribute.Enumeration<['founder', 'member', 'leader']> &
+      Attribute.Required;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::team-profile.team-profile',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::team-profile.team-profile',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 declare module '@strapi/types' {
   export module Shared {
     export interface ContentTypes {
@@ -763,7 +861,10 @@ declare module '@strapi/types' {
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'api::game.game': ApiGameGame;
+      'api::game-mode.game-mode': ApiGameModeGameMode;
       'api::profile.profile': ApiProfileProfile;
+      'api::team.team': ApiTeamTeam;
+      'api::team-profile.team-profile': ApiTeamProfileTeamProfile;
     }
   }
 }

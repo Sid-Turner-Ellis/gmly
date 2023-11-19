@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "team_profiles",
+  "info": {
+    "singularName": "team-profile",
+    "pluralName": "team-profiles",
+    "displayName": "Team Profile",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "is_pending": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    },
+    "role": {
+      "type": "enumeration",
+      "enum": [
+        "founder",
+        "member",
+        "leader"
+      ],
+      "required": true
+    }
+  }
+}
