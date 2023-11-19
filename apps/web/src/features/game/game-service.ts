@@ -1,7 +1,6 @@
 import { strapiApi } from "@/lib/strapi";
-import { StrapiEntity, StrapiImageResponse } from "@/types";
+import { StrapiEntity, StrapiImageResponse } from "@/types/strapi-types";
 import { StrapiError } from "@/utils/strapi-error";
-import QueryString from "qs";
 
 // TODO: If I can't use the GameResponse type for the other API requests then set the strapi.find type not to
 // automatically type the data as an array
@@ -18,7 +17,8 @@ export type GameResponse = StrapiEntity<{
 }>;
 
 export type GetGamesSort = "date" | "title";
-export class GamesService {
+
+export class GameService {
   static async getGames(page: number, sort?: GetGamesSort) {
     const gamesResponse = await strapiApi.find<GameResponse>("games", {
       sort: sort === "date" ? "createdAt:asc" : "title:asc",

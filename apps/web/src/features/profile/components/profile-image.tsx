@@ -11,7 +11,7 @@ import Uppy, {
 import XHR from "@uppy/xhr-upload";
 import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
 import { Text } from "@/components/text";
-import { StrapiImageResponse } from "@/types";
+import { StrapiImageResponse } from "@/types/strapi-types";
 import { Skeleton } from "@/components/skeleton";
 import { Image } from "@/components/image";
 

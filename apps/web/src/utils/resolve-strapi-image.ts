@@ -3,7 +3,7 @@ import {
   StrapiImageResponse,
   isStrapiImage,
   isStrapiImageResponse,
-} from "@/types";
+} from "@/types/strapi-types";
 
 const addUrl = (url: string) =>
   `${process.env.NEXT_PUBLIC_STRAPI_PROTOCOL}://${process.env.NEXT_PUBLIC_STRAPI_HOSTNAME}${url}`;

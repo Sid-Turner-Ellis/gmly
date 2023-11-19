@@ -2,7 +2,7 @@ import { ErrorPage } from "@/components/error-page";
 import { Heading } from "@/components/heading";
 import { ProfilePageContent } from "@/features/profile/components/profile-page-content";
 import { ProfilePageSkeleton } from "@/features/profile/components/profile-page-skeleton";
-import { ProfilesService } from "@/features/profile/profiles-service";
+import { ProfileService } from "@/features/profile/profile-service";
 import { useAuth } from "@/hooks/use-auth";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
@@ -18,7 +18,7 @@ export default function ProfileIdPage() {
   const { isLoading, data, isError, error, isLoadingError } = useQuery(
     ["profile", profileId],
     async () => {
-      const profileResponse = await ProfilesService.getProfileById(profileId!);
+      const profileResponse = await ProfileService.getProfileById(profileId!);
       return profileResponse.data;
     },
     {

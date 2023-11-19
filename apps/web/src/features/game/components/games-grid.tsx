@@ -1,4 +1,4 @@
-import { GameResponse } from "@/services/games";
+import { GameResponse } from "@/features/game/game-service";
 import { GameCard, GameCardSkeleton } from "./game-card";
 
 type GamesGrid = {

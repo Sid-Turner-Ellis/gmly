@@ -5,7 +5,7 @@ import { tailwind } from "@/lib/tailwind";
 import { useEffect, useState } from "react";
 import * as Separator from "@radix-ui/react-separator";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ProfilesService } from "@/features/profile/profiles-service";
+import { ProfileService } from "@/features/profile/profile-service";
 import { AuthenticatedUser, useAuth } from "@/hooks/use-auth";
 import { produce } from "immer";
 import { useToast } from "@/providers/toast-provider";
@@ -20,47 +20,44 @@ export default function SettingsPage() {
   const wagerMode = user?.data.profile.wager_mode ?? false;
   const trustMode = user?.data.profile.trust_mode ?? false;
 
-  const { mutate, isError, reset } = useMutation(
-    ProfilesService.updateProfile,
-    {
-      async onMutate(variables) {
-        await queryClient.cancelQueries(["tw-cache", "user"]);
-        const previousUser = queryClient.getQueryData([
-          "tw-cache",
-          "user",
-        ]) as AuthenticatedUser;
+  const { mutate, isError, reset } = useMutation(ProfileService.updateProfile, {
+    async onMutate(variables) {
+      await queryClient.cancelQueries(["tw-cache", "user"]);
+      const previousUser = queryClient.getQueryData([
+        "tw-cache",
+        "user",
+      ]) as AuthenticatedUser;
 
-        if (!previousUser) {
-          throw new Error("User not found in cache");
+      if (!previousUser) {
+        throw new Error("User not found in cache");
+      }
+
+      const newUser = produce(previousUser, (draft) => {
+        if (variables.wager_mode !== undefined) {
+          draft.data!.profile.wager_mode = variables.wager_mode;
         }
+        if (variables.trust_mode !== undefined) {
+          draft.data!.profile.trust_mode = variables.trust_mode;
+        }
+      });
 
-        const newUser = produce(previousUser, (draft) => {
-          if (variables.wager_mode !== undefined) {
-            draft.data!.profile.wager_mode = variables.wager_mode;
-          }
-          if (variables.trust_mode !== undefined) {
-            draft.data!.profile.trust_mode = variables.trust_mode;
-          }
-        });
+      queryClient.setQueryData(["tw-cache", "user"], newUser);
 
-        queryClient.setQueryData(["tw-cache", "user"], newUser);
-
-        return { previousUser };
-      },
-      onError(error, variables, context) {
-        queryClient.setQueryData(["tw-cache", "user"], context!.previousUser);
-      },
-      onSuccess() {
-        addToast({
-          type: "success",
-          message: "Settings updated",
-        });
-      },
-      onSettled() {
-        queryClient.invalidateQueries(["tw-cache", "user"]);
-      },
-    }
-  );
+      return { previousUser };
+    },
+    onError(error, variables, context) {
+      queryClient.setQueryData(["tw-cache", "user"], context!.previousUser);
+    },
+    onSuccess() {
+      addToast({
+        type: "success",
+        message: "Settings updated",
+      });
+    },
+    onSettled() {
+      queryClient.invalidateQueries(["tw-cache", "user"]);
+    },
+  });
 
   useEffect(() => {
     if (isError) {

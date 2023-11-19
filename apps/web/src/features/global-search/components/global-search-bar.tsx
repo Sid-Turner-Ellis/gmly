@@ -3,7 +3,7 @@ import { InputLayout } from "../../../components/input-layout";
 import { useQuery } from "@tanstack/react-query";
 import { meilisearchClient } from "@/lib/meilisearch";
 import { useOutsideClick } from "@/hooks/use-outside-click";
-import { StrapiImage } from "@/types";
+import { StrapiImage } from "@/types/strapi-types";
 import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
 import { Text } from "../../../components/text";
 import { cn } from "@/utils/cn";

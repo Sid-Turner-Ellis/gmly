@@ -1,6 +1,9 @@
-import { GameCard, GameCardSkeleton } from "@/components/game-card";
+import {
+  GameCard,
+  GameCardSkeleton,
+} from "@/features/game/components/game-card";
 
-import { GamesService } from "@/services/games";
+import { GameService } from "@/features/game/game-service";
 import { useUser } from "@thirdweb-dev/react";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
 import * as React from "react";
@@ -18,7 +21,7 @@ export default function Home({}) {
   const router = useRouter();
   const { data, isLoading } = useQuery(
     ["games", 1],
-    () => GamesService.getGames(1),
+    () => GameService.getGames(1),
     {}
   );
 

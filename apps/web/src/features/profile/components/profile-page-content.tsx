@@ -15,7 +15,7 @@ import Image from "next/image";
 import { useEffect, useReducer, useRef, useState } from "react";
 import Uppy from "@uppy/core";
 import XHR from "@uppy/xhr-upload";
-import { ProfileResponse, ProfilesService } from "../profiles-service";
+import { ProfileResponse, ProfileService } from "../profile-service";
 import { ProfilePageLayout } from "./profile-page-layout";
 import { ImageUpload, ProfileImage, ProfileImageProps } from "./profile-image";
 import { ProfileBio } from "./profile-bio";
@@ -39,8 +39,8 @@ export const ProfilePageContent = ({
   });
   const { mutate } = useOptimisticMutation<
     AuthenticatedUser,
-    typeof ProfilesService.updateProfile
-  >(ProfilesService.updateProfile, {
+    typeof ProfileService.updateProfile
+  >(ProfileService.updateProfile, {
     queryKey: ["tw-cache", "user"],
     updateCache(variables, previousValueDraft) {
       if (variables.bio && previousValueDraft) {

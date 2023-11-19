@@ -1,5 +1,5 @@
 import { strapiApi } from "@/lib/strapi";
-import { StrapiEntity, StrapiImageResponse } from "@/types";
+import { StrapiEntity, StrapiImageResponse } from "@/types/strapi-types";
 import { StrapiError } from "@/utils/strapi-error";
 
 // TODO: Consider updating the strapi service so that we don't deal with profileIDs but rather addresses
@@ -17,7 +17,7 @@ export type ProfileResponse = StrapiEntity<{
 
 const populate = ["avatar"];
 
-export class ProfilesService {
+export class ProfileService {
   static async getProfileById(profileId: number) {
     const profileResponse = await strapiApi.findOne<ProfileResponse>(
       "profiles",

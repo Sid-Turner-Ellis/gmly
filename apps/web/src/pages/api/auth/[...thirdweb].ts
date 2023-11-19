@@ -4,8 +4,8 @@ import { getCookie } from "cookies-next";
 import { NextRequest } from "next/server";
 import {
   ProfileResponse,
-  ProfilesService,
-} from "@/features/profile/profiles-service";
+  ProfileService,
+} from "@/features/profile/profile-service";
 import { StrapiError } from "@/utils/strapi-error";
 import { AuthenticatedUser } from "@/hooks/use-auth";
 /**
@@ -55,7 +55,7 @@ export const { ThirdwebAuthHandler, getUser } = ThirdwebAuth({
       let profile: AuthenticatedUser["data"]["profile"];
 
       try {
-        const profileResponse = await ProfilesService.getProfile(address);
+        const profileResponse = await ProfileService.getProfile(address);
         const {
           username,
           wallet_address,
@@ -83,8 +83,9 @@ export const { ThirdwebAuthHandler, getUser } = ThirdwebAuth({
           StrapiError.isStrapiError(error) && error.error.status === 404;
 
         if (isProfileNotFound) {
-          const newProfileResponse =
-            await ProfilesService.createProfile(address);
+          const newProfileResponse = await ProfileService.createProfile(
+            address
+          );
 
           profile = {
             id: newProfileResponse.id,

@@ -1,6 +1,6 @@
-import { GameCoverCard } from "@/components/game-cover-card";
+import { GameCoverCard } from "@/features/game/components/game-cover-card";
 import { Heading } from "@/components/heading";
-import { GameResponse, GamesService } from "@/services/games";
+import { GameResponse, GameService } from "@/features/game/game-service";
 import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
 import { StrapiError } from "@/utils/strapi-error";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
@@ -9,7 +9,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const games: GameResponse[] = [];
 
   const recursivelyFetchGames = async (page: number = 1) => {
-    const response = await GamesService.getGames(1);
+    const response = await GameService.getGames(1);
 
     games.push(...response.data);
 
@@ -29,7 +29,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps = (async (context) => {
   try {
-    const game = await GamesService.getGameBySlug(context.params!.slug);
+    const game = await GameService.getGameBySlug(context.params!.slug);
     return { props: { game }, revalidate: 600 };
   } catch (error) {
     if (StrapiError.isStrapiError(error)) {

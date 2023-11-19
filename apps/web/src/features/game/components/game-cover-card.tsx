@@ -1,5 +1,5 @@
 import * as AspectRatio from "@radix-ui/react-aspect-ratio";
-import { Image } from "./image";
+import { Image } from "../../../components/image";
 
 type GameCoverCardProps = {
   url: string;

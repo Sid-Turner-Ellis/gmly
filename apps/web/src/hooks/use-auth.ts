@@ -1,5 +1,5 @@
 import { THIRDWEB_CONNECT_BUTTON_CLASSNAME } from "@/components/site-layout/header";
-import { ProfileResponse } from "@/features/profile/profiles-service";
+import { ProfileResponse } from "@/features/profile/profile-service";
 import {
   UserWithData,
   useDisconnect,

@@ -1,9 +1,9 @@
-import { GameResponse } from "@/services/games";
+import { GameResponse } from "@/features/game/game-service";
 import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
-import { Image } from "./image";
-import { Skeleton } from "./skeleton";
+import { Image } from "../../../components/image";
+import { Skeleton } from "../../../components/skeleton";
 import { ReactNode } from "react";
-import { Text, TextSkeleton } from "./text";
+import { Text, TextSkeleton } from "../../../components/text";
 import Link from "next/link";
 
 type GameCardProps = {

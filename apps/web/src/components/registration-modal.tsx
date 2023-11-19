@@ -6,9 +6,9 @@ import { Icon } from "./icon";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import {
   ProfileResponse,
-  ProfilesService,
+  ProfileService,
   Regions,
-} from "@/features/profile/profiles-service";
+} from "@/features/profile/profile-service";
 import { Button } from "./button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRegistrationModal } from "@/providers/registration-modal-provider";
@@ -36,7 +36,7 @@ export const RegistrationModal = () => {
   const queryClient = useQueryClient();
   const selectRef = useRef<HTMLDivElement>(null);
   const { mutate, isLoading, isSuccess, isError } = useMutation(
-    ProfilesService.updateProfile,
+    ProfileService.updateProfile,
     {
       onError(error) {
         const usernameTaken =

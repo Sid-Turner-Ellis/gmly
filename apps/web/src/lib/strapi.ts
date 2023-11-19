@@ -10,8 +10,6 @@ import axios, {
 } from "axios";
 import QueryString from "qs";
 
-// process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
-
 type StrapiBaseRequestParams = {
   fields?: Array<string>;
   populate?: string | Array<string> | Record<string, unknown>;
@@ -80,7 +78,6 @@ class Strapi {
     url: string,
     axiosConfig: AxiosRequestConfig
   ): Promise<T> {
-    // TODO: make sure this is throwing strapi errors
     try {
       const response: AxiosResponse<T> = await this._api.request<T>({
         method,

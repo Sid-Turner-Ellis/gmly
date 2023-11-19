@@ -1,8 +1,11 @@
 import { ErrorPage } from "@/components/error-page";
-import { GamesGrid, GamesGridSkeleton } from "@/components/games-grid";
+import {
+  GamesGrid,
+  GamesGridSkeleton,
+} from "@/features/game/components/games-grid";
 import { GradientCircle } from "@/components/gradient-circle";
 import { Heading, headingVariants } from "@/components/heading";
-import { GamesService, GetGamesSort } from "@/services/games";
+import { GameService, GetGamesSort } from "@/features/game/game-service";
 import { useQuery } from "@tanstack/react-query";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { useEffect, useRef, useState } from "react";
@@ -18,7 +21,7 @@ export default function BattlesIndexPage() {
   const [superficiallyLoading, setSuperficiallyLoading] = useState(false);
   const { data, isLoading, isError } = useQuery(
     ["games", sort, 1],
-    () => GamesService.getGames(1, sort),
+    () => GameService.getGames(1, sort),
     {}
   );
 

@@ -7,15 +7,6 @@ type SkeletonProps = {
   type?: "image";
 };
 
-/**
- * Be good if:
- *
- * Could give it a type:
- * - image
- * - text
- * If text then passing in: lines, word count, breaks per line
- */
-
 export const Skeleton = ({
   className,
   type,

@@ -1,4 +1,4 @@
-import { StrapiImage } from "@/types";
+import { StrapiImage } from "@/types/strapi-types";
 
 export type GlobalIndexHit = {
   name: string;
