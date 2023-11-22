@@ -769,6 +769,11 @@ export interface ApiProfileProfile extends Schema.CollectionType {
       Attribute.Required &
       Attribute.DefaultTo<false>;
     bio: Attribute.Text;
+    team_profiles: Attribute.Relation<
+      'api::profile.profile',
+      'oneToMany',
+      'api::team-profile.team-profile'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -801,6 +806,11 @@ export interface ApiTeamTeam extends Schema.CollectionType {
     image: Attribute.Media;
     game: Attribute.Relation<'api::team.team', 'manyToOne', 'api::game.game'>;
     name: Attribute.String & Attribute.Required;
+    team_profiles: Attribute.Relation<
+      'api::team.team',
+      'oneToMany',
+      'api::team-profile.team-profile'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<'api::team.team', 'oneToOne', 'admin::user'> &
@@ -827,6 +837,16 @@ export interface ApiTeamProfileTeamProfile extends Schema.CollectionType {
       Attribute.DefaultTo<true>;
     role: Attribute.Enumeration<['founder', 'member', 'leader']> &
       Attribute.Required;
+    profile: Attribute.Relation<
+      'api::team-profile.team-profile',
+      'manyToOne',
+      'api::profile.profile'
+    >;
+    team: Attribute.Relation<
+      'api::team-profile.team-profile',
+      'manyToOne',
+      'api::team.team'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<

@@ -8,7 +8,7 @@ export type StrapiImageResponse = {
   data: {
     id: number;
     attributes: StrapiImage;
-  };
+  } | null;
 };
 
 export const isStrapiImageResponse = (i: unknown): i is StrapiImageResponse => {

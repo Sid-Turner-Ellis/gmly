@@ -65,6 +65,7 @@ export const { ThirdwebAuthHandler, getUser } = ThirdwebAuth({
           bio,
           createdAt,
           avatar,
+          team_profiles,
         } = profileResponse.attributes;
 
         profile = {
@@ -77,6 +78,7 @@ export const { ThirdwebAuthHandler, getUser } = ThirdwebAuth({
           createdAt,
           bio,
           avatar,
+          team_profiles,
         };
       } catch (error) {
         const isProfileNotFound =
@@ -97,6 +99,7 @@ export const { ThirdwebAuthHandler, getUser } = ThirdwebAuth({
             createdAt: newProfileResponse.attributes.createdAt,
             bio: null,
             avatar: null,
+            team_profiles: [],
           };
         } else {
           throw error;

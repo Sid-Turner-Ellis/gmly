@@ -55,10 +55,6 @@ class Strapi {
     });
 
     this._api.interceptors.request.use((config) => {
-      const token = isServer()
-        ? process.env.API_TOKEN
-        : tokenStore.getState().token;
-
       if (isServer()) {
         config.headers.Authorization = `Bearer ${process.env.API_TOKEN}`;
       } else {
@@ -79,6 +75,7 @@ class Strapi {
     axiosConfig: AxiosRequestConfig
   ): Promise<T> {
     try {
+      console.log({ url, axiosConfig });
       const response: AxiosResponse<T> = await this._api.request<T>({
         method,
         url,

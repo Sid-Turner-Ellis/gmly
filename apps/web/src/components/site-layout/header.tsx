@@ -32,6 +32,7 @@ export const Header = ({ openSidebar, className }: HeaderProps) => {
     user && user.data?.profile.username && user.data.profile.region;
   const isDesktop = useTailwindBreakpoint("md");
 
+  console.log(user);
   const handleOnConnect = async () => {
     const thirdwebButton = document.querySelector(
       `.${THIRDWEB_CONNECT_BUTTON_CLASSNAME}`

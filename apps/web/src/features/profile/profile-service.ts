@@ -1,6 +1,7 @@
 import { strapiApi } from "@/lib/strapi";
 import { StrapiEntity, StrapiImageResponse } from "@/types/strapi-types";
 import { StrapiError } from "@/utils/strapi-error";
+import { TeamProfile, TeamResponse } from "../team/team-service";
 
 // TODO: Consider updating the strapi service so that we don't deal with profileIDs but rather addresses
 export type Regions = "Europe" | "NA" | "Asia" | "Oceania";
@@ -13,9 +14,10 @@ export type ProfileResponse = StrapiEntity<{
   trust_mode: boolean;
   bio: string | null;
   avatar: StrapiImageResponse | null;
+  team_profiles: TeamProfile[];
 }>;
 
-const populate = ["avatar"];
+const populate = ["avatar", "team_profiles.team.image"];
 
 export class ProfileService {
   static async getProfileById(profileId: number) {

@@ -35,6 +35,7 @@ export default factories.createCoreController(
 
       const { data, meta } = await super.update(ctx);
 
+      // TODO: Sanitise and transform properly
       return { data, meta };
     },
   })

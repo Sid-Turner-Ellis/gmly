@@ -16,6 +16,8 @@ import NextImage from "next/image";
 import { Image } from "@/components/image";
 import { ErrorPage } from "@/components/error-page";
 import { Modal } from "@/components/modal";
+import { Button } from "@/components/button";
+import { TeamService } from "@/features/team/team-service";
 
 /**
  * Facets are like tags
@@ -65,6 +67,22 @@ export default function Page() {
   useEffect(() => {
     setIsOpen(true);
   }, []);
+
+  return (
+    <div>
+      <Button
+        title="Create team"
+        variant={"primary"}
+        onClick={async () => {
+          const res = await TeamService.createTeam({
+            name: "my team",
+            gameId: 1,
+          });
+          console.log(res);
+        }}
+      />
+    </div>
+  );
 
   return (
     <div>

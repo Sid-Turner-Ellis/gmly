@@ -29,6 +29,12 @@
     "name": {
       "type": "string",
       "required": true
+    },
+    "team_profiles": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::team-profile.team-profile",
+      "mappedBy": "team"
     }
   }
 }
