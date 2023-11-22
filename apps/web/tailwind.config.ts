@@ -55,6 +55,7 @@ export default {
           },
           gray: {
             DEFAULT: "#939597",
+            dark: "#787878",
           },
 
           navy: {

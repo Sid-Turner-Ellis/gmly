@@ -129,7 +129,7 @@ export const RegistrationModal = () => {
           </>
         }
       >
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
           {!hasUsername && (
             <div>
               <InputLayout icon="profile" error={errors?.username?.message}>
@@ -186,7 +186,7 @@ export const RegistrationModal = () => {
                     ref={selectRef}
                     tabIndex={-1}
                   >
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between h-full">
                       <Text className={cn({ "text-brand-white": !!region })}>
                         {region ?? "Region"}
                       </Text>
@@ -203,14 +203,14 @@ export const RegistrationModal = () => {
                     sideOffset={8}
                     side="bottom"
                   >
-                    <SelectPrimitive.Viewport className="w-full overflow-hidden rounded bg-brand-navy-light">
+                    <SelectPrimitive.Viewport className="w-full overflow-hidden rounded bg-brand-navy">
                       {REGIONS.map((region) => (
                         <SelectPrimitive.Item
                           value={region}
                           key={region}
                           className={cn(
                             textVariantClassnames.p,
-                            "w-full gap-12 px-4 py-2 border-2 border-transparent transition-all bg-brand-navy-light  data-[highlighted]:outline-none data-[highlighted]:bg-white/5 outline-none text-brand-white"
+                            "w-full gap-12 px-4 py-2 border-2 border-transparent transition-all bg-brand-navy  data-[highlighted]:outline-none data-[highlighted]:bg-whiteAlpha-50 outline-none text-brand-white"
                           )}
                         >
                           <SelectPrimitive.ItemText>

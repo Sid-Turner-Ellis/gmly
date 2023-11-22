@@ -23,7 +23,7 @@ const ModalContent = ({ children }: { children: ReactNode }) => (
 
 const ModalFooter = ({ children }: { children: ReactNode }) => (
   <div className="relative px-4 py-4">
-    <div className="absolute top-0 left-0 right-0 h-[1px] bg-black" />
+    <div className="absolute top-0 left-0 right-0 h-[1px] bg-brand-navy" />
     {children}
   </div>
 );
@@ -46,7 +46,7 @@ export const Modal = ({
             className="z-10 bg-black/50 data-[state=open]:animate-overlayShow fixed inset-0 backdrop-blur-sm"
             onClick={onOverlayClick}
           />
-          <DialogPrimitives.Content className="pt-4 z-20 data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-[6px]  shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none bg-brand-navy">
+          <DialogPrimitives.Content className="pt-4 z-20 data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-[6px]  shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none bg-brand-navy-light">
             <DialogPrimitives.Title className="px-4">
               <Heading variant="h2" className="mb-3">
                 {title}

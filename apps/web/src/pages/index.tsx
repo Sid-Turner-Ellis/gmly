@@ -51,10 +51,17 @@ export default function Home({}) {
             <Text>USDC wagered</Text>
           </div>
         </div>
-        <Heading variant="h2" className="mb-1">
-          All games
-        </Heading>
-        <div className="grid grid-cols-1 gap-4 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 auto-cols-max">
+        <div className="flex items-center gap-3 ">
+          <Heading variant="h2">Featured games</Heading>
+          <Button
+            className="flex-nowrap whitespace-nowrap"
+            title="+ 12 more games"
+            variant="secondary"
+            onClick={() => router.push("/battles")}
+            size="sm"
+          />
+        </div>
+        <div className="grid grid-cols-1 gap-4 -mt-4 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 auto-cols-max">
           {isLoading && (
             <>
               <GameCardSkeleton />
@@ -74,13 +81,6 @@ export default function Home({}) {
               .slice(0, 4)
               .map((game) => <GameCard key={game.id} game={game} />)}
         </div>
-        <Button
-          className="self-end -mt-4"
-          title="+ 12 more games"
-          variant="secondary"
-          onClick={() => router.push("/battles")}
-          size="sm"
-        />
       </div>
       <GradientCircle />
     </div>

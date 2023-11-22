@@ -20,7 +20,7 @@ export const InputLayout = forwardRef<HTMLDivElement, InputLayoutProps>(
           {...props}
           ref={ref}
           className={cn(
-            "flex transition-all h-12 items-center bg-brand-navy-light border-2 gap-2 border-brand-navy-light focus-within:border-black flex-nowrap rounded overflow-hidden text-brand-gray",
+            "flex transition-all h-12 items-center bg-brand-navy border gap-3 border-brand-navy focus-within:border-brand-gray-dark flex-nowrap rounded overflow-hidden text-brand-gray",
             error &&
               "border-brand-status-error focus-within:border-brand-status-error",
             disabled && "opacity-70 pointer-events-none",

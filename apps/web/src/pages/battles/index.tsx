@@ -29,7 +29,7 @@ export default function BattlesIndexPage() {
     setSuperficiallyLoading(true);
     let timer = setTimeout(() => {
       setSuperficiallyLoading(false);
-    }, 400);
+    }, 200);
 
     return () => {
       clearTimeout(timer);

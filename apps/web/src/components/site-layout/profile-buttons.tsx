@@ -13,9 +13,9 @@ export const ProfileButtons = ({}: ProfileButtonsProps) => {
   return (
     <div className="relative z-0 flex h-full gap-2 lg:gap-3">
       <Button
-        title={isDesktop ? "150 USDC" : undefined}
-        className="h-full border-brand-primary hover:border-brand-primary-dark text-brand-white"
-        icon="usdc"
+        title={"$150"}
+        variant={"primary"}
+        icon={isDesktop ? "usdc" : undefined}
       />
       <div className="h-full">
         <Button

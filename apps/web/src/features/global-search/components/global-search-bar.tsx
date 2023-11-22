@@ -98,7 +98,7 @@ export const GlobalSearchBar = () => {
     <div className="relative w-full h-full" ref={registerRefForOutsideClick()}>
       <InputLayout
         icon="search"
-        className="w-full h-full"
+        className="w-full h-full bg-brand-navy-light"
         onClick={() => setIsOpen(true)}
       >
         <input
