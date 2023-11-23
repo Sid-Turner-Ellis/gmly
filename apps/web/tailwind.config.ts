@@ -97,6 +97,7 @@ export default {
         },
       },
       // Animations
+      // TODO: Most of these are for specific components so make sure to name them accor
       keyframes: {
         overlayShow: {
           from: { opacity: "0" },
@@ -124,6 +125,23 @@ export default {
           to: { transform: "translateX(calc(100% + var(--viewport-padding)))" },
         },
 
+        collapsableSlideDown: {
+          from: {
+            height: "0",
+          },
+          to: {
+            height: "var(--radix-collapsible-content-height)",
+          },
+        },
+        collapsableSlideUp: {
+          from: {
+            height: "var(--radix-collapsible-content-height)",
+          },
+          to: {
+            height: "0",
+          },
+        },
+
         pulse: {
           "0%, 100%": {
             opacity: "1",
@@ -140,6 +158,8 @@ export default {
         hide: "hide 100ms ease-in",
         slideIn: "slideIn 150ms cubic-bezier(0.16, 1, 0.3, 1)",
         swipeOut: "swipeOut 100ms ease-out",
+        collapsableShow: "collapsableSlideDown 80ms ease-out",
+        collapsableHide: "collapsableSlideUp 80ms ease-out",
       },
     },
   },

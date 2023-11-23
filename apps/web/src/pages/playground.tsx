@@ -18,7 +18,9 @@ import { ErrorPage } from "@/components/error-page";
 import { Modal } from "@/components/modal";
 import { Button } from "@/components/button";
 import { TeamService } from "@/features/team/team-service";
-
+import * as CollapsiblePrimitive from "@radix-ui/react-collapsible";
+import { Collapsable } from "@/components/collapsable";
+import { GameService } from "@/features/game/game-service";
 /**
  * Facets are like tags
  * You can create a facet for an index and have multiple products for that facet
@@ -64,9 +66,36 @@ export default function Page() {
     "https://picsum.photos/703/303",
   ];
   const [isOpen, setIsOpen] = useState(false);
+  const { user, logout } = useAuth();
+  console.log("profile", user);
+
   useEffect(() => {
-    setIsOpen(true);
+    (async () => {
+      console.log("games", await GameService.getGames(1));
+      console.log("teams", await TeamService.getTeams());
+    })();
   }, []);
+  return (
+    <div>
+      <div> hi</div>
+    </div>
+  );
+
+  return (
+    <div>
+      <div className="text-white"> collapsable </div>
+
+      <Collapsable isOpen={isOpen} setIsOpen={setIsOpen}>
+        <button className="p-4 text-white bg-slate-700">toggle meh </button>
+        <ul>
+          <li className="p-2 text-white bg-purple-700 rounded">oioi matey</li>
+          <li className="p-2 text-white bg-purple-700 rounded">oioi matey</li>
+          <li className="p-2 text-white bg-purple-700 rounded">oioi matey</li>
+          <li className="p-2 text-white bg-purple-700 rounded">oioi matey</li>
+        </ul>
+      </Collapsable>
+    </div>
+  );
 
   return (
     <div>

@@ -12,6 +12,22 @@
 
 /* Global styles, easy to override */
 @layer base {
+  * {
+    scrollbar-gutter: auto;
+
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+    &::-webkit-scrollbar {
+      position: absolute;
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 4px;
+      background-color: var(--brand-color-navy);
+    }
+  }
+
   html {
     height: 100%;
   }

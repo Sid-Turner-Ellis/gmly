@@ -99,7 +99,7 @@ export const { ThirdwebAuthHandler, getUser } = ThirdwebAuth({
             createdAt: newProfileResponse.attributes.createdAt,
             bio: null,
             avatar: null,
-            team_profiles: [],
+            team_profiles: { data: [] },
           };
         } else {
           throw error;

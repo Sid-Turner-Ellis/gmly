@@ -1,6 +1,13 @@
 import { strapiApi } from "@/lib/strapi";
-import { StrapiEntity, StrapiImageResponse } from "@/types/strapi-types";
+import {
+  ModifyEntity,
+  OmitEntityAttributes,
+  StrapiEntity,
+  StrapiImageResponse,
+  StrapiRelation,
+} from "@/types/strapi-types";
 import { StrapiError } from "@/utils/strapi-error";
+import { TeamEntity } from "../team/team-service";
 
 // TODO: If I can't use the GameResponse type for the other API requests then set the strapi.find type not to
 // automatically type the data as an array
@@ -9,20 +16,25 @@ import { StrapiError } from "@/utils/strapi-error";
 
 // TODO: Stop using a class and use separate files e.g. games/getGames.ts as it will make types less annoying
 
-export type GameResponse = StrapiEntity<{
+export type GameEntity = StrapiEntity<{
   title: string;
   card_image: StrapiImageResponse;
   cover_image: StrapiImageResponse;
   slug: string;
+  teams: StrapiRelation<TeamEntity[]>;
 }>;
 
+export type GameResponse = ModifyEntity<GameEntity, "teams", {}>;
+
 export type GetGamesSort = "date" | "title";
+
+const populate = ["card_image", "cover_image"];
 
 export class GameService {
   static async getGames(page: number, sort?: GetGamesSort) {
     const gamesResponse = await strapiApi.find<GameResponse>("games", {
       sort: sort === "date" ? "createdAt:asc" : "title:asc",
-      populate: "*",
+      populate,
       pagination: {
         page,
         pageSize: 25,
@@ -37,7 +49,7 @@ export class GameService {
       filters: {
         slug,
       },
-      populate: "*",
+      populate,
     });
 
     const game = gameResponse.data[0];

@@ -1,12 +1,21 @@
 import { strapiApi } from "@/lib/strapi";
-import { StrapiEntity, StrapiImageResponse } from "@/types/strapi-types";
+import {
+  ModifyEntity,
+  ModifyRelationAttributes,
+  OmitEntityAttributes,
+  PickEntityAttributes,
+  StrapiEntity,
+  StrapiImageResponse,
+  StrapiRelation,
+} from "@/types/strapi-types";
 import { StrapiError } from "@/utils/strapi-error";
-import { TeamProfile, TeamResponse } from "../team/team-service";
+import { TeamEntity, TeamProfileEntity } from "../team/team-service";
+import { GameEntity } from "../game/game-service";
 
 // TODO: Consider updating the strapi service so that we don't deal with profileIDs but rather addresses
 export type Regions = "Europe" | "NA" | "Asia" | "Oceania";
 
-export type ProfileResponse = StrapiEntity<{
+export type ProfileEntity = StrapiEntity<{
   wallet_address: string;
   region: Regions | null;
   username: string | null;
@@ -14,8 +23,42 @@ export type ProfileResponse = StrapiEntity<{
   trust_mode: boolean;
   bio: string | null;
   avatar: StrapiImageResponse | null;
-  team_profiles: TeamProfile[];
+  team_profiles: StrapiRelation<TeamProfileEntity[]>;
 }>;
+
+type ProfileResponseParts = {
+  team: ModifyRelationAttributes<
+    NonNullable<
+      ProfileEntity["attributes"]["team_profiles"]["data"]
+    >[number]["attributes"]["team"],
+    {
+      profile: never;
+      game: never;
+      team_profiles: never;
+    }
+  >;
+  team_profiles: ModifyRelationAttributes<
+    ProfileEntity["attributes"]["team_profiles"],
+    {
+      profile: never;
+      team: ProfileResponseParts["team"];
+    }
+  >;
+};
+
+export type ProfileResponse = ModifyEntity<
+  ProfileEntity,
+  "team_profiles",
+  {
+    team_profiles: ProfileResponseParts["team_profiles"];
+  }
+>;
+
+// type D = NonNullable<
+//   NonNullable<
+//     PR["attributes"]["team_profiles"]["data"]
+//   >[number]["attributes"]["team"]["data"]
+// >['attributes']['team_profiles']
 
 const populate = ["avatar", "team_profiles.team.image"];
 

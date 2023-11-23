@@ -1,3 +1,51 @@
+export type OmitEntityAttributes<
+  T extends StrapiEntity<any>,
+  K extends keyof T["attributes"]
+> = {
+  [P in keyof T]: P extends "attributes" ? Omit<T[P], K> : T[P];
+};
+
+export type PickEntityAttributes<
+  T extends StrapiEntity<any>,
+  K extends keyof T["attributes"]
+> = {
+  [P in keyof T]: P extends "attributes" ? Pick<T[P], K> : T[P];
+};
+
+export type ModifyEntity<
+  T extends StrapiEntity<any>,
+  K extends keyof T["attributes"],
+  Modifications extends Record<string, any>
+> = {
+  [P in keyof T]: P extends "attributes" ? Omit<T[P], K> & Modifications : T[P];
+};
+
+export type StrapiRelation<
+  T extends StrapiEntity<any> | StrapiEntity<any>[],
+  Nullable = true
+> = Nullable extends true ? { data: T | null } : { data: T };
+
+export const isStrapiRelationDefined = <
+  T extends StrapiRelation<StrapiEntity<any>, any>
+>(
+  relation: T
+): relation is T & { data: NonNullable<T["data"]> } => {
+  return relation && typeof relation === "object" && relation.data !== null;
+};
+
+export type ModifyRelationAttributes<
+  R extends StrapiRelation<StrapiEntity<any> | StrapiEntity<any>[]>,
+  Modifications extends Record<string, any>
+> = R extends { data: infer D }
+  ? {
+      data: D extends Array<StrapiEntity<infer AttrArray>>
+        ? Array<{ attributes: AttrArray & Modifications }>
+        : D extends StrapiEntity<infer Attr>
+        ? { attributes: Attr & Modifications }
+        : null;
+    }
+  : never;
+
 type ImageFormat = {
   width: number;
   height: number;

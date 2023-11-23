@@ -1,24 +1,68 @@
 import { strapiApi } from "@/lib/strapi";
-import { StrapiEntity, StrapiImageResponse } from "@/types/strapi-types";
+import {
+  ModifyEntity,
+  ModifyRelationAttributes,
+  OmitEntityAttributes,
+  PickEntityAttributes,
+  StrapiEntity,
+  StrapiImageResponse,
+  StrapiRelation,
+} from "@/types/strapi-types";
 import { StrapiError } from "@/utils/strapi-error";
-import { ProfileResponse } from "../profile/profile-service";
+import { ProfileEntity, ProfileResponse } from "../profile/profile-service";
+import { GameEntity } from "../game/game-service";
 
 type TeamRoles = "founder" | "leader" | "member";
 
-export type TeamProfile = StrapiEntity<{
+export type TeamProfileEntity = StrapiEntity<{
   is_pending: boolean;
   role: TeamRoles;
-  profile: {
-    data: ProfileResponse;
-  };
+  profile: StrapiRelation<ProfileEntity>;
+  team: StrapiRelation<TeamEntity>;
 }>;
 
-export type TeamResponse = StrapiEntity<{
+export type TeamEntity = StrapiEntity<{
+  image: StrapiImageResponse;
   name: string;
-  team_profiles: {
-    data: TeamProfile[];
-  };
+  game: StrapiRelation<GameEntity>;
+  team_profiles: StrapiRelation<TeamProfileEntity[]>;
 }>;
+
+type TeamResponseParts = {
+  game: ModifyRelationAttributes<
+    TeamEntity["attributes"]["game"],
+    { teams: never }
+  >;
+  profile: ModifyRelationAttributes<
+    NonNullable<
+      TeamEntity["attributes"]["team_profiles"]["data"]
+    >[number]["attributes"]["profile"],
+    {
+      team_profiles: never;
+    }
+  >;
+  team_profiles: ModifyRelationAttributes<
+    TeamEntity["attributes"]["team_profiles"],
+    {
+      team: never;
+      profile: TeamResponseParts["profile"];
+    }
+  >;
+};
+
+export type TeamResponse = ModifyEntity<
+  TeamEntity,
+  "team_profiles",
+  {
+    team_profiles: TeamResponseParts["team_profiles"];
+  }
+>;
+
+const populate = [
+  "team_profiles.profile.avatar",
+  "game.cover_image",
+  "game.card_image",
+];
 
 export class TeamService {
   static async createTeam({
@@ -31,7 +75,7 @@ export class TeamService {
     image?: number;
   }) {
     // Create the team
-    const team = await strapiApi.create<TeamResponse>(
+    const newTeam = await strapiApi.create<TeamResponse>(
       "teams",
       {
         name,
@@ -40,9 +84,17 @@ export class TeamService {
       },
       { populate: ["team_profiles.profile.avatar"] }
     );
+
+    return newTeam;
   }
   static async getTeam(teamId: number) {}
-  static async getTeams() {}
+  static async getTeams() {
+    const teams = await strapiApi.find<TeamResponse>("teams", {
+      populate,
+    });
+
+    return teams;
+  }
   static async updateTeam() {}
   static async deleteTeam() {}
   static async inviteTeamMember() {}

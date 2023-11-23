@@ -1,6 +1,19 @@
 import { cn } from "@/utils/cn";
-import { Icon, IconType } from "../icon";
+import { Icon, IconType, isIconType } from "../icon";
 import { Text } from "../text";
+import { Clickable, ClickableProps } from "../clickable";
+import { StrapiImageResponse } from "@/types/strapi-types";
+import { Image } from "../image";
+import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
+
+export type SidebarButtonProps = {
+  label: string;
+  icon: IconType | StrapiImageResponse;
+  isActive?: boolean;
+  buttonClassName?: string;
+  textClassName?: string;
+  action: ClickableProps["action"];
+};
 
 export const SidebarButton = ({
   label,
@@ -8,45 +21,52 @@ export const SidebarButton = ({
   isActive,
   buttonClassName,
   textClassName,
-}: {
-  label: string;
-  icon: IconType;
-  isActive?: boolean;
-  buttonClassName?: string;
-  textClassName?: string;
-}) => {
+  action,
+}: SidebarButtonProps) => {
   return (
-    <div
-      data-active={isActive}
-      className={cn(
-        "flex items-center gap-4 p-2 transition-all cursor-pointer group rounded-lg border-[1.5px] border-solid border-brand-navy-light bg-brand-navy-light",
-        {
-          "hover:border-white/20": !isActive,
-          "bg-whiteAlpha-100": isActive,
-        },
-        buttonClassName
-      )}
-    >
-      <Icon
-        icon={icon}
-        size={24}
+    <Clickable action={action}>
+      <div
+        data-active={isActive}
         className={cn(
-          "transition group-hover:text-brand-white text-brand-gray",
+          "flex items-center gap-4 transition-all cursor-pointer group rounded-lg border-[1.5px] border-solid border-brand-navy-light bg-brand-navy-light",
           {
-            "text-brand-white": isActive,
+            "hover:border-white/20": !isActive,
+            "bg-whiteAlpha-100": isActive,
           },
-          textClassName
-        )}
-      />
-      <Text
-        className={cn(
-          "group-hover:text-brand-white transition font-grotesque font-medium",
-          isActive && "text-brand-white",
-          textClassName
+          buttonClassName
         )}
       >
-        {label}
-      </Text>
-    </div>
+        {isIconType(icon) ? (
+          <Icon
+            icon={icon}
+            size={24}
+            className={cn(
+              "transition group-hover:text-brand-white text-brand-gray",
+              {
+                "text-brand-white": isActive,
+              },
+              textClassName
+            )}
+          />
+        ) : (
+          <div className="w-[24px] h-[24px] rounded-sm shadow overflow-hidden">
+            <Image
+              src={resolveStrapiImage(icon, "xsmall")}
+              alt={`Icon for ${label} button`}
+            />
+          </div>
+        )}
+
+        <Text
+          className={cn(
+            "group-hover:text-brand-white transition font-grotesque font-medium",
+            isActive && "text-brand-white",
+            textClassName
+          )}
+        >
+          {label}
+        </Text>
+      </div>
+    </Clickable>
   );
 };
