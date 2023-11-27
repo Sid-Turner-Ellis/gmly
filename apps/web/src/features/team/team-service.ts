@@ -12,7 +12,7 @@ import { StrapiError } from "@/utils/strapi-error";
 import { ProfileEntity, ProfileResponse } from "../profile/profile-service";
 import { GameEntity } from "../game/game-service";
 
-type TeamRoles = "founder" | "leader" | "member";
+export type TeamRoles = "founder" | "leader" | "member";
 
 export type TeamProfileEntity = StrapiEntity<{
   is_pending: boolean;
@@ -97,7 +97,24 @@ export class TeamService {
   }
   static async updateTeam() {}
   static async deleteTeam() {}
-  static async inviteTeamMember() {}
+  static async inviteTeamMembers(
+    teamId: number,
+    teamMemberInvites: { profile: number; role: TeamRoles }[]
+  ) {
+    const teamWithNewInvites = await strapiApi.request(
+      "post",
+      `/teams/${teamId}/invite`,
+      {
+        data: {
+          data: teamMemberInvites.filter((tmi) => tmi.role !== "founder"),
+        },
+        params: {
+          populate,
+        },
+      }
+    );
+    return teamWithNewInvites;
+  }
   static async removeTeamMember() {}
   static async updateRole() {}
 }

@@ -6,18 +6,7 @@ import { StrapiError } from "@/utils/strapi-error";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const games: GameResponse[] = [];
-
-  const recursivelyFetchGames = async (page: number = 1) => {
-    const response = await GameService.getGames(1);
-
-    games.push(...response.data);
-
-    if (page < response.meta.pagination.pageCount) {
-      await recursivelyFetchGames(page + 1);
-    }
-  };
-  await recursivelyFetchGames();
+  const games = await GameService.recursivelyGetGames();
 
   return {
     paths: games.map((game) => ({

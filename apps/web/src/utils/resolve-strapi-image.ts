@@ -13,7 +13,7 @@ export const resolveStrapiImage = (
   format?: keyof NonNullable<StrapiImage["formats"]>
 ) => {
   const imageData = isStrapiImageResponse(image)
-    ? image.data.attributes
+    ? image.data?.attributes
     : image;
 
   const defaultUrl = imageData?.url;

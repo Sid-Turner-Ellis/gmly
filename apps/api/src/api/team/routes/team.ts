@@ -4,7 +4,7 @@
 
 import { factories } from "@strapi/strapi";
 
-const sharedConfig = {
+export const sharedConfig = {
   middlewares: ["global::protected"],
 };
 

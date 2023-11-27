@@ -2,7 +2,7 @@ import { cn } from "@/utils/cn";
 import { ClassValue } from "clsx";
 import { HTMLAttributes, ReactNode } from "react";
 
-type SkeletonProps = {
+export type SkeletonProps = {
   className?: ClassValue;
   type?: "image";
   dark?: boolean;

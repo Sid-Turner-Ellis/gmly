@@ -52,7 +52,7 @@ export const SiteLayout = ({ children }: { children: ReactNode }) => {
         <main
           className={cn(
             sharedPageWidthClasses,
-            "z-0 mt-6 overflow-hidden pb-18 max-w-5xl mx-auto"
+            "z-0 mt-6 overflow-hidden pb-18 max-w-5xl mx-auto h-full"
           )}
         >
           {children}

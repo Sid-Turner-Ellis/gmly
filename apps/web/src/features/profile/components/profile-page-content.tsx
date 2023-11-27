@@ -19,6 +19,8 @@ import { ProfileResponse, ProfileService } from "../profile-service";
 import { ProfilePageLayout } from "./profile-page-layout";
 import { ImageUpload, ProfileImage, ProfileImageProps } from "./profile-image";
 import { ProfileBio } from "./profile-bio";
+import { EditableImage } from "@/components/editable-image";
+import { useStrapiImageUpload } from "@/hooks/use-strapi-image-upload";
 
 export const ProfilePageContent = ({
   profile: {
@@ -32,11 +34,13 @@ export const ProfilePageContent = ({
   const isOwnProfile = user?.data.profile.id === id;
   const [isEditMode, setIsEditMode] = useState(false);
   const { addToast } = useToast();
+  const {
+    imageUploadState,
+    resetUploadState,
+    fileObjectUrl,
+    onFileInputChange,
+  } = useStrapiImageUpload();
   const bioRef = useRef<HTMLParagraphElement>(null);
-  const [imageUpload, setImageUpload] = useState<ImageUpload>({
-    status: "idle",
-    detail: 0,
-  });
   const { mutate } = useOptimisticMutation<
     AuthenticatedUser,
     typeof ProfileService.updateProfile
@@ -71,11 +75,13 @@ export const ProfilePageContent = ({
 
   const handleOnClick = () => {
     if (!isOwnProfile) return;
-    if (imageUpload.status === "uploading") return;
+    if (imageUploadState.status === "uploading") return;
 
     const text = bioRef.current?.textContent ?? undefined;
     const imageId =
-      imageUpload.status === "complete" ? imageUpload.detail : undefined;
+      imageUploadState.status === "complete"
+        ? imageUploadState.detail
+        : undefined;
 
     if (isEditMode) {
       mutate({
@@ -85,7 +91,7 @@ export const ProfilePageContent = ({
       });
     }
 
-    setImageUpload({ status: "idle", detail: 0 });
+    resetUploadState();
     setIsEditMode((p) => !p);
   };
 
@@ -98,11 +104,12 @@ export const ProfilePageContent = ({
   return (
     <ProfilePageLayout
       Right={
-        <ProfileImage
+        <EditableImage
           isEditMode={isEditMode}
-          imageUpload={imageUpload}
-          setImageUpload={setImageUpload}
-          avatar={avatar}
+          initialImage={avatar}
+          imageUploadState={imageUploadState}
+          fileObjectUrl={fileObjectUrl}
+          onFileInputChange={onFileInputChange}
         />
       }
       LeftTop={
@@ -117,7 +124,7 @@ export const ProfilePageContent = ({
           </Heading>
           {isOwnProfile && (
             <Button
-              disabled={imageUpload.status === "uploading"}
+              disabled={imageUploadState.status === "uploading"}
               onClick={handleOnClick}
               title={isEditMode ? "Save" : "Edit"}
               size="sm"

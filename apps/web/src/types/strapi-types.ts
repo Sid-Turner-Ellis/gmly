@@ -67,6 +67,7 @@ export const isStrapiImageResponse = (i: unknown): i is StrapiImageResponse => {
   );
 };
 
+// TODO: StrapiImageResponse and StrapiImage are different - the strapiIMage has an ID whereas the response has the id on the 'id' props
 export type StrapiImage = {
   name: string;
   formats: {

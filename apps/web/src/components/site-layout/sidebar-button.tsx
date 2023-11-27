@@ -12,6 +12,7 @@ export type SidebarButtonProps = {
   isActive?: boolean;
   buttonClassName?: string;
   textClassName?: string;
+  disabled?: boolean;
   action: ClickableProps["action"];
 };
 
@@ -28,7 +29,7 @@ export const SidebarButton = ({
       <div
         data-active={isActive}
         className={cn(
-          "flex items-center gap-4 transition-all cursor-pointer group rounded-lg border-[1.5px] border-solid border-brand-navy-light bg-brand-navy-light",
+          "flex items-center gap-4 transition-all cursor-pointer group rounded-lg border-[1px] border-solid border-brand-navy-light bg-brand-navy-light",
           {
             "hover:border-white/20": !isActive,
             "bg-whiteAlpha-100": isActive,

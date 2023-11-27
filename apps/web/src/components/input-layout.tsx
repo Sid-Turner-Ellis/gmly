@@ -6,28 +6,43 @@ import { textVariantClassnames } from "./text";
 
 type InputLayoutProps = {
   icon?: IconType;
-  error?: string;
+  error?: string | boolean;
   children: ReactNode;
   disabled?: boolean;
   className?: ClassValue;
-} & HTMLAttributes<HTMLDivElement>;
+  errorTextClassName?: ClassValue;
+} & Omit<HTMLAttributes<HTMLDivElement>, "className">;
 
 export const InputLayout = forwardRef<HTMLDivElement, InputLayoutProps>(
-  ({ icon, error, children, disabled, className, ...props }, ref) => {
+  (
+    {
+      icon,
+      error,
+      children,
+      disabled,
+      errorTextClassName,
+      className,
+      ...props
+    },
+    ref
+  ) => {
+    const errorMessage = typeof error === "string" ? error : undefined;
+    const wasError = !!error;
+
     return (
       <>
         <div
           {...props}
           ref={ref}
           className={cn(
-            "flex transition-all h-12 items-center bg-brand-navy border gap-3 border-brand-navy focus-within:border-brand-gray-dark flex-nowrap rounded overflow-hidden text-brand-gray",
-            error &&
+            "flex pl-[12px] transition-all h-12 items-center bg-brand-navy border gap-3 border-brand-navy focus-within:border-brand-gray-dark flex-nowrap rounded overflow-hidden text-brand-gray",
+            wasError &&
               "border-brand-status-error focus-within:border-brand-status-error",
             disabled && "opacity-70 pointer-events-none",
             className
           )}
         >
-          {icon && <Icon icon={icon} size={16} className="pl-[12px]" />}
+          {icon && <Icon icon={icon} size={16} />}
           <div
             className={cn(
               textVariantClassnames.p,
@@ -37,8 +52,15 @@ export const InputLayout = forwardRef<HTMLDivElement, InputLayoutProps>(
             {children}
           </div>
         </div>
-        {error && !disabled && (
-          <span className="block mt-2 text-brand-status-error">{error}</span>
+        {errorMessage && !disabled && (
+          <span
+            className={cn(
+              "block mt-2 text-brand-status-error",
+              errorTextClassName
+            )}
+          >
+            {errorMessage}
+          </span>
         )}
       </>
     );

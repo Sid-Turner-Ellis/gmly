@@ -31,17 +31,41 @@ export type GetGamesSort = "date" | "title";
 const populate = ["card_image", "cover_image"];
 
 export class GameService {
-  static async getGames(page: number, sort?: GetGamesSort) {
+  static async getGames(
+    page: number,
+    options: Partial<{
+      sort: GetGamesSort;
+      pageSize: number;
+    }> = {}
+  ) {
     const gamesResponse = await strapiApi.find<GameResponse>("games", {
-      sort: sort === "date" ? "createdAt:asc" : "title:asc",
+      sort: options.sort === "date" ? "createdAt:asc" : "title:asc",
       populate,
       pagination: {
         page,
-        pageSize: 25,
+        pageSize: options.pageSize ?? 25,
       },
     });
 
     return gamesResponse;
+  }
+
+  static async recursivelyGetGames(
+    page: number = 1,
+    prevGames: GameResponse[] = []
+  ): Promise<GameResponse[]> {
+    const response = await GameService.getGames(page, {
+      sort: "title",
+      pageSize: 100,
+    });
+
+    const games = [...prevGames, ...response.data];
+
+    if (page < response.meta.pagination.pageCount) {
+      return GameService.recursivelyGetGames(page + 1, games);
+    } else {
+      return games;
+    }
   }
 
   static async getGameBySlug(slug: string) {

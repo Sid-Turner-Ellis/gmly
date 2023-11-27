@@ -1,141 +1,100 @@
-// /**
-//  * Variant (large or small)
-//  *
-//  */
-// import * as SelectPrimitive from "@radix-ui/react-select";
-// import { IconType } from "./icon";
-// import { useRef } from "react";
+import * as SelectPrimitive from "@radix-ui/react-select";
+import { useRef } from "react";
+import { InputLayout } from "./input-layout";
+import { cn } from "@/utils/cn";
+import { Text, textVariantClassnames } from "./text";
+import { Icon, IconType } from "./icon";
+import { ChevronDownIcon, ChevronUpIcon } from "@radix-ui/react-icons";
 
-// type SelectProps = {
-//   setValue: (value: string) => void;
-//   options: string[];
-//   icon?: IconType;
-//   value: string;
-// };
+export type SelectProps = {
+  options: string[];
+  icon?: IconType;
+  value: string | null;
+  setValue: React.Dispatch<React.SetStateAction<string | null>>;
+  placeholder?: string;
+  error?: string | boolean;
+  disabled?: boolean;
+  getLabel?: (id: string) => string;
+};
 
-// export const Select = ({ setValue, options, value, icon }: SelectProps) => {
-//   const ref = useRef<null | HTMLElement>();
+export const Select = ({
+  options,
+  value,
+  setValue,
+  icon,
+  placeholder,
+  disabled,
+  getLabel = (value) => value,
+  error,
+}: SelectProps) => {
+  const ref = useRef<HTMLDivElement>(null);
 
-//   return (
-//     <SelectPrimitive.Root
-//       value={value}
-//       onValueChange={(v) => {
-//         setValue(v);
-//       }}
-//     >
-//       <SelectPrimitive.Trigger
-//         className="w-full outline-none focus:outline-none"
-//         onFocus={() => {
-//           ref.current?.focus();
-//         }}
-//         onBlur={() => {
-//           ref.current?.blur();
-//         }}
-//         asChild
-//       >
-//         <InputLayout
-//           icon="flag"
-//           error={errors?.region?.message}
-//           ref={ref}
-//           tabIndex={-1}
-//         >
-//           <div className="flex items-center justify-between">
-//             <Text className={cn({ "text-brand-white": !!region })}>
-//               {region ?? "Region"}
-//             </Text>
+  return (
+    <SelectPrimitive.Root
+      disabled={disabled}
+      value={value ?? undefined}
+      onValueChange={(v) => {
+        setValue(v);
+      }}
+    >
+      <SelectPrimitive.Trigger
+        className="w-full outline-none focus:outline-none"
+        onFocus={() => {
+          ref.current?.focus();
+        }}
+        onBlur={() => {
+          ref.current?.blur();
+        }}
+        asChild
+      >
+        <InputLayout
+          icon={icon}
+          error={error}
+          ref={ref}
+          tabIndex={-1}
+          disabled={disabled}
+        >
+          <div className="flex items-center justify-between h-full">
+            <Text className={cn({ "text-brand-white": !!value })}>
+              {(value && getLabel(value)) ?? placeholder ?? "Choose an option"}
+            </Text>
 
-//             <Icon icon="chevron-down" size={12} />
-//           </div>
-//         </InputLayout>
-//       </SelectPrimitive.Trigger>
+            <Icon icon="chevron-down" size={12} />
+          </div>
+        </InputLayout>
+      </SelectPrimitive.Trigger>
 
-//       <SelectPrimitive.Portal>
-//         <SelectPrimitive.Content
-//           className="w-[var(--radix-select-trigger-width)] z-50"
-//           position="popper"
-//           sideOffset={8}
-//           side="bottom"
-//         >
-//           <SelectPrimitive.Viewport className="w-full overflow-hidden rounded bg-brand-navy-light">
-//             {REGIONS.map((region) => (
-//               <SelectPrimitive.Item
-//                 value={region}
-//                 key={region}
-//                 className={cn(
-//                   textVariantClassnames.p,
-//                   "w-full gap-12 px-4 py-2 border-2 border-transparent transition-all bg-brand-navy-light  data-[highlighted]:outline-none data-[highlighted]:bg-white/5 outline-none text-brand-white"
-//                 )}
-//               >
-//                 <SelectPrimitive.ItemText>{region}</SelectPrimitive.ItemText>
-//               </SelectPrimitive.Item>
-//             ))}
-//           </SelectPrimitive.Viewport>
-//         </SelectPrimitive.Content>
-//       </SelectPrimitive.Portal>
-//     </SelectPrimitive.Root>
-//   );
-// };
-
-// /**
-//  *
-
-//               <SelectPrimitive.Root
-//                 value={region ?? "Region"}
-//                 onValueChange={(v) => {
-//                   setRegion(v as Regions);
-//                 }}
-//               >
-//                 <SelectPrimitive.Trigger
-//                   className="w-full outline-none focus:outline-none"
-//                   onFocus={() => {
-//                     ref.current?.focus();
-//                   }}
-//                   onBlur={() => {
-//                     ref.current?.blur();
-//                   }}
-//                   asChild
-//                 >
-//                   <InputLayout
-//                     icon="flag"
-//                     error={errors?.region?.message}
-//                     ref={ref}
-//                     tabIndex={-1}
-//                   >
-//                     <div className="flex items-center justify-between">
-//                       <Text className={cn({ "text-brand-white": !!region })}>
-//                         {region ?? "Region"}
-//                       </Text>
-
-//                       <Icon icon="chevron-down" size={12} />
-//                     </div>
-//                   </InputLayout>
-//                 </SelectPrimitive.Trigger>
-
-//                 <SelectPrimitive.Portal>
-//                   <SelectPrimitive.Content
-//                     className="w-[var(--radix-select-trigger-width)] z-50"
-//                     position="popper"
-//                     sideOffset={8}
-//                     side="bottom"
-//                   >
-//                     <SelectPrimitive.Viewport className="w-full overflow-hidden rounded bg-brand-navy-light">
-//                       {REGIONS.map((region) => (
-//                         <SelectPrimitive.Item
-//                           value={region}
-//                           key={region}
-//                           className={cn(
-//                             textVariantClassnames.p,
-//                             "w-full gap-12 px-4 py-2 border-2 border-transparent transition-all bg-brand-navy-light  data-[highlighted]:outline-none data-[highlighted]:bg-white/5 outline-none text-brand-white"
-//                           )}
-//                         >
-//                           <SelectPrimitive.ItemText>
-//                             {region}
-//                           </SelectPrimitive.ItemText>
-//                         </SelectPrimitive.Item>
-//                       ))}
-//                     </SelectPrimitive.Viewport>
-//                   </SelectPrimitive.Content>
-//                 </SelectPrimitive.Portal>
-//               </SelectPrimitive.Root>
-
-//  */
+      <SelectPrimitive.Portal>
+        <SelectPrimitive.Content
+          className="w-[var(--radix-select-trigger-width)] z-50"
+          position="popper"
+          sideOffset={8}
+          side="bottom"
+        >
+          <SelectPrimitive.ScrollUpButton className="absolute flex w-full items-center border-b-brand-navy-accent-light border-b rounded-t justify-center h-[30px] bg-brand-navy text-brand-gray cursor-default z-20">
+            <ChevronUpIcon />
+          </SelectPrimitive.ScrollUpButton>
+          <SelectPrimitive.Viewport className="w-full h-full overflow-hidden rounded bg-brand-navy max-h-56">
+            {options.map((option) => (
+              <SelectPrimitive.Item
+                value={option}
+                key={option}
+                className={cn(
+                  textVariantClassnames.p,
+                  "w-full gap-12 px-4 py-2 border-2 border-transparent transition-all bg-brand-navy  data-[highlighted]:outline-none data-[highlighted]:bg-whiteAlpha-50 outline-none text-brand-white"
+                )}
+              >
+                <SelectPrimitive.ItemText>
+                  {getLabel(option)}
+                </SelectPrimitive.ItemText>
+              </SelectPrimitive.Item>
+            ))}
+          </SelectPrimitive.Viewport>
+          <SelectPrimitive.ScrollDownButton className="absolute flex w-full items-center bottom-0 border-t-brand-navy-accent-light rounded-b border-t justify-center h-[30px] bg-brand-navy text-brand-gray cursor-default z-20">
+            <ChevronDownIcon />
+          </SelectPrimitive.ScrollDownButton>
+        </SelectPrimitive.Content>
+      </SelectPrimitive.Portal>
+    </SelectPrimitive.Root>
+  );
+};

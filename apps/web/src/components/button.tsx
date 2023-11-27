@@ -13,7 +13,7 @@ const buttonVariants = cva(
         primary:
           "bg-brand-primary text-brand-white hover:bg-brand-primary-dark active:border-brand-primary",
         secondary:
-          "bg-brand-navy-light text-brand-gray hover:text-white border-brand-navy-light active:border-brand-navy-accent-dark",
+          "bg-brand-navy-light text-brand-gray hover:text-white border-brand-navy-light active:border-black/40",
       },
       disabled: {
         true: "opacity-70 pointer-events-none",

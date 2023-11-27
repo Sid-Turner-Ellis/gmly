@@ -1,7 +1,7 @@
 import { cn } from "@/utils/cn";
 import { ClassValue } from "clsx";
 import { HTMLAttributes, ReactNode, forwardRef, useMemo, useRef } from "react";
-import { Skeleton } from "./skeleton";
+import { Skeleton, SkeletonProps } from "./skeleton";
 
 export const textVariantClassnames = {
   p: "text-sm text-brand-gray font-inter",
@@ -15,8 +15,11 @@ type TextProps = {
   children: ReactNode;
 } & HTMLAttributes<HTMLParagraphElement>;
 
-export const TextSkeleton = ({ className }: { className?: ClassValue }) => {
-  return <Skeleton className={cn("h-3", className)} />;
+export const TextSkeleton = ({
+  className,
+  ...rest
+}: { className?: ClassValue } & Pick<SkeletonProps, "dark">) => {
+  return <Skeleton className={cn("h-3", className)} {...rest} />;
 };
 
 export const Text = forwardRef<HTMLParagraphElement, TextProps>(

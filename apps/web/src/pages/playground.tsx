@@ -10,7 +10,7 @@ import { AuthenticatedUser, useAuth } from "@/hooks/use-auth";
 import { produce } from "immer";
 import { useToast } from "@/providers/toast-provider";
 import { MeiliSearch } from "meilisearch";
-import { set } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { useDebounce } from "@/hooks/use-debounce";
 import NextImage from "next/image";
 import { Image } from "@/components/image";
@@ -21,6 +21,14 @@ import { TeamService } from "@/features/team/team-service";
 import * as CollapsiblePrimitive from "@radix-ui/react-collapsible";
 import { Collapsable } from "@/components/collapsable";
 import { GameService } from "@/features/game/game-service";
+import { CreateTeamModal } from "@/features/team/components/create-team-modal";
+import { TextInput } from "@/components/text-input";
+import { Select } from "@/components/select";
+import { SearchDropdown } from "@/components/search-dropdown/search-dropdown";
+import { useSearchDropdown } from "@/hooks/use-search-dropdown";
+import { globalMelilisearchIndex } from "@/lib/meilisearch";
+import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
+
 /**
  * Facets are like tags
  * You can create a facet for an index and have multiple products for that facet
@@ -56,83 +64,99 @@ export const getServerSideProps = async () => {
 };
 
 export default function Page() {
-  const [index, setIndex] = useState(0);
-  const urls = [
-    "https://picsum.photos/203/303",
-    "https://picsum.photos/303/303",
-    "https://picsum.photos/403/303",
-    "https://picsum.photos/503/303",
-    "https://picsum.photos/603/303",
-    "https://picsum.photos/703/303",
-  ];
   const [isOpen, setIsOpen] = useState(false);
-  const { user, logout } = useAuth();
-  console.log("profile", user);
+
+  // useEffect(() => {
+  //   console.log(editableImageProps.imageUploadState);
+  //   if (editableImageProps.imageUploadState.status === "complete") {
+  //   }
+  // }, [editableImageProps.imageUploadState]);
+
+  // return (
+  //   <div>
+  //     <div className="w-40 h-40">
+  //       <EditableImage isEditMode={true} {...editableImageProps} />
+  //     </div>
+  //   </div>
+  // );
+
+  const [value, setValue] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
-      console.log("games", await GameService.getGames(1));
-      console.log("teams", await TeamService.getTeams());
+      const t = await GameService.recursivelyGetGames();
+      console.log("allgames", t);
     })();
   }, []);
-  return (
-    <div>
-      <div> hi</div>
-    </div>
-  );
 
-  return (
-    <div>
-      <div className="text-white"> collapsable </div>
+  // return (
+  //   <div>
+  //     <Select
+  //       value={value}
+  //       placeholder="place your ass "
+  //       setValue={setValue}
+  //       options={["hi", "mate", "fuck", "you"]}
+  //       error="fuck outa here"
+  //     />
+  //   </div>
+  // );
 
-      <Collapsable isOpen={isOpen} setIsOpen={setIsOpen}>
-        <button className="p-4 text-white bg-slate-700">toggle meh </button>
-        <ul>
-          <li className="p-2 text-white bg-purple-700 rounded">oioi matey</li>
-          <li className="p-2 text-white bg-purple-700 rounded">oioi matey</li>
-          <li className="p-2 text-white bg-purple-700 rounded">oioi matey</li>
-          <li className="p-2 text-white bg-purple-700 rounded">oioi matey</li>
-        </ul>
-      </Collapsable>
-    </div>
-  );
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<{ email: string }>();
+
+  const props = useSearchDropdown("fuck-you", async (query) => {
+    const searchResult = await globalMelilisearchIndex.search(query, {
+      attributesToSearchOn: ["name"],
+      limit: 4,
+      filter: ["collection_type = profiles"],
+      sort: ["name:asc"],
+    });
+
+    return searchResult.hits;
+  });
+
+  // return <div></div>;
+
+  // props.results.forEach((t) => {
+  //   console.log(t.id);
+  // });
+
+  // return (
+  //   <div>
+  //     <SearchDropdown
+  //       renderItem={({ name, image }) => (
+  //         <div className="flex items-center gap-3">
+  //           <div className="w-[30px] h-[30px] relative rounded-sm overflow-hidden">
+  //             <Image alt={name} src={resolveStrapiImage(image)} />
+  //           </div>
+  //           <Text className={"text-brand-white"}>{name}</Text>
+  //         </div>
+  //       )}
+  //       ItemSkeleton={<>skelly</>}
+  //       onResultClick={(result) => console.log(result)}
+  //       {...props}
+  //     />
+  //   </div>
+  // );
+  const { user } = useAuth();
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <div>
       <Button
-        title="Create team"
         variant={"primary"}
-        onClick={async () => {
-          const res = await TeamService.createTeam({
-            name: "my team",
-            gameId: 1,
-          });
-          console.log(res);
+        title="creat a team mate"
+        onClick={() => {
+          setIsOpen(true);
         }}
       />
+      <CreateTeamModal user={user} {...{ isOpen, setIsOpen }} />
     </div>
   );
-
-  return (
-    <div>
-      <h1 className="text-4xl text-white font-grotesque">hello mate</h1>
-      <Modal title="hello boi" isOpen={isOpen} setIsOpen={setIsOpen}>
-        <div>
-          <Heading variant="h2">holloooo</Heading>
-          <h1 className="text-4xl text-white font-grotesque">hello mate</h1>
-          <Text className={"font-grotesque text-3xl text-white"}>
-            hello mate
-          </Text>
-        </div>
-      </Modal>
-    </div>
-  );
-  // return (
-  //   <div>
-  //     <button onClick={() => setIndex((p) => p + 1)}> increase url </button>
-  //     <div className="h-56 w-80">
-  //       <NextImage src={urls[index]} alt="shit" />
-  //     </div>
-  //   </div>
-  // );
 }
