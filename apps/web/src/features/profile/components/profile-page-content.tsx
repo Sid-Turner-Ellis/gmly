@@ -13,14 +13,10 @@ import * as AspectRatio from "@radix-ui/react-aspect-ratio";
 import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import { useEffect, useReducer, useRef, useState } from "react";
-import Uppy from "@uppy/core";
-import XHR from "@uppy/xhr-upload";
 import { ProfileResponse, ProfileService } from "../profile-service";
-import { ProfilePageLayout } from "./profile-page-layout";
-import { ImageUpload, ProfileImage, ProfileImageProps } from "./profile-image";
 import { ProfileBio } from "./profile-bio";
-import { EditableImage } from "@/components/editable-image";
 import { useStrapiImageUpload } from "@/hooks/use-strapi-image-upload";
+import { EditableImagePageSection } from "@/components/editable-image-page-section";
 
 export const ProfilePageContent = ({
   profile: {
@@ -73,7 +69,7 @@ export const ProfilePageContent = ({
     }
   }, [isEditMode]);
 
-  const handleOnClick = () => {
+  const onSave = () => {
     if (!isOwnProfile) return;
     if (imageUploadState.status === "uploading") return;
 
@@ -92,7 +88,6 @@ export const ProfilePageContent = ({
     }
 
     resetUploadState();
-    setIsEditMode((p) => !p);
   };
 
   const playerSince = new Date(createdAt).toLocaleDateString(undefined, {
@@ -102,18 +97,17 @@ export const ProfilePageContent = ({
   });
 
   return (
-    <ProfilePageLayout
-      Right={
-        <EditableImage
-          isEditMode={isEditMode}
-          initialImage={avatar}
-          imageUploadState={imageUploadState}
-          fileObjectUrl={fileObjectUrl}
-          onFileInputChange={onFileInputChange}
-        />
-      }
-      LeftTop={
-        <div className="flex items-center gap-4 px-3 mb-1">
+    <div>
+      <EditableImagePageSection
+        isEditMode={isEditMode}
+        initialImage={avatar}
+        imageUploadState={imageUploadState}
+        fileObjectUrl={fileObjectUrl}
+        onFileInputChange={onFileInputChange}
+        setIsEditMode={setIsEditMode}
+        onSave={onSave}
+        showEditButton={isOwnProfile}
+        TitleSection={
           <Heading
             variant="h1"
             className={
@@ -122,26 +116,16 @@ export const ProfilePageContent = ({
           >
             {username}
           </Heading>
-          {isOwnProfile && (
-            <Button
-              disabled={imageUploadState.status === "uploading"}
-              onClick={handleOnClick}
-              title={isEditMode ? "Save" : "Edit"}
-              size="sm"
-              variant={isEditMode ? "primary" : "secondary"}
-              className="duration-75"
-            />
-          )}
-        </div>
-      }
-      LeftMiddle={
-        <Text variant="p" className="px-3 cursor-default">
-          Player since {playerSince}
-        </Text>
-      }
-      LeftBottom={
-        <ProfileBio isEditMode={isEditMode} bio={bio} bioRef={bioRef} />
-      }
-    />
+        }
+        ContentSection={
+          <>
+            <Text variant="p" className="px-3 cursor-default">
+              Player since {playerSince}
+            </Text>
+            <ProfileBio isEditMode={isEditMode} bio={bio} bioRef={bioRef} />
+          </>
+        }
+      />
+    </div>
   );
 };
