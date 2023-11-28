@@ -5,6 +5,7 @@ import { Select } from "@/components/select";
 import { TextInput } from "@/components/text-input";
 import { useStrapiImageUpload } from "@/hooks/use-strapi-image-upload";
 import { UseFormReturn } from "react-hook-form";
+import { validateTeamName } from "../util";
 
 type ContentProps = {
   stringifiedGameId: string | null;
@@ -46,7 +47,6 @@ const Content = ({
   register,
   formState: { errors },
 }: ContentProps) => {
-  console.log({ errors });
   return (
     <div className="relative z-0">
       <div className="grid items-start max-w-[320px] grid-cols-1 gap-3 auto-rows-fr">
@@ -65,7 +65,7 @@ const Content = ({
             <TextInput
               error={!!errors["teamName"]}
               {...register("teamName", {
-                required: "Team name is required",
+                validate: validateTeamName,
               })}
             />
           </div>

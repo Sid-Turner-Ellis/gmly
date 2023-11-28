@@ -14,6 +14,7 @@ import { CreateTeamModalStep } from "./create-team-modal-step";
 import { TeamMemberInvite } from "../types";
 import { InviteTeamModalStep } from "./invite-team-modal-step";
 import { profanity } from "@2toad/profanity";
+import { validateTeamName } from "../util";
 
 export type CreateTeamModalProps = {
   user: AuthenticatedUser;
@@ -89,10 +90,11 @@ export const CreateTeamModal = ({
   );
 
   const onTeamDetailsSubmit = handleSubmit(({ teamName }) => {
-    if (profanity.exists(teamName)) {
+    const teamNameError = validateTeamName(teamName);
+    if (teamNameError) {
       setError("teamName", {
         type: "custom",
-        message: "Team name contains profanity",
+        message: teamNameError,
       });
       return;
     }
@@ -130,12 +132,14 @@ export const CreateTeamModal = ({
           role: tmi.role,
         }))
       );
+
+      return newlyCreatedTeam.data.id;
     },
     {
-      onSuccess() {
-        // TODO: Redirect to team page
+      onSuccess(data) {
         queryClient.invalidateQueries(["tw-cache", "user"]);
         addToast({ type: "success", message: "Team created!" });
+        router.push(`/team/${data}`);
       },
       onSettled() {
         closeModal();

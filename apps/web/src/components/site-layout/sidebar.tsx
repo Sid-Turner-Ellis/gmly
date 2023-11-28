@@ -41,7 +41,7 @@ export const Sidebar = ({ className }: PropsWithChildren<SidebarProps>) => {
         return {
           label: tp.attributes.team.data.attributes.name,
           icon: tp.attributes.team.data.attributes.image,
-          action: "/",
+          action: `/team/${tp.attributes.team.data.id}`,
           isActive: false,
         };
       })

@@ -62,6 +62,7 @@ const populate = [
   "team_profiles.profile.avatar",
   "game.cover_image",
   "game.card_image",
+  "image",
 ];
 
 export class TeamService {
@@ -87,7 +88,14 @@ export class TeamService {
 
     return newTeam;
   }
-  static async getTeam(teamId: number) {}
+  static async getTeam(teamId: number) {
+    const team = await strapiApi.findOne<TeamResponse>("teams", teamId, {
+      populate,
+    });
+
+    return team;
+  }
+
   static async getTeams() {
     const teams = await strapiApi.find<TeamResponse>("teams", {
       populate,
@@ -95,7 +103,23 @@ export class TeamService {
 
     return teams;
   }
-  static async updateTeam() {}
+  static async updateTeam(
+    teamId: number,
+    data: Partial<{
+      name: string;
+      image?: number;
+    }>
+  ) {
+    const updatedTeam = await strapiApi.update<TeamResponse>(
+      "teams",
+      teamId,
+      data,
+      { populate }
+    );
+
+    return updatedTeam;
+  }
+
   static async deleteTeam() {}
   static async inviteTeamMembers(
     teamId: number,
