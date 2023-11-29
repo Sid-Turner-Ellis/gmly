@@ -2,13 +2,13 @@ import { useAuth } from "@/hooks/use-auth";
 import { Button } from "../button";
 import * as Avatar from "@radix-ui/react-avatar";
 import { useTailwindBreakpoint } from "@/hooks/use-tailwind-breakpoint";
+import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
 
 type ProfileButtonsProps = {};
 
 export const ProfileButtons = ({}: ProfileButtonsProps) => {
   const { user } = useAuth();
   const isDesktop = useTailwindBreakpoint("md");
-  const fakeUrl = "";
   const username = user?.data?.profile?.username ?? "User";
   return (
     <div className="relative z-0 flex h-full gap-2 lg:gap-3">
@@ -26,7 +26,7 @@ export const ProfileButtons = ({}: ProfileButtonsProps) => {
             <Avatar.Root className="inline-flex items-center justify-center w-full h-full overflow-hidden rounded-full select-none">
               <Avatar.Image
                 className="h-full w-full rounded-[inherit] object-cover"
-                src={fakeUrl}
+                src={resolveStrapiImage(user?.data.profile?.avatar ?? null)}
                 alt={"Avatar"}
               />
               <Avatar.Fallback

@@ -67,6 +67,10 @@ export default {
               DEFAULT: "#272a30",
               "accent-light": "#3d414b",
             },
+
+            dark: {
+              DEFAULT: "#23252B",
+            },
           },
           status: {
             success: {

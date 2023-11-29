@@ -23,13 +23,15 @@ const EditableImagePageSectionLayout = ({
   BottomRight: ReactNode;
 }) => (
   <div className="relative z-0">
-    <div className="flex gap-0 sm:gap-4 md:gap-6">
+    <div className="flex gap-4 md:gap-6">
       <div className="w-40">
         <AspectRatio ratio={1}>{Left}</AspectRatio>
       </div>
       <div>
         <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-4">{TopRight}</div>
+          <div className="flex flex-col items-start gap-4 mb-2 sm:items-center sm:flex-row sm:mb-0">
+            {TopRight}
+          </div>
           {BottomRight}
         </div>
       </div>

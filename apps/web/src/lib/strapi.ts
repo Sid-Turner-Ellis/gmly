@@ -36,7 +36,7 @@ type PaginationMeta = {
   };
 };
 
-type StrapiResponse<T, M = Record<string, unknown>> = {
+export type StrapiResponse<T, M = Record<string, unknown>> = {
   data: T;
   meta: M & Record<string, unknown>;
 };

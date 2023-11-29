@@ -1,4 +1,4 @@
-import { strapiApi } from "@/lib/strapi";
+import { StrapiResponse, strapiApi } from "@/lib/strapi";
 import {
   ModifyEntity,
   ModifyRelationAttributes,
@@ -17,15 +17,31 @@ export type TeamRoles = "founder" | "leader" | "member";
 export type TeamProfileEntity = StrapiEntity<{
   is_pending: boolean;
   role: TeamRoles;
+  xp: number;
+  earnings: number;
+  rank: number;
   profile: StrapiRelation<ProfileEntity>;
   team: StrapiRelation<TeamEntity>;
 }>;
+
+const transformTeamResponse = (tr: TeamResponse) => {
+  tr.attributes.team_profiles.data?.forEach((tp) => {
+    tp.attributes.xp = Math.floor(Math.random() * 1000);
+    tp.attributes.rank = Math.floor(Math.random() * 1000);
+    tp.attributes.earnings = Math.floor(Math.random() * 10000);
+  });
+
+  tr.attributes.wins = Math.floor(Math.random() * 1000);
+  tr.attributes.losses = Math.floor(Math.random() * 1000);
+};
 
 export type TeamEntity = StrapiEntity<{
   image: StrapiImageResponse;
   name: string;
   game: StrapiRelation<GameEntity>;
   team_profiles: StrapiRelation<TeamProfileEntity[]>;
+  wins: number;
+  losses: number;
 }>;
 
 type TeamResponseParts = {
@@ -86,6 +102,7 @@ export class TeamService {
       { populate: ["team_profiles.profile.avatar"] }
     );
 
+    transformTeamResponse(newTeam.data);
     return newTeam;
   }
   static async getTeam(teamId: number) {
@@ -93,6 +110,7 @@ export class TeamService {
       populate,
     });
 
+    transformTeamResponse(team.data);
     return team;
   }
 
@@ -101,6 +119,9 @@ export class TeamService {
       populate,
     });
 
+    teams.data.forEach((t) => {
+      transformTeamResponse(t);
+    });
     return teams;
   }
   static async updateTeam(
@@ -117,6 +138,7 @@ export class TeamService {
       { populate }
     );
 
+    transformTeamResponse(updatedTeam.data);
     return updatedTeam;
   }
 
@@ -125,18 +147,17 @@ export class TeamService {
     teamId: number,
     teamMemberInvites: { profile: number; role: TeamRoles }[]
   ) {
-    const teamWithNewInvites = await strapiApi.request(
-      "post",
-      `/teams/${teamId}/invite`,
-      {
-        data: {
-          data: teamMemberInvites.filter((tmi) => tmi.role !== "founder"),
-        },
-        params: {
-          populate,
-        },
-      }
-    );
+    const teamWithNewInvites = await strapiApi.request<
+      StrapiResponse<TeamResponse>
+    >("post", `/teams/${teamId}/invite`, {
+      data: {
+        data: teamMemberInvites.filter((tmi) => tmi.role !== "founder"),
+      },
+      params: {
+        populate,
+      },
+    });
+    transformTeamResponse(teamWithNewInvites.data);
     return teamWithNewInvites;
   }
   static async removeTeamMember() {}

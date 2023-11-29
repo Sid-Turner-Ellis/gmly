@@ -10,6 +10,11 @@ import { useToast } from "@/providers/toast-provider";
 import { validateTeamName } from "../util";
 import { StrapiError } from "@/utils/strapi-error";
 import { useQueryClient } from "@tanstack/react-query";
+import { Text } from "@/components/text";
+import { Image } from "@/components/image";
+import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
+import { toPascalCase } from "@/utils/to-pascal-case";
+import { TeamMembersTable } from "./team-members-table";
 
 type TeamPageContent = {
   team: TeamResponse;
@@ -103,7 +108,7 @@ export const TeamPageContent = ({ team, teamProfile }: TeamPageContent) => {
   };
 
   return (
-    <div>
+    <div className="flex flex-col gap-8">
       <EditableImagePageSection
         isEditMode={isEditMode}
         onSave={onSave}
@@ -152,6 +157,8 @@ export const TeamPageContent = ({ team, teamProfile }: TeamPageContent) => {
         setIsEditMode={setIsEditMode}
         showEditButton={isFounder}
       />
+
+      <TeamMembersTable team={team} />
     </div>
   );
 };
