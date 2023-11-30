@@ -118,6 +118,16 @@ class Strapi {
     );
   }
 
+  public delete<T>(
+    contentType: string,
+    id: string | number,
+    params?: StrapiBaseRequestParams
+  ): Promise<StrapiResponse<T>> {
+    return this.request<StrapiResponse<T>>("delete", `/${contentType}/${id}`, {
+      params,
+    });
+  }
+
   async findOne<T>(
     contentType: string,
     id: string | number,

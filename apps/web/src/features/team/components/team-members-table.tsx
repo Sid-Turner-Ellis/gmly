@@ -9,10 +9,14 @@ import { PropsWithChildren, useMemo } from "react";
 import { ClassValue } from "clsx";
 import { CopyIcon } from "@radix-ui/react-icons";
 import { convertToOrdinal } from "@/utils/convert-to-ordinal";
+import { Skeleton } from "@/components/skeleton";
 
 type TeamMembersTableProps = {
   team: TeamResponse;
 };
+
+// TODO: Create the skeleton
+// export const TeamMembersTableSkeleton = () => <Skeleton />;
 
 const GamerTag = ({ tag }: { tag: string }) => (
   <div className="inline-flex items-center gap-2 cursor-pointer text-brand-gray">

@@ -98,7 +98,7 @@ export const Modal = ({
                 <Text>{description}</Text>
               </DialogPrimitives.Description>
             )}
-            {children && <ModalContent>{children}</ModalContent>}
+            <ModalContent>{children}</ModalContent>
             {Footer && <ModalFooter>{Footer}</ModalFooter>}
             {!Footer && <div className="pb-3" />}
             {isLoading && (

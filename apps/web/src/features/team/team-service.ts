@@ -105,6 +105,7 @@ export class TeamService {
     transformTeamResponse(newTeam.data);
     return newTeam;
   }
+
   static async getTeam(teamId: number) {
     const team = await strapiApi.findOne<TeamResponse>("teams", teamId, {
       populate,
@@ -142,7 +143,10 @@ export class TeamService {
     return updatedTeam;
   }
 
-  static async deleteTeam() {}
+  static async deleteTeam(id: number) {
+    await strapiApi.delete<TeamResponse>("teams", id);
+  }
+
   static async inviteTeamMembers(
     teamId: number,
     teamMemberInvites: { profile: number; role: TeamRoles }[]

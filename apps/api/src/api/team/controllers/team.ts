@@ -8,28 +8,48 @@ import { errors } from "@strapi/utils";
 export default factories.createCoreController(
   "api::team.team",
   ({ strapi }) => ({
+    async delete(ctx) {
+      // No need to sanitisze query because we're not returning data in a meaningful way (just confirmation its deleted)
+
+      // Check if the user is a founder
+      const profile = await strapi
+        .service("api::profile.profile")
+        .findOneByWalletAddress(ctx.state.wallet_address);
+
+      const teamId = ctx.params.id;
+
+      const founderTeamProfile = await strapi
+        .service("api::team-profile.team-profile")
+        .findFounderTeamProfile(teamId);
+
+      if (founderTeamProfile.profile.id !== profile.id) {
+        throw new errors.UnauthorizedError();
+      }
+
+      return super.delete(ctx);
+    },
+
     async create(ctx) {
-      const walletAddress = ctx.state.wallet_address;
       const createdTeam = await super.create(ctx);
 
       // Get the profile making the request and create the founder
-      const { results: profileResults } = await strapi
+      const profile = await await strapi
         .service("api::profile.profile")
-        .find({ filters: { wallet_address: walletAddress } });
+        .findOneByWalletAddress(ctx.state.wallet_address);
 
-      const profile = profileResults[0];
+      if (!profile) {
+        throw new errors.UnauthorizedError();
+      }
 
       // Create the founder
-      const teamProfile = await strapi
-        .service("api::team-profile.team-profile")
-        .create({
-          data: {
-            team: createdTeam.data.id,
-            profile: profile.id,
-            role: "founder",
-            is_pending: false,
-          },
-        });
+      await strapi.service("api::team-profile.team-profile").create({
+        data: {
+          team: createdTeam.data.id,
+          profile: profile.id,
+          role: "founder",
+          is_pending: false,
+        },
+      });
 
       const query = await this.sanitizeQuery(ctx);
 
@@ -45,9 +65,7 @@ export default factories.createCoreController(
       // Puts it in the data/meta format
       return this.transformResponse(sanitizedUpdatedCreatedTeam);
     },
-    update(ctx) {
-      return super.update(ctx);
-    },
+
     async invite(ctx) {
       /**
        * 1. Ensure the invites do not include a founder invite
@@ -58,7 +76,10 @@ export default factories.createCoreController(
       const teamId = ctx.params.id;
       const { data: invites } = ctx.request.body ?? [];
 
-      const walletAddress = ctx.state.wallet_address;
+      /**
+       * Kind of makes sense to have this be:
+       * - Fetch the team profile given the team and profile ID
+       */
 
       const team = await strapi.service("api::team.team").findOne(teamId, {
         populate: {
@@ -78,24 +99,27 @@ export default factories.createCoreController(
       const currentTeamProfiles = team.team_profiles ?? [];
       const existingProfileIds = currentTeamProfiles.map((tp) => tp.profile.id);
 
-      const { results: requestingProfileResults } = await strapi
+      const profile = await await strapi
         .service("api::profile.profile")
-        .find({ filters: { wallet_address: walletAddress } });
+        .findOneByWalletAddress(ctx.state.wallet_address);
 
-      const requesterProfile = requestingProfileResults[0];
-      const requesterProfileId = requesterProfile?.id;
       const requesterTeamProfile = currentTeamProfiles.find(
-        (rtp) => rtp.profile.id === requesterProfileId
+        (rtp) => rtp.profile.id === profile.id
       );
 
       // 2.
-      if (
-        !requesterTeamProfile?.role ||
-        requesterTeamProfile.role === "member"
-      ) {
+      const requestersRole = requesterTeamProfile?.role;
+      if (requestersRole === "member") {
         return ctx.badRequest(
           "You do not have permission to invite people to this team"
         );
+      }
+
+      if (
+        invites.some((invite) => invite.role === "leader") &&
+        requestersRole !== "founder"
+      ) {
+        return ctx.badRequest("Only founders can invite people to be leaders");
       }
 
       // 3.
