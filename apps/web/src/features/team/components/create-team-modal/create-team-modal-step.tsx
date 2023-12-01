@@ -5,7 +5,7 @@ import { Select } from "@/components/select";
 import { TextInput } from "@/components/text-input";
 import { useStrapiImageUpload } from "@/hooks/use-strapi-image-upload";
 import { UseFormReturn } from "react-hook-form";
-import { validateTeamName } from "../util";
+import { validateTeamName } from "../../util";
 
 type ContentProps = {
   stringifiedGameId: string | null;

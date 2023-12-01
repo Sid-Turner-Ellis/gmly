@@ -66,88 +66,161 @@ export default factories.createCoreController(
       return this.transformResponse(sanitizedUpdatedCreatedTeam);
     },
 
-    async invite(ctx) {
-      /**
-       * 1. Ensure the invites do not include a founder invite
-       * 2. Ensure the requester has the correct permissions to invite people
-       * 3. Filter out any invites for team members that already exist and create new team profiles
-       */
-      const query = await this.sanitizeQuery(ctx);
-      const teamId = ctx.params.id;
-      const { data: invites } = ctx.request.body ?? [];
+    async leave(ctx) {
+      // TODO: Don't allow them to leave if they have pending games
+      const profile = await strapi
+        .service("api::profile.profile")
+        .findOneByWalletAddress(ctx.state.wallet_address);
 
-      /**
-       * Kind of makes sense to have this be:
-       * - Fetch the team profile given the team and profile ID
-       */
+      const teamProfile = await strapi
+        .service("api::team-profile.team-profile")
+        .findTeamProfileByProfileId(ctx.params.id, profile.id);
 
-      const team = await strapi.service("api::team.team").findOne(teamId, {
-        populate: {
-          team_profiles: {
-            populate: {
-              profile: true,
-            },
-          },
-        },
-      });
-
-      // 1.
-      if (invites.some((invite) => invite.role === "founder")) {
-        return ctx.badRequest("You cannot set a team member to be a founder");
+      // Don't allow the founder to leave
+      if (teamProfile.role === "founder") {
+        return ctx.badRequest("Founders can not leave");
       }
 
-      const currentTeamProfiles = team.team_profiles ?? [];
-      const existingProfileIds = currentTeamProfiles.map((tp) => tp.profile.id);
+      console.log("hit4", teamProfile);
+      return await strapi
+        .service("api::team-profile.team-profile")
+        .delete(teamProfile.id);
+    },
+    async bulkUpdateMembers(ctx) {
+      const query = await this.sanitizeQuery(ctx);
+      const teamId = ctx.params.id;
+      const { data: teamMemberUpdates } = ctx.request.body ?? [];
+
+      const teamBeforeUpdates = await strapi
+        .service("api::team.team")
+        .findOne(teamId, {
+          populate: {
+            team_profiles: {
+              populate: {
+                profile: true,
+              },
+            },
+          },
+        });
+
+      const teamProfiles = teamBeforeUpdates.team_profiles ?? [];
+
+      // Team profile is in the request data but not the original team
+      const teamProfilesToCreate = teamMemberUpdates.filter(
+        (tmu) => !teamProfiles.some((tp) => tp.profile.id === tmu.profile)
+      );
+
+      // // Team profile is in the original team but not the request data
+      const teamProfilesToDelete = teamProfiles
+        .filter(
+          (tp) =>
+            !teamMemberUpdates.some((tmu) => tmu.profile === tp.profile.id)
+        )
+        .map((tp) => ({ id: tp.id, role: tp.role, profile: tp.profile.id }));
+
+      const teamProfilesToUpdate = teamProfiles
+        .map((tp) => {
+          const teamMemberUpdate = teamMemberUpdates.find(
+            (tmu) => tp.profile.id === tmu.profile
+          );
+
+          if (teamMemberUpdate && teamMemberUpdate.role !== tp.role) {
+            return {
+              id: tp.id,
+              role: teamMemberUpdate.role,
+              profile: tp.profile.id,
+            };
+          }
+
+          return false;
+        })
+        .filter(Boolean);
 
       const profile = await await strapi
         .service("api::profile.profile")
         .findOneByWalletAddress(ctx.state.wallet_address);
 
-      const requesterTeamProfile = currentTeamProfiles.find(
-        (rtp) => rtp.profile.id === profile.id
+      if (!profile) {
+        throw new errors.UnauthorizedError();
+      }
+
+      const requesterTeamProfile = teamProfiles.find(
+        (tp) => tp.profile.id === profile.id
       );
 
-      // 2.
       const requestersRole = requesterTeamProfile?.role;
+
+      const updatesContainFounder =
+        teamProfilesToCreate.some((tptc) => tptc.role === "founder") ||
+        teamProfilesToUpdate.some((tptu) => tptu.role === "founder") ||
+        teamProfilesToDelete.some((tptd) => tptd.role === "founder");
+
+      const playersWereDeleted = teamProfilesToDelete.length > 0;
+      const playersWereUpdated = teamProfilesToUpdate.length > 0;
+
+      const updatesContainsLeader =
+        teamProfilesToCreate.some((tptc) => tptc.role === "leader") ||
+        teamProfilesToUpdate.some((tptu) => tptu.role === "leader") ||
+        teamProfilesToDelete.some((tptd) => tptd.role === "leader");
+
       if (requestersRole === "member") {
-        return ctx.badRequest(
-          "You do not have permission to invite people to this team"
-        );
+        throw new errors.UnauthorizedError();
+      }
+
+      if (updatesContainFounder) {
+        return ctx.badRequest("Roles can not include founders");
       }
 
       if (
-        invites.some((invite) => invite.role === "leader") &&
-        requestersRole !== "founder"
+        requestersRole === "leader" &&
+        (playersWereDeleted || playersWereUpdated || updatesContainsLeader)
       ) {
-        return ctx.badRequest("Only founders can invite people to be leaders");
+        throw new errors.UnauthorizedError();
       }
 
-      // 3.
+      // Apply creates
       await Promise.all(
-        invites
-          .filter((invite) => !existingProfileIds.includes(invite.profile))
-          .map(async ({ profile, role }) => {
-            await strapi.service("api::team-profile.team-profile").create({
-              data: {
-                team: teamId,
-                profile: profile,
-                role,
-                is_pending: true,
-              },
-            });
-          })
+        teamProfilesToCreate.map(async ({ profile, role }) => {
+          await strapi.service("api::team-profile.team-profile").create({
+            data: {
+              team: teamId,
+              profile: profile,
+              role,
+              is_pending: true,
+            },
+          });
+        })
       );
 
-      const updatedCreatedTeam = await strapi
+      // Apply updates
+      await Promise.all(
+        teamProfilesToUpdate.map(async ({ role, id }) => {
+          console.log("update", role, id);
+          await strapi.service("api::team-profile.team-profile").update(id, {
+            data: {
+              role,
+            },
+          });
+        })
+      );
+
+      // Apply deletes
+      await Promise.all(
+        teamProfilesToDelete.map(async ({ id }) => {
+          await strapi.service("api::team-profile.team-profile").delete(id);
+        })
+      );
+
+      const refreshedTeam = await strapi
         .service("api::team.team")
         .findOne(teamId, query);
 
-      const sanitizedUpdatedCreatedTeam = await this.sanitizeOutput(
-        updatedCreatedTeam,
+      const sanitizedRefreshedTeam = await this.sanitizeOutput(
+        refreshedTeam,
         ctx
       );
 
-      return this.transformResponse(sanitizedUpdatedCreatedTeam);
+      return this.transformResponse(sanitizedRefreshedTeam);
     },
   })
 );

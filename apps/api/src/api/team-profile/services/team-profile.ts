@@ -17,6 +17,20 @@ export default factories.createCoreService("api::team-profile.team-profile", {
 
     return teamProfiles;
   },
+
+  async findTeamProfileByProfileId(teamId, profileId, params: any = {}) {
+    const mergedParams = merge(params, {
+      filters: {
+        team: teamId,
+        profile: profileId,
+      },
+    });
+
+    const teamProfiles = await this.find(mergedParams);
+
+    return teamProfiles.results[0] ?? null;
+  },
+
   async findFounderTeamProfile(teamId, params: any = {}) {
     const mergedParams = merge(params, {
       filters: {

@@ -58,6 +58,11 @@ export default {
             dark: "#787878",
           },
 
+          red: {
+            DEFAULT: "#DD364D",
+            dark: "#BA263A",
+          },
+
           navy: {
             DEFAULT: "#1a1c20",
             "accent-dark": "#08090a",

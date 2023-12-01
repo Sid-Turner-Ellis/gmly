@@ -1,13 +1,6 @@
-import { Button } from "@/components/button";
 import { Image } from "@/components/image";
-import { ImageInput } from "@/components/image-input";
 import { SearchDropdown } from "@/components/search-dropdown/search-dropdown";
-import { Select } from "@/components/select";
-import { TextInput } from "@/components/text-input";
-import { useStrapiImageUpload } from "@/hooks/use-strapi-image-upload";
 import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
-import { UseFormReturn } from "react-hook-form";
-import { TeamMemberInvite } from "../types";
 import { useSearchDropdown } from "@/hooks/use-search-dropdown";
 import { globalMelilisearchIndex } from "@/lib/meilisearch";
 import { StrapiImage } from "@/types/strapi-types";
@@ -15,26 +8,23 @@ import { TeamRoles } from "../team-service";
 import { Text } from "@/components/text";
 import { Icon } from "@/components/icon";
 import { Skeleton } from "@/components/skeleton";
-import { TeamMemberInviteItem } from "./team-member-invite-item";
+import { TeamMemberEditItem } from "./team-member-edit-item";
+import { MAX_TEAM_MEMBERS } from "../constants";
+import { TeamMemberUpdate } from "../types";
 
-type ContentProps = {
-  maxMembers: number;
-  teamMemberInvites: TeamMemberInvite[];
+type TeamMemberEdit = {
+  inviteOnly?: boolean;
+  teamMemberInvites: TeamMemberUpdate[];
   setTeamMemberInvites: React.Dispatch<
-    React.SetStateAction<TeamMemberInvite[]>
+    React.SetStateAction<TeamMemberUpdate[]>
   >;
 };
 
-type FooterProps = {
-  onSubmit: () => void;
-  setIsFirstStep: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
-const Content = ({
+export const TeamMemberEdit = ({
   teamMemberInvites,
+  inviteOnly,
   setTeamMemberInvites,
-  maxMembers,
-}: ContentProps) => {
+}: TeamMemberEdit) => {
   const { results, isNoResults, ...searchDropdownProps } = useSearchDropdown(
     "global-profiles",
     async (query) => {
@@ -66,36 +56,33 @@ const Content = ({
         username,
         role: "member",
         image,
-      } as TeamMemberInvite,
+      } as TeamMemberUpdate,
     ]);
   };
 
-  const updateTeamMemberRole = (userId: number, newRole: TeamRoles) => {
+  const updateTeamMemberRole = (
+    userId: number,
+    newRole: TeamRoles | "Remove"
+  ) => {
     const teamMemberInvite = teamMemberInvites.find(
       (tmi) => tmi.userId === userId
     );
-
     if (!teamMemberInvite) return;
 
-    const withoutCurrentTeamMemberInvite = teamMemberInvites.filter(
-      (tmi) => tmi.userId !== teamMemberInvite.userId
-    );
-
-    const updatedTeamMemberInvite = {
-      ...teamMemberInvite,
-      role: newRole,
-    };
-
-    setTeamMemberInvites([
-      ...withoutCurrentTeamMemberInvite,
-      updatedTeamMemberInvite,
-    ]);
+    if (newRole === "Remove") {
+      setTeamMemberInvites(
+        teamMemberInvites.filter((tmi) => tmi.userId !== userId)
+      );
+    } else {
+      teamMemberInvite.role = newRole;
+      setTeamMemberInvites([...teamMemberInvites]);
+    }
   };
 
   return (
     <div className="relative z-0">
       <SearchDropdown
-        disabled={maxMembers === teamMemberInvites.length}
+        disabled={MAX_TEAM_MEMBERS === teamMemberInvites.length}
         renderItem={({ name, image }) => (
           <div className="flex items-center gap-3">
             <div className="w-[30px] h-[30px] relative rounded-sm overflow-hidden">
@@ -131,8 +118,9 @@ const Content = ({
 
       <div className="relative flex flex-col gap-4 mt-4 -z-20">
         {teamMemberInvites.map((teamMemberInvite) => (
-          <TeamMemberInviteItem
+          <TeamMemberEditItem
             {...teamMemberInvite}
+            disabled={inviteOnly}
             setRole={(role) =>
               updateTeamMemberRole(teamMemberInvite.userId, role)
             }
@@ -141,24 +129,4 @@ const Content = ({
       </div>
     </div>
   );
-};
-
-const Footer = ({ setIsFirstStep, onSubmit }: FooterProps) => {
-  return (
-    <>
-      <Button
-        variant="secondary"
-        title="Back"
-        onClick={() => {
-          setIsFirstStep(true);
-        }}
-      />
-      <Button variant="primary" title="Create" onClick={onSubmit} />
-    </>
-  );
-};
-
-export const InviteTeamModalStep = {
-  Content,
-  Footer,
 };

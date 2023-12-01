@@ -1,17 +1,18 @@
 import { Image } from "@/components/image";
 import { TeamRoles } from "../team-service";
-import { TeamMemberInvite } from "../types";
+import { TeamMemberUpdate } from "../types";
 import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
 import { Text } from "@/components/text";
 import { SimpleSelect } from "@/components/simple-select";
 
-export const TeamMemberInviteItem = ({
+export const TeamMemberEditItem = ({
   image,
   username,
   role,
   setRole,
-}: { setRole: (role: TeamRoles) => void } & Pick<
-  TeamMemberInvite,
+  disabled,
+}: { setRole: (role: TeamRoles) => void; disabled?: boolean } & Pick<
+  TeamMemberUpdate,
   "image" | "username" | "role"
 >) => {
   return (
@@ -24,9 +25,18 @@ export const TeamMemberInviteItem = ({
       </div>
       <div>
         <SimpleSelect
-          disabled={role === "founder"}
+          disabled={disabled || role === "founder"}
           placeholder="founder"
-          options={["founder", "leader", "member"]}
+          options={[
+            "founder",
+            "leader",
+            "member",
+            {
+              option: "Remove",
+              optionClassName:
+                "bg-brand-red data-[highlighted]:bg-brand-red-dark text-brand-white cursor-pointer",
+            },
+          ]}
           disabledOptions={["founder"]}
           value={role}
           setValue={(v) => {

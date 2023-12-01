@@ -1,4 +1,6 @@
 import { profanity } from "@2toad/profanity";
+import { TeamMemberUpdate } from "./types";
+import { TeamResponse } from "./team-service";
 
 export const validateTeamName = (teamName: string) => {
   const teamNameLength = teamName.length;
@@ -23,3 +25,32 @@ export const validateTeamName = (teamName: string) => {
     return "Team name contains profanity";
   }
 };
+
+export const createFakeTeamProfile = (
+  val: TeamMemberUpdate
+): NonNullable<TeamResponse["attributes"]["team_profiles"]["data"]>[0] => ({
+  attributes: {
+    team: undefined as never,
+    is_pending: true,
+    role: val.role,
+    xp: 0,
+    earnings: 0,
+    rank: 0,
+    profile: {
+      data: {
+        id: 0,
+        attributes: {
+          wallet_address: "",
+          region: "NA",
+          username: val.username,
+          wager_mode: false,
+          trust_mode: false,
+          bio: "",
+          avatar: null,
+          team_profiles: undefined as never,
+          createdAt: "",
+        },
+      },
+    },
+  },
+});

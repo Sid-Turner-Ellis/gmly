@@ -6,15 +6,16 @@ import { useStrapiImageUpload } from "@/hooks/use-strapi-image-upload";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SubmitHandler, set, useForm } from "react-hook-form";
-import { TeamRoles, TeamService } from "../team-service";
+import { TeamRoles, TeamService } from "../../team-service";
 import { AuthenticatedUser, useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/router";
 import { useToast } from "@/providers/toast-provider";
 import { CreateTeamModalStep } from "./create-team-modal-step";
-import { TeamMemberInvite } from "../types";
+import { TeamMemberUpdate } from "../../types";
 import { InviteTeamModalStep } from "./invite-team-modal-step";
 import { profanity } from "@2toad/profanity";
-import { validateTeamName } from "../util";
+import { validateTeamName } from "../../util";
+import { MAX_TEAM_MEMBERS } from "../../constants";
 
 export type CreateTeamModalProps = {
   user: AuthenticatedUser;
@@ -32,8 +33,7 @@ export const CreateTeamModal = ({
   const { addToast } = useToast();
   const [gameSelectError, setGameSelectError] = useState(false);
   const router = useRouter();
-  const maxMembers = 6;
-  const initialTeamMembers: TeamMemberInvite[] = [
+  const initialTeamMembers: TeamMemberUpdate[] = [
     {
       image: user.data.profile.avatar?.data?.attributes ?? null,
       username: user.data.profile.username!,
@@ -124,8 +124,7 @@ export const CreateTeamModal = ({
         image: imageId,
       });
 
-      // invite the team members
-      await TeamService.inviteTeamMembers(
+      await TeamService.bulkUpdateTeamMembers(
         newlyCreatedTeam.data.id,
         teamMemberInvites.map((tmi) => ({
           profile: tmi.userId,
@@ -181,7 +180,7 @@ export const CreateTeamModal = ({
         isFirstStep
           ? "Team details"
           : `Invite team (up to ${
-              maxMembers - teamMemberInvites.length
+              MAX_TEAM_MEMBERS - teamMemberInvites.length
             } more players)`
       }
       Footer={
@@ -228,7 +227,6 @@ export const CreateTeamModal = ({
           <InviteTeamModalStep.Content
             teamMemberInvites={teamMemberInvites}
             setTeamMemberInvites={setTeamMemberInvites}
-            maxMembers={maxMembers}
           />
         )}
       </div>

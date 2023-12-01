@@ -18,6 +18,7 @@ import { TeamMembersTable } from "./team-members-table";
 import { Button } from "@/components/button";
 import { useRouter } from "next/router";
 import { Modal } from "@/components/modal";
+import { TeamActionButtons } from "./team-action-buttons";
 
 type TeamPageContent = {
   team: TeamResponse;
@@ -29,30 +30,14 @@ type TeamPageContent = {
 };
 export const TeamPageContent = ({ team, teamProfile }: TeamPageContent) => {
   const editableImageProps = useStrapiImageUpload();
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const isTeamDeletable = Math.floor(Math.random() * 1000) % 2 === 0; // TODO: Check by looking at upcoming games
-  const isFounder = teamProfile?.attributes.role === "founder";
+  const role = teamProfile?.attributes.role;
   const inputRef = useRef<HTMLInputElement>(null);
   const { addToast } = useToast();
-  const router = useRouter();
   const queryClient = useQueryClient();
   const [teamNameInputValue, setTeamNameInputValue] = useState(
     team.attributes.name
   );
-
-  const { mutate: deleteTeamMutation, isLoading: deleteTeamMutationIsLoading } =
-    useMutation(({ id }: { id: number }) => TeamService.deleteTeam(id), {
-      onSuccess() {
-        queryClient.invalidateQueries(["tw-cache", "user"]);
-        addToast({ type: "success", message: "Team deleted" });
-        router.replace("/");
-      },
-      onError(e) {
-        // TODO: check if the error is because there are pending games
-        addToast({ type: "error", message: "Something went wrong" });
-      },
-    });
 
   const { mutate: updateTeamMutation, isError: updateTeamErrorIsError } =
     useOptimisticMutation<
@@ -128,31 +113,6 @@ export const TeamPageContent = ({ team, teamProfile }: TeamPageContent) => {
 
   return (
     <div className="">
-      <Modal
-        isOpen={isDeleteModalOpen}
-        setIsOpen={setIsDeleteModalOpen}
-        title="Are you sure?"
-        description="This action cannot be undone, and all team members will be removed from the team."
-        isClosable
-        isLoading={deleteTeamMutationIsLoading}
-        Footer={
-          <div className="flex justify-end w-full gap-4">
-            <Button
-              variant="secondary"
-              title="Cancel"
-              onClick={() => setIsDeleteModalOpen(false)}
-            />
-            <Button
-              variant="delete"
-              title="Delete"
-              disabled={deleteTeamMutationIsLoading}
-              onClick={() => {
-                deleteTeamMutation({ id: team.id });
-              }}
-            />
-          </div>
-        }
-      />
       <EditableImagePageSection
         isEditMode={isEditMode}
         onSave={onSave}
@@ -194,28 +154,10 @@ export const TeamPageContent = ({ team, teamProfile }: TeamPageContent) => {
         ContentSection={<></>}
         {...editableImageProps}
         setIsEditMode={setIsEditMode}
-        showEditButton={isFounder}
+        showEditButton={role === "founder"}
       />
 
-      {isFounder && (
-        <div className="flex justify-end w-full gap-4">
-          <Button variant={"secondary"} title="Edit team" />
-          <Button
-            variant={"delete"}
-            title="Delete team"
-            onClick={() => {
-              if (isTeamDeletable) {
-                setIsDeleteModalOpen(true);
-              } else {
-                addToast({
-                  type: "error",
-                  message: "You cannot delete a team with upcoming games",
-                });
-              }
-            }}
-          />
-        </div>
-      )}
+      <TeamActionButtons team={team} teamProfile={teamProfile} />
       <div className={cn("mt-4 md:mt-8")}> </div>
       <TeamMembersTable team={team} />
     </div>

@@ -21,7 +21,7 @@ import { TeamService } from "@/features/team/team-service";
 import * as CollapsiblePrimitive from "@radix-ui/react-collapsible";
 import { Collapsable } from "@/components/collapsable";
 import { GameService } from "@/features/game/game-service";
-import { CreateTeamModal } from "@/features/team/components/create-team-modal";
+import { CreateTeamModal } from "@/features/team/components/create-team-modal/create-team-modal";
 import { TextInput } from "@/components/text-input";
 import { Select } from "@/components/select";
 import { SearchDropdown } from "@/components/search-dropdown/search-dropdown";

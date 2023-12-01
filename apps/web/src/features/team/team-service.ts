@@ -147,23 +147,33 @@ export class TeamService {
     await strapiApi.delete<TeamResponse>("teams", id);
   }
 
-  static async inviteTeamMembers(
+  static async bulkUpdateTeamMembers(
     teamId: number,
-    teamMemberInvites: { profile: number; role: TeamRoles }[]
+    updatedTeam: { profile: number; role: TeamRoles }[]
   ) {
-    const teamWithNewInvites = await strapiApi.request<
+    const teamUpdateResponse = await strapiApi.request<
       StrapiResponse<TeamResponse>
-    >("post", `/teams/${teamId}/invite`, {
+    >("post", `/teams/${teamId}/bulk-update-members`, {
       data: {
-        data: teamMemberInvites.filter((tmi) => tmi.role !== "founder"),
+        data: updatedTeam,
       },
       params: {
         populate,
       },
     });
-    transformTeamResponse(teamWithNewInvites.data);
-    return teamWithNewInvites;
+    transformTeamResponse(teamUpdateResponse.data);
+    return teamUpdateResponse;
   }
-  static async removeTeamMember() {}
+  static async leaveTeam(teamId: number) {
+    await strapiApi.request<StrapiResponse<TeamResponse>>(
+      "get",
+      `/teams/${teamId}/leave`,
+      {
+        params: {
+          populate,
+        },
+      }
+    );
+  }
   static async updateRole() {}
 }

@@ -15,7 +15,7 @@ const buttonVariants = cva(
         secondary:
           "bg-brand-navy-light text-brand-gray hover:text-white border-brand-navy-light active:border-black/40",
         delete:
-          "bg-[#DD364D] text-white hover:bg-[#BA263A] active:border-[#DD364D]",
+          "bg-brand-red text-white hover:bg-brand-red-dark active:border-brand-red",
       },
       disabled: {
         true: "opacity-70 pointer-events-none",

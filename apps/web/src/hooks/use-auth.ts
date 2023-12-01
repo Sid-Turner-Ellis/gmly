@@ -51,8 +51,10 @@ export const useAuth = () => {
       router.replace("/");
     };
 
-    const signIn = () => {
-      router.replace("/");
+    const signIn = (shouldRedirect: boolean = true) => {
+      if (shouldRedirect) {
+        router.replace("/");
+      }
 
       // Redirect home and open the connect button modal
       const thirdWebButton = document.querySelector(

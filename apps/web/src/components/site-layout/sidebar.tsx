@@ -14,7 +14,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { IconType } from "../icon";
 import { TeamResponse } from "@/features/team/team-service";
 import { isStrapiRelationDefined } from "@/types/strapi-types";
-import { CreateTeamModal } from "@/features/team/components/create-team-modal";
+import { CreateTeamModal } from "@/features/team/components/create-team-modal/create-team-modal";
 
 type SidebarProps = {
   className?: ClassValue;
@@ -23,7 +23,7 @@ type SidebarProps = {
 export const Sidebar = ({ className }: PropsWithChildren<SidebarProps>) => {
   const { pathname } = useRouter();
   const route = pathname.split("/")[1] || "home";
-  const { user, isUserLoading } = useAuth();
+  const { user, isUserLoading, signIn } = useAuth();
   const [isCreateTeamModalOpen, setIsCreateTeamModalOpen] = useState(false);
 
   const teamButtons: SidebarButtonProps[] = useMemo(() => {
@@ -51,7 +51,11 @@ export const Sidebar = ({ className }: PropsWithChildren<SidebarProps>) => {
       label: "Create Team",
       icon: "plus",
       action: () => {
-        setIsCreateTeamModalOpen((p) => !p);
+        if (user) {
+          setIsCreateTeamModalOpen((p) => !p);
+        } else {
+          signIn(false);
+        }
       },
       isActive: false,
     };
