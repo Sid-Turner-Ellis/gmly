@@ -115,6 +115,27 @@ export class TeamService {
     return team;
   }
 
+  static async getTeamsForProfile(profileId: number, page = 1) {
+    console.log("hit");
+    const teams = await strapiApi.find<TeamResponse>("teams", {
+      populate,
+      pagination: {
+        page,
+        pageSize: 3,
+      },
+      filters: {
+        team_profiles: {
+          profile: profileId,
+        },
+      },
+    });
+
+    teams.data.forEach((t) => {
+      transformTeamResponse(t);
+    });
+    return teams;
+  }
+
   static async getTeams() {
     const teams = await strapiApi.find<TeamResponse>("teams", {
       populate,

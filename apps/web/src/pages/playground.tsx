@@ -73,6 +73,14 @@ export default function Page() {
   const [page, setPage] = useState(1);
   return (
     <div>
+      <Button
+        variant={"primary"}
+        onClick={async () => {
+          console.log("hit2");
+          console.log(await TeamService.getTeamsForProfile(7));
+        }}
+        title="Get"
+      />
       <Pagination
         page={page}
         setPage={setPage}
