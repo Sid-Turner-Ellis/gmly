@@ -28,6 +28,10 @@ import { SearchDropdown } from "@/components/search-dropdown/search-dropdown";
 import { useSearchDropdown } from "@/hooks/use-search-dropdown";
 import { globalMelilisearchIndex } from "@/lib/meilisearch";
 import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
+import { Icon } from "@/components/icon";
+import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
+import { cn } from "@/utils/cn";
+import { Pagination } from "@/components/pagination";
 
 /**
  * Facets are like tags
@@ -66,97 +70,15 @@ export const getServerSideProps = async () => {
 export default function Page() {
   const [isOpen, setIsOpen] = useState(false);
 
-  // useEffect(() => {
-  //   console.log(editableImageProps.imageUploadState);
-  //   if (editableImageProps.imageUploadState.status === "complete") {
-  //   }
-  // }, [editableImageProps.imageUploadState]);
-
-  // return (
-  //   <div>
-  //     <div className="w-40 h-40">
-  //       <EditableImage isEditMode={true} {...editableImageProps} />
-  //     </div>
-  //   </div>
-  // );
-
-  const [value, setValue] = useState<string | null>(null);
-
-  useEffect(() => {
-    (async () => {
-      const t = await GameService.recursivelyGetGames();
-      console.log("allgames", t);
-    })();
-  }, []);
-
-  // return (
-  //   <div>
-  //     <Select
-  //       value={value}
-  //       placeholder="place your ass "
-  //       setValue={setValue}
-  //       options={["hi", "mate", "fuck", "you"]}
-  //       error="fuck outa here"
-  //     />
-  //   </div>
-  // );
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<{ email: string }>();
-
-  const props = useSearchDropdown("fuck-you", async (query) => {
-    const searchResult = await globalMelilisearchIndex.search(query, {
-      attributesToSearchOn: ["name"],
-      limit: 4,
-      filter: ["collection_type = profiles"],
-      sort: ["name:asc"],
-    });
-
-    return searchResult.hits;
-  });
-
-  // return <div></div>;
-
-  // props.results.forEach((t) => {
-  //   console.log(t.id);
-  // });
-
-  // return (
-  //   <div>
-  //     <SearchDropdown
-  //       renderItem={({ name, image }) => (
-  //         <div className="flex items-center gap-3">
-  //           <div className="w-[30px] h-[30px] relative rounded-sm overflow-hidden">
-  //             <Image alt={name} src={resolveStrapiImage(image)} />
-  //           </div>
-  //           <Text className={"text-brand-white"}>{name}</Text>
-  //         </div>
-  //       )}
-  //       ItemSkeleton={<>skelly</>}
-  //       onResultClick={(result) => console.log(result)}
-  //       {...props}
-  //     />
-  //   </div>
-  // );
-  const { user } = useAuth();
-
-  if (!user) {
-    return null;
-  }
-
+  const [page, setPage] = useState(1);
   return (
     <div>
-      <Button
-        variant={"primary"}
-        title="creat a team mate"
-        onClick={() => {
-          setIsOpen(true);
-        }}
+      <Pagination
+        page={page}
+        setPage={setPage}
+        maxPages={9}
+        visiblePageCount={3}
       />
-      <CreateTeamModal user={user} {...{ isOpen, setIsOpen }} />
     </div>
   );
 }

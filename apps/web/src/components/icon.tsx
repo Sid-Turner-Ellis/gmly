@@ -18,6 +18,7 @@ const ICONS = [
   "pencil",
   "coins",
   "usdc",
+  "arrow-left",
   "image",
   "search",
   "plus",
@@ -525,6 +526,26 @@ const ICON_MAP: Record<
         strokeLinecap="round"
         strokeLinejoin="round"
         d="M17 1H3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2Z"
+      />
+    </svg>
+  ),
+  "arrow-left": ({ boxSize }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 12 12"
+      {...getWidthAndHeight({
+        size: boxSize,
+        width: 12,
+        height: 12,
+      })}
+    >
+      <path
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M10.665 6H1.332M5.999 10.667 1.332 6.001l4.667-4.667"
       />
     </svg>
   ),
