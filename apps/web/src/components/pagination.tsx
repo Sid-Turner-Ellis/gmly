@@ -1,18 +1,21 @@
 import { cn } from "@/utils/cn";
 import { useState } from "react";
 import { Icon } from "./icon";
+import { ClassValue } from "clsx";
 
 type PaginationProps = {
   page: number;
   setPage: (page: number) => void;
   maxPages: number;
   visiblePageCount?: number; // Added this to control the number of visible page buttons
+  className?: ClassValue;
 };
 
 export const Pagination = ({
   page,
   setPage,
   maxPages,
+  className,
   visiblePageCount = 3,
 }: PaginationProps) => {
   const [startIndex, setStartIndex] = useState(0);
@@ -33,7 +36,7 @@ export const Pagination = ({
   );
 
   return (
-    <div className="flex gap-1">
+    <div className={cn("flex gap-1", className)}>
       <button
         className="px-3 py-2 rounded text-brand-white opacity-80 disabled:opacity-40"
         onClick={() => shift(-1)}
@@ -47,7 +50,7 @@ export const Pagination = ({
           onClick={() => pageNum <= maxPages && setPage(pageNum)}
           disabled={pageNum > maxPages}
           className={cn(
-            "px-4 py-2 rounded disabled:opacity-40 transition text-brand-gray hover:text-brand-white",
+            "px-4 py-2 rounded shadow disabled:opacity-40 transition text-brand-gray [&:not(:disabled)]:hover:text-brand-white ",
             pageNum === page && "bg-brand-navy-light text-brand-white"
           )}
         >

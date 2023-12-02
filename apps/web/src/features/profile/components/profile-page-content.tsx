@@ -17,6 +17,7 @@ import { ProfileResponse, ProfileService } from "../profile-service";
 import { ProfileBio } from "./profile-bio";
 import { useStrapiImageUpload } from "@/hooks/use-strapi-image-upload";
 import { EditableImagePageSection } from "@/components/editable-image-page-section";
+import { TeamsTable } from "./teams-table/teams-table";
 
 export const ProfilePageContent = ({
   profile: {
@@ -126,6 +127,8 @@ export const ProfilePageContent = ({
           </>
         }
       />
+
+      <TeamsTable profileId={id} />
     </div>
   );
 };

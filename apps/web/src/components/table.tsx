@@ -3,9 +3,15 @@ import { ClassValue } from "clsx";
 import { PropsWithChildren, ReactNode } from "react";
 import { Text } from "./text";
 import { Image } from "./image";
+import { Skeleton } from "./skeleton";
 
 type TableImage = Parameters<typeof Image>[0];
 
+export const TableImageSkeleton = ({ isDark }: { isDark?: boolean }) => (
+  <div className="min-w-[40px] w-[40px] relative rounded overflow-hidden aspect-square">
+    <Skeleton type="image" className="w-full h-full" />
+  </div>
+);
 export const TableImage = (props: TableImage) => (
   <div className="min-w-[40px] w-[40px] relative rounded overflow-hidden aspect-square">
     <Image {...props} />
