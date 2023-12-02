@@ -157,6 +157,7 @@ export const TeamPageContent = ({ team, teamProfile }: TeamPageContent) => {
         showEditButton={role === "founder"}
       />
 
+      <div className={cn("mt-4 md:mt-0")}> </div>
       <TeamActionButtons team={team} teamProfile={teamProfile} />
       <div className={cn("mt-4 md:mt-8")}> </div>
       <TeamMembersTable team={team} />

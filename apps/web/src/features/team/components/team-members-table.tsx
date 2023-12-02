@@ -1,15 +1,11 @@
 import { Text } from "@/components/text";
 import { TeamResponse } from "../team-service";
-import { cn } from "@/utils/cn";
 import { Image } from "@/components/image";
 import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
 import { toPascalCase } from "@/utils/to-pascal-case";
 import { useTailwindBreakpoint } from "@/hooks/use-tailwind-breakpoint";
-import { PropsWithChildren, useMemo } from "react";
-import { ClassValue } from "clsx";
-import { CopyIcon } from "@radix-ui/react-icons";
+import { PropsWithChildren, ReactNode, useMemo } from "react";
 import { convertToOrdinal } from "@/utils/convert-to-ordinal";
-import { Skeleton } from "@/components/skeleton";
 import {
   TableCell,
   TableContainer,
@@ -17,22 +13,14 @@ import {
   TableRow,
 } from "@/components/table";
 import { Badge } from "@/components/badge";
+import { GamerTag } from "./gamer-tag";
+import { Skeleton } from "@/components/skeleton";
 
 type TeamMembersTableProps = {
   team: TeamResponse;
 };
 
-// TODO: Create the skeleton
-// export const TeamMembersTableSkeleton = () => <Skeleton />;
-
-const GamerTag = ({ tag }: { tag: string }) => (
-  <div className="inline-flex items-center gap-2 cursor-pointer text-brand-gray">
-    <Text>{tag}</Text>
-    <CopyIcon width={14} />
-  </div>
-);
-
-const TableContentDesktop = ({
+const DesktopTableRows = ({
   teamProfiles,
 }: {
   teamProfiles: NonNullable<
@@ -113,7 +101,8 @@ const TableContentDesktop = ({
     </div>
   );
 };
-const TableContentMobile = ({
+
+const MobileTableRows = ({
   teamProfiles,
 }: {
   teamProfiles: NonNullable<
@@ -158,6 +147,25 @@ const TableContentMobile = ({
   );
 };
 
+export const TeamMembersTableSkeleton = () => (
+  <div className="mt-8">
+    <TableContainer title={<Skeleton dark className="w-96 h-8 max-w-[80%]" />}>
+      <TableRow>
+        <Skeleton className="w-[80%] h-3" dark />
+      </TableRow>
+      <TableRow isDark>
+        <Skeleton className="w-[60%] h-3" dark />
+      </TableRow>
+      <TableRow>
+        <Skeleton className="w-[80%] h-3" dark />
+      </TableRow>
+      <TableRow isDark>
+        <Skeleton className="w-[60%] h-3" dark />
+      </TableRow>
+    </TableContainer>
+  </div>
+);
+
 export const TeamMembersTable = ({ team }: TeamMembersTableProps) => {
   const isDesktop = useTailwindBreakpoint("md", { fallback: true });
   const tableTitle = `${isDesktop ? team.attributes.name : ""} Team members`;
@@ -181,8 +189,8 @@ export const TeamMembersTable = ({ team }: TeamMembersTableProps) => {
       }
     >
       <>
-        {isDesktop && <TableContentDesktop teamProfiles={teamProfiles} />}
-        {!isDesktop && <TableContentMobile teamProfiles={teamProfiles} />}
+        {isDesktop && <DesktopTableRows teamProfiles={teamProfiles} />}
+        {!isDesktop && <MobileTableRows teamProfiles={teamProfiles} />}
       </>
     </TableContainer>
   );

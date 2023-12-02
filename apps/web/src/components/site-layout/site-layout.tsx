@@ -14,11 +14,11 @@ const sharedPageWidthClasses = "px-6 lg:pl-10 lg:pr-16";
 export const SiteLayout = ({ children }: { children: ReactNode }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isBigScreen = useTailwindBreakpoint("lg", { fallback: true });
-  const { pathname } = useRouter();
+  const { asPath } = useRouter();
 
   useEffect(() => {
     setIsSidebarOpen(false);
-  }, [pathname]);
+  }, [asPath]);
 
   return (
     <div

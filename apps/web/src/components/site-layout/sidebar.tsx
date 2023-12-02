@@ -21,11 +21,10 @@ type SidebarProps = {
 };
 
 export const Sidebar = ({ className }: PropsWithChildren<SidebarProps>) => {
-  const { pathname } = useRouter();
+  const { pathname, asPath } = useRouter();
   const route = pathname.split("/")[1] || "home";
   const { user, isUserLoading, signIn } = useAuth();
   const [isCreateTeamModalOpen, setIsCreateTeamModalOpen] = useState(false);
-
   const teamButtons: SidebarButtonProps[] = useMemo(() => {
     const teamProfiles = user?.data.profile.team_profiles.data || [];
 
@@ -42,7 +41,7 @@ export const Sidebar = ({ className }: PropsWithChildren<SidebarProps>) => {
           label: tp.attributes.team.data.attributes.name,
           icon: tp.attributes.team.data.attributes.image,
           action: `/team/${tp.attributes.team.data.id}`,
-          isActive: false,
+          isActive: asPath === `/team/${tp.attributes.team.data.id}`,
         };
       })
       .filter(Boolean) as SidebarButtonProps[];
@@ -63,7 +62,7 @@ export const Sidebar = ({ className }: PropsWithChildren<SidebarProps>) => {
     buttons.push(createTeamButton);
 
     return buttons;
-  }, [user]);
+  }, [user, asPath]);
 
   return (
     <>

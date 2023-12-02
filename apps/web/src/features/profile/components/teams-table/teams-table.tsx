@@ -17,7 +17,9 @@ import { convertToOrdinal } from "@/utils/convert-to-ordinal";
 import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
 import { useQuery } from "@tanstack/react-query";
 import { ClassValue } from "clsx";
-import { ReactNode, useState } from "react";
+import { PropsWithChildren, ReactNode, useState } from "react";
+
+const PAGE_SIZE = 3;
 
 type TeamsTableProps = {
   profileId: number;
@@ -85,11 +87,9 @@ const MobileTableRowSkeleton = ({ isDark }: { isDark?: boolean }) => (
 const MobileTableRows = ({
   isLoading,
   teams,
-  pageSize,
 }: {
   isLoading: boolean;
   teams?: Awaited<ReturnType<typeof TeamService.getTeamsForProfile>>;
-  pageSize: number;
 }) => (
   <>
     <TableRow>
@@ -102,7 +102,7 @@ const MobileTableRows = ({
     </TableRow>
     {isLoading && (
       <>
-        {Array.from({ length: pageSize }).map((_, index) => (
+        {Array.from({ length: PAGE_SIZE }).map((_, index) => (
           <MobileTableRowSkeleton isDark={index % 2 === 0} />
         ))}
       </>
@@ -140,11 +140,9 @@ const MobileTableRows = ({
 const DesktopTableRows = ({
   isLoading,
   teams,
-  pageSize,
 }: {
   isLoading: boolean;
   teams?: Awaited<ReturnType<typeof TeamService.getTeamsForProfile>>;
-  pageSize: number;
 }) => (
   <>
     <DesktopTableRow>
@@ -157,7 +155,7 @@ const DesktopTableRows = ({
     </DesktopTableRow>
     {isLoading && (
       <>
-        {Array.from({ length: pageSize }).map((_, index) => (
+        {Array.from({ length: PAGE_SIZE }).map((_, index) => (
           <DesktopTableRowSkeleton isDark={index % 2 === 0} />
         ))}
       </>
@@ -192,15 +190,31 @@ const DesktopTableRows = ({
   </>
 );
 
+const TeamsTableContainer = ({ children }: PropsWithChildren<{}>) => (
+  <div className="mt-8">
+    <TableContainer title="Teams">{children}</TableContainer>
+  </div>
+);
+
+export const TeamsTableSkeleton = () => (
+  <TeamsTableContainer>
+    <div className="hidden md:block">
+      <DesktopTableRows isLoading />
+    </div>
+    <div className=" md:hidden">
+      <MobileTableRows isLoading />
+    </div>
+  </TeamsTableContainer>
+);
+
 export const TeamsTable = ({ profileId }: TeamsTableProps) => {
-  const pageSize = 3;
   const isDesktop = useTailwindBreakpoint("md", { fallback: true });
   const [page, setPage] = useState(1);
   const { data: teamsData, isLoading: teamDataIsLoading } = useQuery(
     ["teams-for-profile", profileId, page],
     async () => {
       await new Promise((resolve) => setTimeout(resolve, 500));
-      return TeamService.getTeamsForProfile(profileId, page, pageSize);
+      return TeamService.getTeamsForProfile(profileId, page, PAGE_SIZE);
     },
     {
       enabled: !!profileId,
@@ -208,26 +222,19 @@ export const TeamsTable = ({ profileId }: TeamsTableProps) => {
   );
 
   return (
-    <div className="flex flex-col gap-4 mt-8">
-      <TableContainer title="Teams">
+    <div className="flex flex-col gap-4">
+      <TeamsTableContainer>
         <>
           {isDesktop && (
-            <DesktopTableRows
-              teams={teamsData}
-              isLoading={teamDataIsLoading}
-              pageSize={pageSize}
-            />
+            <DesktopTableRows teams={teamsData} isLoading={teamDataIsLoading} />
           )}
 
           {!isDesktop && (
-            <MobileTableRows
-              teams={teamsData}
-              isLoading={teamDataIsLoading}
-              pageSize={pageSize}
-            />
+            <MobileTableRows teams={teamsData} isLoading={teamDataIsLoading} />
           )}
         </>
-      </TableContainer>
+      </TeamsTableContainer>
+
       <div className="self-end">
         <Pagination
           page={page}

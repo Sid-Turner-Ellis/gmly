@@ -49,9 +49,10 @@ export const TableRow = ({ children, isDark, className }: TableRowProps) => (
 );
 
 type TableContainerProps = PropsWithChildren<{
-  title: string;
+  title: string | ReactNode;
   Right?: ReactNode;
 }>;
+
 export const TableContainer = ({
   children,
   title,
@@ -60,7 +61,13 @@ export const TableContainer = ({
   <div className="overflow-hidden rounded shadow-md bg-brand-navy-light">
     <div>
       <TableRow className="my-4">
-        <Text className="font-semibold text-brand-white text-md">{title}</Text>
+        {typeof title === "string" ? (
+          <Text className="font-semibold text-brand-white text-md">
+            {title}
+          </Text>
+        ) : (
+          title
+        )}
         {Right}
       </TableRow>
     </div>

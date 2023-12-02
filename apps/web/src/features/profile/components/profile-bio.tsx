@@ -23,9 +23,9 @@ export const ProfileBio = ({ isEditMode, bio, bioRef }: ProfileBioProps) => {
       ref={bioRef}
       className={cn(
         textVariantClassnames.p,
-        "cursor-default w-full px-3 py-1",
+        "cursor-default w-full py-1",
         isEditMode &&
-          "border border-solid text-brand-white rounded cursor-text outline-none focus:outline-none border-brand-navy-accent-light focus:border-brand-gray"
+          "border border-solid text-brand-white rounded cursor-text outline-none px-1 focus:outline-none border-brand-navy-accent-light focus:border-brand-gray"
       )}
       onKeyDown={(e) => {
         if (e.code === "Enter") {

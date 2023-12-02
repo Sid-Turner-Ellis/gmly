@@ -120,7 +120,7 @@ export const ProfilePageContent = ({
         }
         ContentSection={
           <>
-            <Text variant="p" className="px-3 cursor-default">
+            <Text variant="p" className="cursor-default">
               Player since {playerSince}
             </Text>
             <ProfileBio isEditMode={isEditMode} bio={bio} bioRef={bioRef} />

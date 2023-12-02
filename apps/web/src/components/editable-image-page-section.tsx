@@ -41,13 +41,13 @@ const EditableImagePageSectionLayout = ({
 
 export const EditableImagePageSectionSkeleton = () => (
   <EditableImagePageSectionLayout
-    Left={<Skeleton className="w-full h-full" type="image" />}
-    TopRight={<Skeleton className="w-56 h-10 mb-2" />}
+    Left={<Skeleton className="w-full h-full " type="image" />}
+    TopRight={<Skeleton className="w-24 xs:w-56 h-10 mb-2" />}
     BottomRight={
       <>
-        <Skeleton className="h-4 mb-2 w-96" />
-        <Skeleton className="h-4 mb-2 w-80" />
-        <Skeleton className="h-4 w-96" />
+        <Skeleton className="h-4 mb-2 xs:w-96" />
+        <Skeleton className="h-4 mb-2 xs:w-80" />
+        <Skeleton className="h-4 xs:w-96" />
       </>
     }
   />
