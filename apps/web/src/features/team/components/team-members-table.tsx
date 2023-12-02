@@ -10,6 +10,13 @@ import { ClassValue } from "clsx";
 import { CopyIcon } from "@radix-ui/react-icons";
 import { convertToOrdinal } from "@/utils/convert-to-ordinal";
 import { Skeleton } from "@/components/skeleton";
+import {
+  TableCell,
+  TableContainer,
+  TableImage,
+  TableRow,
+} from "@/components/table";
+import { Badge } from "@/components/badge";
 
 type TeamMembersTableProps = {
   team: TeamResponse;
@@ -25,22 +32,6 @@ const GamerTag = ({ tag }: { tag: string }) => (
   </div>
 );
 
-const Row = ({
-  children,
-  isDark,
-  className,
-}: PropsWithChildren<{ isDark?: boolean; className?: ClassValue }>) => (
-  <div
-    className={cn(
-      "flex py-4 px-4 md:px-12 items-center justify-between",
-      isDark && "bg-brand-navy-dark",
-      className
-    )}
-  >
-    {children}
-  </div>
-);
-
 const TableContentDesktop = ({
   teamProfiles,
 }: {
@@ -50,35 +41,37 @@ const TableContentDesktop = ({
 }) => {
   return (
     <div className="grid grid-cols-1">
-      <Row>
-        <div className="w-[14%]">
+      <TableRow>
+        <TableCell className="w-[14%]">
           <Text className="">G Rank</Text>
-        </div>
-        <div className="w-[30%]">
+        </TableCell>
+        <TableCell className="w-[30%]">
           <Text>Player</Text>
-        </div>
-        <div className="w-[14%]">
-          <Text className={"text-center"}>Tag</Text>
-        </div>
-        <div className="w-[14%]">
-          <Text className={"text-center"}>Position</Text>
-        </div>
-        <div className="w-[14%]">
-          <Text className={"text-center"}>Earnings</Text>
-        </div>
-        <div className="w-[14%]">
-          <Text className={"text-center"}>XP</Text>
-        </div>
-        <div className="block md:hidden">
-          <Text>Result</Text>
-        </div>
-      </Row>
+        </TableCell>
+
+        <TableCell className="w-[14%]" isCentered>
+          <Text>Tag</Text>
+        </TableCell>
+
+        <TableCell className="w-[14%]" isCentered>
+          <Text>Position</Text>
+        </TableCell>
+
+        <TableCell className="w-[14%]" isCentered>
+          <Text>Earnings</Text>
+        </TableCell>
+
+        <TableCell className="w-[14%]" isCentered>
+          <Text>XP</Text>
+        </TableCell>
+      </TableRow>
       {teamProfiles.map((profile, ind) => (
-        <Row isDark={ind % 2 === 0} key={ind}>
-          <div className="w-[14%]">
-            <Text className={""}>{profile.attributes.rank}</Text>
-          </div>
-          <div className="w-[30%]">
+        <TableRow isDark={ind % 2 === 0} key={ind}>
+          <TableCell className="w-[14%]">
+            <Text>{profile.attributes.rank}</Text>
+          </TableCell>
+
+          <TableCell className="w-[30%]">
             <div className="flex items-center gap-4">
               <div className="w-[28px] h-[28px] relative rounded-sm overflow-hidden">
                 <Image
@@ -92,16 +85,17 @@ const TableContentDesktop = ({
                 {profile.attributes.profile.data?.attributes.username!}
               </Text>
             </div>
-          </div>
-          <div className="w-[14%] text-center">
+          </TableCell>
+
+          <TableCell className="w-[14%]" isCentered>
             <GamerTag tag="gamerTag" />
-          </div>
-          <div className="w-[14%]">
-            <Text className={"text-center"}>
-              {toPascalCase(profile.attributes.role)}
-            </Text>
-          </div>
-          <div className="w-[14%]">
+          </TableCell>
+
+          <TableCell className="w-[14%]" isCentered>
+            <Text>{toPascalCase(profile.attributes.role)}</Text>
+          </TableCell>
+
+          <TableCell className="w-[14%]" isCentered>
             <Text className={"text-brand-primary text-center"}>
               $
               {profile.attributes.earnings.toLocaleString("en-US", {
@@ -109,11 +103,12 @@ const TableContentDesktop = ({
                 maximumFractionDigits: 0,
               })}
             </Text>
-          </div>
-          <div className="w-[14%]">
+          </TableCell>
+
+          <TableCell className="w-[14%]" isCentered>
             <Text className={"text-center"}>{profile.attributes.xp}</Text>
-          </div>
-        </Row>
+          </TableCell>
+        </TableRow>
       ))}
     </div>
   );
@@ -127,22 +122,20 @@ const TableContentMobile = ({
 }) => {
   return (
     <div className="grid grid-cols-1">
-      <Row>
+      <TableRow>
         <Text>Players</Text>
         <Text>Result</Text>
-      </Row>
+      </TableRow>
       {teamProfiles.map((profile, ind) => (
         <div>
-          <Row isDark={ind % 2 === 0}>
+          <TableRow isDark={ind % 2 === 0}>
             <div className="flex items-center w-full gap-3">
-              <div className="min-w-[40px] w-[40px] relative rounded overflow-hidden aspect-square">
-                <Image
-                  alt={profile.attributes.profile.data?.attributes.username!}
-                  src={resolveStrapiImage(
-                    profile.attributes.profile.data?.attributes.avatar ?? null
-                  )}
-                />
-              </div>
+              <TableImage
+                alt={profile.attributes.profile.data?.attributes.username!}
+                src={resolveStrapiImage(
+                  profile.attributes.profile.data?.attributes.avatar ?? null
+                )}
+              />
               <div className="grid justify-between w-full grid-cols-2 gap-y-1 grow-1">
                 <Text className="text-brand-white ">
                   {profile.attributes.profile.data?.attributes.username!}
@@ -158,7 +151,7 @@ const TableContentMobile = ({
                 </Text>
               </div>
             </div>
-          </Row>
+          </TableRow>
         </div>
       ))}
     </div>
@@ -167,6 +160,7 @@ const TableContentMobile = ({
 
 export const TeamMembersTable = ({ team }: TeamMembersTableProps) => {
   const isDesktop = useTailwindBreakpoint("md", { fallback: true });
+  const tableTitle = `${isDesktop ? team.attributes.name : ""} Team members`;
 
   const teamProfiles = useMemo(
     () =>
@@ -177,31 +171,19 @@ export const TeamMembersTable = ({ team }: TeamMembersTableProps) => {
   );
 
   return (
-    <div className="overflow-hidden rounded shadow-md bg-brand-navy-light">
-      <div>
-        <Row className="my-4">
-          <Text className="font-semibold text-brand-white text-md">
-            <span className="hidden md:inline">{team.attributes.name} </span>
-            Team members
-          </Text>
-
-          <div className="flex gap-3">
-            <div className="px-2 py-[0px] text-sm rounded bg-[#cdfee1]">
-              <p className="font-semibold text-brand-status-success-light">
-                W {team.attributes.wins}
-              </p>
-            </div>
-            <div className="font-semibold px-2 py-[0px] text-sm rounded bg-[#fedad9]">
-              <p className="text-brand-status-error-light">
-                L {team.attributes.losses}
-              </p>
-            </div>
-          </div>
-        </Row>
-      </div>
-
-      {isDesktop && <TableContentDesktop teamProfiles={teamProfiles} />}
-      {!isDesktop && <TableContentMobile teamProfiles={teamProfiles} />}
-    </div>
+    <TableContainer
+      title={tableTitle}
+      Right={
+        <div className="flex gap-2">
+          <Badge colorScheme={"emerald"}>W {team.attributes.wins}</Badge>
+          <Badge colorScheme={"rose"}>L {team.attributes.losses}</Badge>
+        </div>
+      }
+    >
+      <>
+        {isDesktop && <TableContentDesktop teamProfiles={teamProfiles} />}
+        {!isDesktop && <TableContentMobile teamProfiles={teamProfiles} />}
+      </>
+    </TableContainer>
   );
 };

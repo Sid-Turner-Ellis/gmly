@@ -9,7 +9,7 @@ const addUrl = (url: string) =>
   `${process.env.NEXT_PUBLIC_STRAPI_PROTOCOL}://${process.env.NEXT_PUBLIC_STRAPI_HOSTNAME}${url}`;
 
 export const resolveStrapiImage = (
-  image: StrapiImage | StrapiImageResponse | null,
+  image: StrapiImage | StrapiImageResponse | null | undefined,
   format?: keyof NonNullable<StrapiImage["formats"]>
 ) => {
   const imageData = isStrapiImageResponse(image)
