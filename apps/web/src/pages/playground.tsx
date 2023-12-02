@@ -32,6 +32,7 @@ import { Icon } from "@/components/icon";
 import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 import { cn } from "@/utils/cn";
 import { Pagination } from "@/components/pagination";
+import { NotificationService } from "@/features/notification/notification-service";
 
 /**
  * Facets are like tags
@@ -77,15 +78,10 @@ export default function Page() {
         variant={"primary"}
         onClick={async () => {
           console.log("hit2");
-          console.log(await TeamService.getTeamsForProfile(7));
+          console.log(await NotificationService.markAsRead(1));
+          // console.log(await NotificationService.markAllAsSeen(7));
         }}
         title="Get"
-      />
-      <Pagination
-        page={page}
-        setPage={setPage}
-        maxPages={9}
-        visiblePageCount={3}
       />
     </div>
   );

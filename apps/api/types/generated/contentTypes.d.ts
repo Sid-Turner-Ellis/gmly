@@ -742,6 +742,53 @@ export interface ApiGameModeGameMode extends Schema.CollectionType {
   };
 }
 
+export interface ApiNotificationNotification extends Schema.CollectionType {
+  collectionName: 'notifications';
+  info: {
+    singularName: 'notification';
+    pluralName: 'notifications';
+    displayName: 'Notification';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    read: Attribute.Boolean & Attribute.Required & Attribute.DefaultTo<false>;
+    type: Attribute.Enumeration<['TEAM_INVITE_RECEIVED']> & Attribute.Required;
+    profile: Attribute.Relation<
+      'api::notification.notification',
+      'manyToOne',
+      'api::profile.profile'
+    >;
+    team: Attribute.Relation<
+      'api::notification.notification',
+      'oneToOne',
+      'api::team.team'
+    >;
+    seen: Attribute.Boolean & Attribute.Required & Attribute.DefaultTo<false>;
+    team_profile: Attribute.Relation<
+      'api::notification.notification',
+      'oneToOne',
+      'api::team-profile.team-profile'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::notification.notification',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::notification.notification',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiProfileProfile extends Schema.CollectionType {
   collectionName: 'profiles';
   info: {
@@ -773,6 +820,11 @@ export interface ApiProfileProfile extends Schema.CollectionType {
       'api::profile.profile',
       'oneToMany',
       'api::team-profile.team-profile'
+    >;
+    notifications: Attribute.Relation<
+      'api::profile.profile',
+      'oneToMany',
+      'api::notification.notification'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -882,6 +934,7 @@ declare module '@strapi/types' {
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'api::game.game': ApiGameGame;
       'api::game-mode.game-mode': ApiGameModeGameMode;
+      'api::notification.notification': ApiNotificationNotification;
       'api::profile.profile': ApiProfileProfile;
       'api::team.team': ApiTeamTeam;
       'api::team-profile.team-profile': ApiTeamProfileTeamProfile;

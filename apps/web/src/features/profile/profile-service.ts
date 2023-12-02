@@ -54,12 +54,6 @@ export type ProfileResponse = ModifyEntity<
   }
 >;
 
-// type D = NonNullable<
-//   NonNullable<
-//     PR["attributes"]["team_profiles"]["data"]
-//   >[number]["attributes"]["team"]["data"]
-// >['attributes']['team_profiles']
-
 const populate = ["avatar", "team_profiles.team.image"];
 
 export class ProfileService {

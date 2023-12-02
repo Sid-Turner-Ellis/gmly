@@ -59,6 +59,12 @@
       "relation": "oneToMany",
       "target": "api::team-profile.team-profile",
       "mappedBy": "profile"
+    },
+    "notifications": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::notification.notification",
+      "mappedBy": "profile"
     }
   }
 }

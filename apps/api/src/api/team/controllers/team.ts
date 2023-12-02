@@ -81,7 +81,6 @@ export default factories.createCoreController(
         return ctx.badRequest("Founders can not leave");
       }
 
-      console.log("hit4", teamProfile);
       return await strapi
         .service("api::team-profile.team-profile")
         .delete(teamProfile.id);
