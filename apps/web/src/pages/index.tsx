@@ -4,18 +4,13 @@ import {
 } from "@/features/game/components/game-card";
 
 import { GameService } from "@/features/game/game-service";
-import { useUser } from "@thirdweb-dev/react";
-import { GetStaticProps, InferGetStaticPropsType } from "next";
 import * as React from "react";
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Heading } from "@/components/heading";
 import { Text } from "@/components/text";
 import { Button } from "@/components/button";
 import { useRouter } from "next/router";
 import { GradientCircle } from "@/components/gradient-circle";
-import { Icon } from "@/components/icon";
 
 export default function Home({}) {
   const router = useRouter();

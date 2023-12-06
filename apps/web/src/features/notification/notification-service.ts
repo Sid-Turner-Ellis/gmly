@@ -1,16 +1,6 @@
-import {
-  ModifyEntity,
-  ModifyRelationAttributes,
-  PickEntityAttributes,
-  StrapiEntity,
-  StrapiRelation,
-} from "@/types/strapi-types";
-import { TeamEntity, TeamProfileEntity } from "../team/team-service";
+import { StrapiEntity, StrapiRelation } from "@/types/strapi-types";
 import { strapiApi } from "@/lib/strapi";
-
-/**
- * Note the types here don't fit the usual pattern of declaring an entity and then a response
- */
+import { Team, TeamWithoutRelations } from "../team/team-service";
 
 enum NOTIFICATION_TYPES {
   TeamInviteReceived = "TEAM_INVITE_RECEIVED",
@@ -25,7 +15,7 @@ type SharedNotificationAttributes = {
 export type TeamInviteReceivedNotificationResponse = StrapiEntity<
   SharedNotificationAttributes & {
     team: StrapiRelation<
-      PickEntityAttributes<TeamEntity, "name" | "game" | "image">
+      StrapiEntity<TeamWithoutRelations & Pick<Team, "image">>
     >;
   }
 >;
@@ -43,7 +33,7 @@ export const isTeamInviteReceivedNotification = (
 
 export type NotificationResponse = TeamInviteReceivedNotificationResponse;
 
-const populate = ["team", "team_profile", "team.image"];
+const populate = ["team", "team.image"];
 
 export class NotificationService {
   static async getUnreadNotificationsForProfile(profileId: number) {

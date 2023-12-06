@@ -1,19 +1,10 @@
-import { Button } from "@/components/button";
-import { EditableImage } from "@/components/editable-image";
 import { ErrorPage } from "@/components/error-page";
-import { Heading } from "@/components/heading";
-import { ProfilePageContent } from "@/features/profile/components/profile-page-content";
-import { ProfilePageSkeleton } from "@/features/profile/components/profile-page-skeleton";
-import { ProfileService } from "@/features/profile/profile-service";
 import { TeamPageContent } from "@/features/team/components/team-page-content";
 import { TeamPageSkeleton } from "@/features/team/components/team-page-skeleton";
 import { TeamService } from "@/features/team/team-service";
 import { AuthenticatedUser, useAuth } from "@/hooks/use-auth";
-import { useStrapiImageUpload } from "@/hooks/use-strapi-image-upload";
-import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import { ReactNode } from "react";
 
 const getTeamProfileForTeam = (
   user: AuthenticatedUser | null,

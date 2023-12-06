@@ -11,17 +11,21 @@ import Uppy, {
 import XHR from "@uppy/xhr-upload";
 import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
 import { Text } from "@/components/text";
-import { StrapiImageResponse } from "@/types/strapi-types";
 import { Skeleton } from "@/components/skeleton";
 import { Image } from "@/components/image";
 import { useStrapiImageUpload } from "@/hooks/use-strapi-image-upload";
 import { ClassValue } from "clsx";
 import { cn } from "@/utils/cn";
 import { ImageInput } from "./image-input";
+import {
+  StrapiEntity,
+  StrapiImage,
+  StrapiRelation,
+} from "@/types/strapi-types";
 
 export type EditableImageProps = {
   isEditMode: boolean;
-  initialImage?: StrapiImageResponse | null;
+  initialImage?: StrapiRelation<StrapiEntity<StrapiImage>> | null;
   editContainerClassName?: ClassValue;
   editTextClassName?: ClassValue;
 } & Pick<

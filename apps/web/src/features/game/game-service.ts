@@ -1,10 +1,7 @@
 import { strapiApi } from "@/lib/strapi";
 import {
-  ModifyEntity,
-  OmitEntityAttributes,
   StrapiEntity,
   StrapiImage,
-  StrapiImageResponse,
   StrapiRelation,
 } from "@/types/strapi-types";
 import { StrapiError } from "@/utils/strapi-error";
@@ -16,7 +13,7 @@ import { StrapiError } from "@/utils/strapi-error";
 
 // TODO: Stop using a class and use separate files e.g. games/getGames.ts as it will make types less annoying
 
-type GameWithoutRelations = {
+export type GameWithoutRelations = {
   title: string;
   slug: string;
 };
@@ -26,12 +23,7 @@ export type Game = GameWithoutRelations & {
   cover_image: StrapiRelation<StrapiEntity<StrapiImage>>;
 };
 
-export type GameResponse = StrapiEntity<{
-  title: string;
-  card_image: StrapiRelation<StrapiEntity<StrapiImage>>;
-  cover_image: StrapiRelation<StrapiEntity<StrapiImage>>;
-  slug: string;
-}>;
+export type GameResponse = StrapiEntity<Game>;
 
 export type GetGamesSort = "date" | "title";
 

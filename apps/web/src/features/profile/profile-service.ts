@@ -1,65 +1,46 @@
 import { strapiApi } from "@/lib/strapi";
 import {
-  ModifyEntity,
-  ModifyRelationAttributes,
-  OmitEntityAttributes,
-  PickEntityAttributes,
   StrapiEntity,
-  StrapiImageResponse,
+  StrapiImage,
   StrapiRelation,
 } from "@/types/strapi-types";
 import { StrapiError } from "@/utils/strapi-error";
-import { TeamEntity, TeamProfileEntity } from "../team/team-service";
-import { GameEntity } from "../game/game-service";
+import {
+  TeamProfileWithoutRelations,
+  TeamWithoutRelations,
+} from "../team/team-service";
 
 // TODO: Consider updating the strapi service so that we don't deal with profileIDs but rather addresses
 export type Regions = "Europe" | "NA" | "Asia" | "Oceania";
 
-export type ProfileEntity = StrapiEntity<{
+export type ProfileWithoutRelations = {
   wallet_address: string;
   region: Regions | null;
   username: string | null;
   wager_mode: boolean;
   trust_mode: boolean;
   bio: string | null;
-  avatar: StrapiImageResponse | null;
-  team_profiles: StrapiRelation<TeamProfileEntity[]>;
-}>;
+};
 
-type ProfileResponseParts = {
-  team: ModifyRelationAttributes<
-    NonNullable<
-      ProfileEntity["attributes"]["team_profiles"]["data"]
-    >[number]["attributes"]["team"],
-    {
-      profile: never;
-      game: never;
-      team_profiles: never;
-    }
-  >;
-
-  team_profiles: ModifyRelationAttributes<
-    ProfileEntity["attributes"]["team_profiles"],
-    {
-      profile: never;
-      team: ProfileResponseParts["team"];
-      invited_by: StrapiRelation<
-        PickEntityAttributes<
-          NonNullable<TeamProfileEntity["attributes"]["invited_by"]["data"]>,
-          "username"
-        >
-      >;
-    }
+export type Profile = ProfileWithoutRelations & {
+  avatar: StrapiRelation<StrapiEntity<StrapiImage>> | null;
+  team_profiles: StrapiRelation<
+    StrapiEntity<
+      TeamProfileWithoutRelations & {
+        invited_by: StrapiRelation<StrapiEntity<ProfileWithoutRelations>>;
+        team: StrapiRelation<
+          StrapiEntity<
+            TeamWithoutRelations & {
+              image: StrapiRelation<StrapiEntity<StrapiImage>>;
+            }
+          >
+        >;
+      }
+    >[]
   >;
 };
 
-export type ProfileResponse = ModifyEntity<
-  ProfileEntity,
-  "team_profiles",
-  {
-    team_profiles: ProfileResponseParts["team_profiles"];
-  }
->;
+export type ProfileResponse = StrapiEntity<Profile>;
 
 const populate = [
   "avatar",

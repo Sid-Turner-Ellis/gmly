@@ -1,13 +1,3 @@
-/**
- * The tet content
- * the notification ID to remove it
- * When the notifcation was clicked
- * the image
- * the action
- *
- */
-
-import { StrapiImageResponse } from "@/types/strapi-types";
 import { PropsWithChildren } from "react";
 import { NotificationResponse } from "../notification-service";
 import { Image } from "@/components/image";
@@ -15,10 +5,15 @@ import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
 import { Text } from "@/components/text";
 import { timeAgo } from "../util";
 import { useNotifications } from "../use-notifications";
+import {
+  StrapiEntity,
+  StrapiImage,
+  StrapiRelation,
+} from "@/types/strapi-types";
 
 type NotificationItemProps = PropsWithChildren<{
   onNotificationClick?: () => void;
-  image?: StrapiImageResponse;
+  image?: StrapiRelation<StrapiEntity<StrapiImage>>;
   notification: NotificationResponse;
   hideBottomBorder?: boolean;
 }>;

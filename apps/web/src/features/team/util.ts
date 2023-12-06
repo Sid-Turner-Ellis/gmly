@@ -29,8 +29,9 @@ export const validateTeamName = (teamName: string) => {
 export const createFakeTeamProfile = (
   val: TeamMemberUpdate
 ): NonNullable<TeamResponse["attributes"]["team_profiles"]["data"]>[0] => ({
+  id: 0,
   attributes: {
-    team: undefined as never,
+    createdAt: "",
     is_pending: true,
     role: val.role,
     xp: 0,
@@ -47,7 +48,6 @@ export const createFakeTeamProfile = (
           trust_mode: false,
           bio: "",
           avatar: null,
-          team_profiles: undefined as never,
           createdAt: "",
         },
       },

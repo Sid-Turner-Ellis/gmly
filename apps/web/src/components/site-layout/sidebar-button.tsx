@@ -3,8 +3,9 @@ import { Icon, IconType, isIconType } from "../icon";
 import { Text } from "../text";
 import { Clickable, ClickableProps } from "../clickable";
 import {
-  StrapiImageResponse,
-  isStrapiImageResponse,
+  StrapiEntity,
+  StrapiImage,
+  StrapiRelation,
 } from "@/types/strapi-types";
 import { Image } from "../image";
 import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
@@ -12,7 +13,7 @@ import { ReactNode } from "react";
 
 export type SidebarButtonProps = {
   label: string;
-  icon: IconType | StrapiImageResponse | ReactNode;
+  icon: IconType | ReactNode | StrapiRelation<StrapiEntity<StrapiImage>>;
   isActive?: boolean;
   buttonClassName?: string;
   textClassName?: string;

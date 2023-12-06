@@ -2,10 +2,7 @@ import { ThirdwebAuth } from "@thirdweb-dev/auth/next";
 import { PrivateKeyWallet } from "@thirdweb-dev/auth/evm";
 import { getCookie } from "cookies-next";
 import { NextRequest } from "next/server";
-import {
-  ProfileResponse,
-  ProfileService,
-} from "@/features/profile/profile-service";
+import { ProfileService } from "@/features/profile/profile-service";
 import { StrapiError } from "@/utils/strapi-error";
 import { AuthenticatedUser } from "@/hooks/use-auth";
 /**

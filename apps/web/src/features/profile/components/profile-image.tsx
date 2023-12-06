@@ -11,9 +11,14 @@ import Uppy, {
 import XHR from "@uppy/xhr-upload";
 import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
 import { Text } from "@/components/text";
-import { StrapiImageResponse } from "@/types/strapi-types";
+
 import { Skeleton } from "@/components/skeleton";
 import { Image } from "@/components/image";
+import {
+  StrapiEntity,
+  StrapiImage,
+  StrapiRelation,
+} from "@/types/strapi-types";
 
 export type ImageUpload = {
   status: "idle" | "uploading" | "complete";
@@ -24,7 +29,7 @@ export type ProfileImageProps = {
   isEditMode: boolean;
   imageUpload: ImageUpload;
   setImageUpload: Dispatch<ImageUpload>;
-  avatar: StrapiImageResponse | null;
+  avatar: StrapiRelation<StrapiEntity<StrapiImage>> | null;
 };
 
 const uppy = new Uppy().use(XHR, {

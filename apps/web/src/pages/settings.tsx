@@ -1,7 +1,6 @@
 import { Heading } from "@/components/heading";
 import Switch from "@/components/switch";
 import { Text } from "@/components/text";
-import { tailwind } from "@/lib/tailwind";
 import { useEffect, useState } from "react";
 import * as Separator from "@radix-ui/react-separator";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

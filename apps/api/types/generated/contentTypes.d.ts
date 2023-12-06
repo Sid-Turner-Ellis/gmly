@@ -767,11 +767,6 @@ export interface ApiNotificationNotification extends Schema.CollectionType {
       'api::team.team'
     >;
     seen: Attribute.Boolean & Attribute.Required & Attribute.DefaultTo<false>;
-    team_profile: Attribute.Relation<
-      'api::notification.notification',
-      'oneToOne',
-      'api::team-profile.team-profile'
-    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -898,6 +893,11 @@ export interface ApiTeamProfileTeamProfile extends Schema.CollectionType {
       'api::team-profile.team-profile',
       'manyToOne',
       'api::team.team'
+    >;
+    invited_by: Attribute.Relation<
+      'api::team-profile.team-profile',
+      'oneToOne',
+      'api::profile.profile'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;

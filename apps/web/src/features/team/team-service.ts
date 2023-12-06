@@ -1,29 +1,12 @@
 import { StrapiResponse, strapiApi } from "@/lib/strapi";
 import {
-  ModifyEntity,
-  ModifyRelationAttributes,
-  OmitEntityAttributes,
-  PickEntityAttributes,
   StrapiEntity,
-  StrapiImageResponse,
+  StrapiImage,
   StrapiRelation,
 } from "@/types/strapi-types";
 import { StrapiError } from "@/utils/strapi-error";
-import { ProfileEntity, ProfileResponse } from "../profile/profile-service";
-import { GameEntity } from "../game/game-service";
-
-export type TeamRoles = "founder" | "leader" | "member";
-
-export type TeamProfileEntity = StrapiEntity<{
-  is_pending: boolean;
-  role: TeamRoles;
-  xp: number;
-  earnings: number;
-  rank: number;
-  profile: StrapiRelation<ProfileEntity>;
-  team: StrapiRelation<TeamEntity>;
-  invited_by: StrapiRelation<ProfileEntity>;
-}>;
+import { Game, GameWithoutRelations } from "../game/game-service";
+import { Profile, ProfileWithoutRelations } from "../profile/profile-service";
 
 const transformTeamResponse = (tr: TeamResponse) => {
   tr.attributes.team_profiles.data?.forEach((tp) => {
@@ -31,50 +14,44 @@ const transformTeamResponse = (tr: TeamResponse) => {
     tp.attributes.rank = Math.floor(Math.random() * 1000);
     tp.attributes.earnings = Math.floor(Math.random() * 10000);
   });
-
   tr.attributes.wins = Math.floor(Math.random() * 1000);
   tr.attributes.losses = Math.floor(Math.random() * 1000);
 };
 
-export type TeamEntity = StrapiEntity<{
-  image: StrapiImageResponse;
-  name: string;
-  game: StrapiRelation<GameEntity>;
-  team_profiles: StrapiRelation<TeamProfileEntity[]>;
-  wins: number;
-  losses: number;
-}>;
+export type TeamRoles = "founder" | "leader" | "member";
 
-type TeamResponseParts = {
-  game: ModifyRelationAttributes<
-    TeamEntity["attributes"]["game"],
-    { teams: never }
-  >;
-  profile: ModifyRelationAttributes<
-    NonNullable<
-      TeamEntity["attributes"]["team_profiles"]["data"]
-    >[number]["attributes"]["profile"],
-    {
-      team_profiles: never;
-    }
-  >;
-  team_profiles: ModifyRelationAttributes<
-    TeamEntity["attributes"]["team_profiles"],
-    {
-      team: never;
-      profile: TeamResponseParts["profile"];
-      invited_by: never;
-    }
-  >;
+export type TeamProfileWithoutRelations = {
+  is_pending: boolean;
+  role: TeamRoles;
+  xp: number;
+  earnings: number;
+  rank: number;
 };
 
-export type TeamResponse = ModifyEntity<
-  TeamEntity,
-  "team_profiles",
-  {
-    team_profiles: TeamResponseParts["team_profiles"];
-  }
->;
+export type TeamProfile = TeamProfileWithoutRelations & {
+  profile: StrapiRelation<
+    StrapiEntity<ProfileWithoutRelations & Pick<Profile, "avatar">>
+  >;
+  invited_by: StrapiRelation<StrapiEntity<ProfileWithoutRelations>>;
+};
+
+export type TeamWithoutRelations = {
+  name: string;
+  wins: number;
+  losses: number;
+};
+
+export type Team = TeamWithoutRelations & {
+  image: StrapiRelation<StrapiEntity<StrapiImage>>;
+  game: StrapiRelation<
+    StrapiEntity<
+      GameWithoutRelations & Pick<Game, "card_image" | "cover_image">
+    >
+  >;
+  team_profiles: StrapiRelation<StrapiEntity<TeamProfile>[]>;
+};
+
+export type TeamResponse = StrapiEntity<Team>;
 
 const populate = [
   "team_profiles.profile.avatar",
@@ -163,7 +140,9 @@ export class TeamService {
       "teams",
       teamId,
       data,
-      { populate }
+      {
+        populate,
+      }
     );
 
     transformTeamResponse(updatedTeam.data);
