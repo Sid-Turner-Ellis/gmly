@@ -83,7 +83,7 @@ export const SearchDropdown = <T extends {}>({
       {!disabled && shouldShowDropdown && (
         <div
           className={cn(
-            "absolute z-20 w-full mt-3 scroll-light rounded top-full bg-brand-navy-light overflow-y-scroll max-h-56",
+            "absolute z-20 w-full mt-3 scroll-light rounded top-full bg-brand-navy-light overflow-y-auto max-h-56",
             dropdownContainerClassName
           )}
         >

@@ -10,6 +10,7 @@ const badgeVariants = cva(
       colorScheme: {
         emerald: "bg-emerald-100 text-emerald-950",
         rose: "bg-rose-100 text-rose-950",
+        violet: "bg-violet-300 text-brand-primary-dark",
       },
     },
   }

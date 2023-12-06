@@ -31,6 +31,7 @@ const buttonVariants = cva(
     // Purposefully empty so that by default we can extend with custom styles
     defaultVariants: {
       size: "md",
+      variant: "primary",
     },
     compoundVariants: [{}],
   }

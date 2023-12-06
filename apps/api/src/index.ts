@@ -23,7 +23,13 @@ export default {
   bootstrap({ strapi }) {
     strapi.db.lifecycles.subscribe({
       models: ["api::team-profile.team-profile"],
+
       async afterCreate({ params: { data }, result }) {
+        const ctx = strapi.requestContext.get();
+        const profile = await strapi
+          .service("api::profile.profile")
+          .findOneByWalletAddress(ctx.state.wallet_address);
+
         // Only send a notification if the team profile is pending (not founders on team creation)
         if (result.is_pending) {
           await strapi.service("api::notification.notification").create({
@@ -31,7 +37,6 @@ export default {
               type: "TEAM_INVITE_RECEIVED",
               team: data.team,
               profile: data.profile,
-              team_profile: result.id,
             },
           });
         }
@@ -42,11 +47,16 @@ export default {
           where: { id },
         },
       }) {
+        const teamProfileToBeDeleted = await strapi
+          .service("api::team-profile.team-profile")
+          .findOne(id, { populate: { team: true, profile: true } });
+
         await strapi.db.query("api::notification.notification").delete({
           where: {
-            team_profile: id,
             type: "TEAM_INVITE_RECEIVED",
             read: false,
+            team: teamProfileToBeDeleted.team.id,
+            profile: teamProfileToBeDeleted.profile.id,
           },
         });
       },
@@ -54,21 +64,15 @@ export default {
     strapi.db.lifecycles.subscribe({
       models: ["api::team.team"],
       async beforeDelete(event) {
-        const teamProfilesToDelete = await strapi.db
+        const teamToBeDeleted = await strapi.db
           .query("api::team.team")
           .findOne({ ...event.params, populate: { team_profiles: true } });
 
-        event.state.teamProfileIds = teamProfilesToDelete.team_profiles.map(
-          (tp) => tp.id
-        );
-      },
-
-      async afterDelete(event) {
         // Note the deleting of team profiles will trigger the delete profile hook which will delete the notifications
         await Promise.all(
-          event.state.teamProfileIds.map((id) =>
+          teamToBeDeleted.team_profiles.map((tp) =>
             strapi.db.query("api::team-profile.team-profile").delete({
-              where: { id },
+              where: { id: tp.id },
             })
           )
         );

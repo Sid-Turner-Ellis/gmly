@@ -1,6 +1,6 @@
 import { Button } from "@/components/button";
 import { ErrorPage } from "@/components/error-page";
-import { Modal, ModalProps } from "@/components/modal";
+import { Modal, ModalProps } from "@/components/modal/modal";
 import { GameService } from "@/features/game/game-service";
 import { useStrapiImageUpload } from "@/hooks/use-strapi-image-upload";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -17,9 +17,13 @@ import { profanity } from "@2toad/profanity";
 import { validateTeamName } from "../../util";
 import { MAX_TEAM_MEMBERS } from "../../constants";
 
+// TODO: start using the modal component
+
 export type CreateTeamModalProps = {
   user: AuthenticatedUser;
-} & Pick<ModalProps, "isOpen" | "setIsOpen">;
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+};
 
 export const CreateTeamModal = ({
   isOpen,
@@ -173,7 +177,7 @@ export const CreateTeamModal = ({
       title={isFirstStep ? "Create team" : "Invite team"}
       isOpen={isOpen}
       isClosable
-      setIsOpen={setIsOpen}
+      closeModal={() => closeModal()}
       isLoading={createTeamMutationIsLoading || gameQueryIsLoading}
       size={"md"}
       description={

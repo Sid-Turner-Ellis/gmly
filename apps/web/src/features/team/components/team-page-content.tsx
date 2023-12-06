@@ -1,4 +1,4 @@
-import { AuthenticatedUser } from "@/hooks/use-auth";
+import { AuthenticatedUser, useAuth } from "@/hooks/use-auth";
 import { TeamResponse, TeamRoles, TeamService } from "../team-service";
 import { useStrapiImageUpload } from "@/hooks/use-strapi-image-upload";
 import { ReactNode, useEffect, useRef, useState } from "react";
@@ -10,15 +10,10 @@ import { useToast } from "@/providers/toast-provider";
 import { validateTeamName } from "../util";
 import { StrapiError } from "@/utils/strapi-error";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Text } from "@/components/text";
-import { Image } from "@/components/image";
-import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
-import { toPascalCase } from "@/utils/to-pascal-case";
 import { TeamMembersTable } from "./team-members-table";
-import { Button } from "@/components/button";
-import { useRouter } from "next/router";
-import { Modal } from "@/components/modal";
 import { TeamActionButtons } from "./team-action-buttons";
+import { useGlobalModal } from "@/providers/global-modal-provider";
+import { TeamInviteReceivedModal } from "./team-invite-recieved-modal";
 
 type TeamPageContent = {
   team: TeamResponse;
@@ -38,6 +33,33 @@ export const TeamPageContent = ({ team, teamProfile }: TeamPageContent) => {
   const [teamNameInputValue, setTeamNameInputValue] = useState(
     team.attributes.name
   );
+  const isInvitationPending = teamProfile?.attributes.is_pending;
+  const { openModal: openTeamInviteModal, closeModal: closeTeamInviteModal } =
+    useGlobalModal();
+
+  useEffect(() => {
+    if (isInvitationPending) {
+      openTeamInviteModal(
+        <TeamInviteReceivedModal
+          gameName="NOT IMPLEMENTED"
+          teamId={team.id}
+          teamProfileId={(teamProfile as any).id}
+          teamName={team.attributes.name}
+          invitedBy={
+            teamProfile.attributes.invited_by.data?.attributes.username ??
+            "User"
+          }
+          onRespondToInvite={() => {
+            queryClient.invalidateQueries(["team", team.id]);
+          }}
+          closeModal={() => closeTeamInviteModal()}
+        />,
+        {
+          isClosable: true,
+        }
+      );
+    }
+  }, [isInvitationPending]);
 
   const { mutate: updateTeamMutation, isError: updateTeamErrorIsError } =
     useOptimisticMutation<

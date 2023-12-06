@@ -1,38 +1,23 @@
 import { Heading } from "@/components/heading";
-import Switch from "@/components/switch";
 import { Text } from "@/components/text";
-import { tailwind } from "@/lib/tailwind";
 import { useEffect, useState } from "react";
-import * as Separator from "@radix-ui/react-separator";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ProfileService } from "@/features/profile/profile-service";
-import { AuthenticatedUser, useAuth } from "@/hooks/use-auth";
-import { produce } from "immer";
-import { useToast } from "@/providers/toast-provider";
-import { MeiliSearch } from "meilisearch";
-import { set, useForm } from "react-hook-form";
-import { useDebounce } from "@/hooks/use-debounce";
-import NextImage from "next/image";
+
 import { Image } from "@/components/image";
-import { ErrorPage } from "@/components/error-page";
-import { Modal } from "@/components/modal";
 import { Button } from "@/components/button";
-import { TeamService } from "@/features/team/team-service";
-import * as CollapsiblePrimitive from "@radix-ui/react-collapsible";
-import { Collapsable } from "@/components/collapsable";
-import { GameService } from "@/features/game/game-service";
-import { CreateTeamModal } from "@/features/team/components/create-team-modal/create-team-modal";
-import { TextInput } from "@/components/text-input";
-import { Select } from "@/components/select";
-import { SearchDropdown } from "@/components/search-dropdown/search-dropdown";
-import { useSearchDropdown } from "@/hooks/use-search-dropdown";
-import { globalMelilisearchIndex } from "@/lib/meilisearch";
 import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
-import { Icon } from "@/components/icon";
-import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
-import { cn } from "@/utils/cn";
-import { Pagination } from "@/components/pagination";
-import { NotificationService } from "@/features/notification/notification-service";
+import {
+  NotificationService,
+  isTeamInviteReceivedNotification,
+} from "@/features/notification/notification-service";
+import { NotificationBell } from "@/features/notification/components/notification-bell";
+import { useAuthenticatedQuery } from "@/hooks/use-authenticated-query";
+import { useAuth } from "@/hooks/use-auth";
+import { NotificationsModal } from "@/features/notification/components/notifications-modal";
+import * as Popover from "@radix-ui/react-popover";
+import { Cross2Icon, MixerHorizontalIcon } from "@radix-ui/react-icons";
+import { NotificationsContent } from "@/features/notification/components/notifications-content";
+import { useGlobalModal } from "@/providers/global-modal-provider";
+import { ModalCard } from "@/components/modal/modal-card";
 
 /**
  * Facets are like tags
@@ -69,20 +54,5 @@ export const getServerSideProps = async () => {
 };
 
 export default function Page() {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const [page, setPage] = useState(1);
-  return (
-    <div>
-      <Button
-        variant={"primary"}
-        onClick={async () => {
-          console.log("hit2");
-          console.log(await NotificationService.markAsRead(1));
-          // console.log(await NotificationService.markAllAsSeen(7));
-        }}
-        title="Get"
-      />
-    </div>
-  );
+  return null;
 }

@@ -37,11 +37,18 @@ type ProfileResponseParts = {
       team_profiles: never;
     }
   >;
+
   team_profiles: ModifyRelationAttributes<
     ProfileEntity["attributes"]["team_profiles"],
     {
       profile: never;
       team: ProfileResponseParts["team"];
+      invited_by: StrapiRelation<
+        PickEntityAttributes<
+          NonNullable<TeamProfileEntity["attributes"]["invited_by"]["data"]>,
+          "username"
+        >
+      >;
     }
   >;
 };
@@ -54,7 +61,11 @@ export type ProfileResponse = ModifyEntity<
   }
 >;
 
-const populate = ["avatar", "team_profiles.team.image"];
+const populate = [
+  "avatar",
+  "team_profiles.team.image",
+  "team_profiles.invited_by",
+];
 
 export class ProfileService {
   static async getProfileById(profileId: number) {

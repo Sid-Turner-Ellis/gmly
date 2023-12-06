@@ -2,13 +2,17 @@ import { cn } from "@/utils/cn";
 import { Icon, IconType, isIconType } from "../icon";
 import { Text } from "../text";
 import { Clickable, ClickableProps } from "../clickable";
-import { StrapiImageResponse } from "@/types/strapi-types";
+import {
+  StrapiImageResponse,
+  isStrapiImageResponse,
+} from "@/types/strapi-types";
 import { Image } from "../image";
 import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
+import { ReactNode } from "react";
 
 export type SidebarButtonProps = {
   label: string;
-  icon: IconType | StrapiImageResponse;
+  icon: IconType | StrapiImageResponse | ReactNode;
   isActive?: boolean;
   buttonClassName?: string;
   textClassName?: string;
@@ -49,13 +53,15 @@ export const SidebarButton = ({
               textClassName
             )}
           />
-        ) : (
+        ) : icon && typeof icon === "object" && "data" in icon ? (
           <div className="w-[24px] h-[24px] rounded-sm shadow overflow-hidden">
             <Image
               src={resolveStrapiImage(icon, "xsmall")}
               alt={`Icon for ${label} button`}
             />
           </div>
+        ) : (
+          icon
         )}
 
         <Text

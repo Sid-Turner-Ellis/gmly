@@ -2,12 +2,6 @@ import { useUser } from "@thirdweb-dev/react";
 import { ReactNode, useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { createStore, useStore } from "zustand";
-import * as Dialog from "@radix-ui/react-dialog";
-import { Cross2Icon } from "@radix-ui/react-icons";
-import { Heading } from "@/components/heading";
-import { Text } from "@/components/text";
-import { Modal } from "@/components/modal";
-import { RegistrationModal } from "@/components/registration-modal";
 import { useAuth } from "@/hooks/use-auth";
 
 // TODO: Delete this and replace it with queryClient.getQueryData<ThirdWebUser>(["tw-cache", "user"])?.data?.token

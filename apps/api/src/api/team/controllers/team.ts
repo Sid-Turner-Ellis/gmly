@@ -179,13 +179,14 @@ export default factories.createCoreController(
 
       // Apply creates
       await Promise.all(
-        teamProfilesToCreate.map(async ({ profile, role }) => {
+        teamProfilesToCreate.map(async (teamProfileToCreate) => {
           await strapi.service("api::team-profile.team-profile").create({
             data: {
               team: teamId,
-              profile: profile,
-              role,
+              profile: teamProfileToCreate.profile,
+              role: teamProfileToCreate.role,
               is_pending: true,
+              invited_by: profile.id,
             },
           });
         })

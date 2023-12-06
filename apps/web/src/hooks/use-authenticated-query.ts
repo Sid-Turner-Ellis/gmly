@@ -17,13 +17,14 @@ export const useAuthenticatedQuery = <TData, TError>(
   fetchFn: QueryFunction<TData, QueryKey>,
   options?: Omit<
     UseQueryOptions<TData, TError, TData, QueryKey>,
-    "queryKey" | "queryFn" | "enabled"
+    "queryKey" | "queryFn"
   >
 ): UseQueryResult<TData, TError> => {
   const { isTokenLoading } = useToken();
+
   const query = useQuery<TData, TError>(key, fetchFn, {
     ...(options || {}),
-    enabled: !isTokenLoading,
+    enabled: !isTokenLoading && !!options?.enabled,
   });
 
   return query;

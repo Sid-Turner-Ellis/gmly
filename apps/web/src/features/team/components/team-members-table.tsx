@@ -116,7 +116,7 @@ const MobileTableRows = ({
         <Text>Result</Text>
       </TableRow>
       {teamProfiles.map((profile, ind) => (
-        <div>
+        <div key={ind}>
           <TableRow isDark={ind % 2 === 0}>
             <div className="flex items-center w-full gap-3">
               <TableImage

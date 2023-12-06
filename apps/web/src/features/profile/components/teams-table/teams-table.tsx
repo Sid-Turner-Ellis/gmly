@@ -103,13 +103,13 @@ const MobileTableRows = ({
     {isLoading && (
       <>
         {Array.from({ length: PAGE_SIZE }).map((_, index) => (
-          <MobileTableRowSkeleton isDark={index % 2 === 0} />
+          <MobileTableRowSkeleton key={index} isDark={index % 2 === 0} />
         ))}
       </>
     )}
     {!isLoading &&
       (teams?.data ?? []).map((team, index) => (
-        <Clickable action={`/team/${team.id}`}>
+        <Clickable key={team.id} action={`/team/${team.id}`}>
           <TableRow isDark={index % 2 === 0}>
             <div className="flex gap-2 xs:w-[65%]">
               <TableImage
@@ -156,13 +156,13 @@ const DesktopTableRows = ({
     {isLoading && (
       <>
         {Array.from({ length: PAGE_SIZE }).map((_, index) => (
-          <DesktopTableRowSkeleton isDark={index % 2 === 0} />
+          <DesktopTableRowSkeleton key={index} isDark={index % 2 === 0} />
         ))}
       </>
     )}
     {!isLoading &&
       (teams?.data ?? []).map((team, index) => (
-        <Clickable action={`/team/${team.id}`}>
+        <Clickable key={team.id} action={`/team/${team.id}`}>
           <DesktopTableRow isDark={index % 2 === 0}>
             <Text>{Math.floor(Math.random() * 10)}</Text>
             <div className={"w-[35%] lg:w-[45%] flex gap-4 items-center"}>

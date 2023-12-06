@@ -37,6 +37,11 @@
       "relation": "manyToOne",
       "target": "api::team.team",
       "inversedBy": "team_profiles"
+    },
+    "invited_by": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::profile.profile"
     }
   }
 }

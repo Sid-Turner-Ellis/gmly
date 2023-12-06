@@ -13882,10 +13882,10 @@ strapi-plugin-meilisearch@^0.10.0:
     "@strapi/utils" "^4.13.7"
     meilisearch "^0.34.2"
 
-strapi-plugin-schemas-to-ts@^1.1.10:
-  version "1.1.10"
-  resolved "https://registry.yarnpkg.com/strapi-plugin-schemas-to-ts/-/strapi-plugin-schemas-to-ts-1.1.10.tgz#399e0e59fa6675a4159d171d440b8605c67c811b"
-  integrity sha512-TQBZbaJpoSe9l7OGJPAzO3BtNwgG9RaATJAzBeQ8m+B+zwMacfJHooJI9PXrcHZssqKe7bc/qtMrKD8da7X3Cw==
+strapi-plugin-schemas-to-ts@^1.1.21:
+  version "1.1.21"
+  resolved "https://registry.yarnpkg.com/strapi-plugin-schemas-to-ts/-/strapi-plugin-schemas-to-ts-1.1.21.tgz#78c70d813333aac95dfea570446fd9f8d771b34a"
+  integrity sha512-SIqqbk70aik6yoIHGugWbHMWm/z8hJjd3Tp3fEHRJ8pk6QVZ5fawKRvJ00h+uUlQPY37AcWwBaFvfwqnBaPVKQ==
   dependencies:
     "@strapi/helper-plugin" "^4.12.1"
     pascal-case "^3.1.2"

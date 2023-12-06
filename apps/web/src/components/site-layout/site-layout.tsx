@@ -27,6 +27,7 @@ export const SiteLayout = ({ children }: { children: ReactNode }) => {
     >
       <aside>
         <Sidebar
+          closeSidebar={() => setIsSidebarOpen(false)}
           className={cn("bg-brand-navy-light w-60 max-w-full px-4 py-6", {
             "fixed z-30 right-full transition-all": !isBigScreen,
             "translate-x-full": !isBigScreen && isSidebarOpen,

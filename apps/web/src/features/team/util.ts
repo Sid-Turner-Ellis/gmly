@@ -52,5 +52,6 @@ export const createFakeTeamProfile = (
         },
       },
     },
+    invited_by: undefined as never,
   },
 });

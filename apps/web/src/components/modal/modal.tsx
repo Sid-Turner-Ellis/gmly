@@ -1,0 +1,70 @@
+import { ReactNode } from "react";
+import * as DialogPrimitives from "@radix-ui/react-dialog";
+import { Cross2Icon } from "@radix-ui/react-icons";
+import { ModalOverlay } from "./modal-overlay";
+import { ModalContent } from "./modal-content";
+import { ModalCard, ModalCardProps } from "./modal-card";
+
+export type ModalProps = {
+  isOpen: boolean;
+  closeModal: () => void;
+  isClosable?: boolean;
+  onOverlayClick?: () => void;
+} & ModalCardProps;
+
+export const Modal = ({
+  isOpen,
+  closeModal,
+  title,
+  isClosable,
+  description,
+  isLoading,
+  children,
+  onOverlayClick,
+  size,
+  Footer,
+}: ModalProps) => {
+  return (
+    <div className="relative z-0">
+      <DialogPrimitives.Root open={isOpen}>
+        <DialogPrimitives.Portal>
+          <div className="z-0 relative">
+            <ModalOverlay
+              className="z-0"
+              onOverlayClick={() => {
+                onOverlayClick?.();
+
+                if (isClosable) {
+                  closeModal();
+                }
+              }}
+            />
+
+            <ModalContent>
+              {isClosable && (
+                <DialogPrimitives.Close asChild>
+                  <button
+                    onClick={() => closeModal()}
+                    className="absolute top-[10px] right-[10px] inline-flex h-7 w-7  appearance-none items-center transition justify-center rounded-full focus:outline-none text-brand-gray hover:bg-white/10"
+                    aria-label="Close"
+                  >
+                    <Cross2Icon aria-label="Close" />
+                  </button>
+                </DialogPrimitives.Close>
+              )}
+              <ModalCard
+                title={title}
+                description={description}
+                Footer={Footer}
+                size={size}
+                isLoading={isLoading}
+              >
+                {children}
+              </ModalCard>
+            </ModalContent>
+          </div>
+        </DialogPrimitives.Portal>
+      </DialogPrimitives.Root>
+    </div>
+  );
+};

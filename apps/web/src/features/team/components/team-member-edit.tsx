@@ -119,6 +119,7 @@ export const TeamMemberEdit = ({
       <div className="relative flex flex-col gap-4 mt-4 -z-20">
         {teamMemberInvites.map((teamMemberInvite) => (
           <TeamMemberEditItem
+            key={teamMemberInvite.userId}
             {...teamMemberInvite}
             disabled={inviteOnly}
             setRole={(role) =>

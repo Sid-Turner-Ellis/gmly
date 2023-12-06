@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Modal } from "./modal";
+import { Modal } from "./modal/modal";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { cn } from "@/utils/cn";
 import { Icon } from "./icon";
@@ -114,7 +114,7 @@ export const RegistrationModal = () => {
         isLoading={isLoading}
         title="Create an account"
         isOpen={isOpen}
-        setIsOpen={() => open()}
+        closeModal={() => close()}
         description="You need to create an account to continue."
         Footer={
           <>

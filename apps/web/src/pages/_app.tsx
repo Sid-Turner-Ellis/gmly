@@ -12,6 +12,7 @@ import { ToastProvider } from "@/providers/toast-provider";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { Inter, Bricolage_Grotesque } from "@next/font/google";
 import { cn } from "@/utils/cn";
+import { GlobalModalProvider } from "@/providers/global-modal-provider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -29,21 +30,23 @@ export default function App({ Component, pageProps }: AppProps) {
       <ThirdwebProvider>
         <TokenProvider>
           <QueryClientProvider>
-            <ToastProvider>
-              <ConditionallyWrap
-                condition={!pageProps.hideSidebar}
-                Wrapper={SiteLayout}
-              >
-                {process.env.NODE_ENV === "development" && (
-                  <ReactQueryDevtools />
-                )}
-                <RegistrationModalProvider>
-                  <ErrorBoundary>
-                    <Component {...pageProps} />
-                  </ErrorBoundary>
-                </RegistrationModalProvider>
-              </ConditionallyWrap>
-            </ToastProvider>
+            <GlobalModalProvider>
+              <ToastProvider>
+                <ConditionallyWrap
+                  condition={!pageProps.hideSidebar}
+                  Wrapper={SiteLayout}
+                >
+                  {process.env.NODE_ENV === "development" && (
+                    <ReactQueryDevtools />
+                  )}
+                  <RegistrationModalProvider>
+                    <ErrorBoundary>
+                      <Component {...pageProps} />
+                    </ErrorBoundary>
+                  </RegistrationModalProvider>
+                </ConditionallyWrap>
+              </ToastProvider>
+            </GlobalModalProvider>
           </QueryClientProvider>
         </TokenProvider>
       </ThirdwebProvider>

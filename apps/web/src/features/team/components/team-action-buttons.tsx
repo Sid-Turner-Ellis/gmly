@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useToast } from "@/providers/toast-provider";
 import { useRouter } from "next/router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Modal } from "@/components/modal";
+import { Modal } from "@/components/modal/modal";
 import { Button } from "@/components/button";
 import { TeamMemberUpdate } from "../types";
 import { TeamMemberEdit } from "./team-member-edit";
@@ -33,6 +33,7 @@ export const TeamActionButtons = ({
   const [isTeamUpdateModalOpen, setIsTeamUpdateModalOpen] = useState(false);
   const role = teamProfile?.attributes.role;
   const { addToast } = useToast();
+  const isPending = teamProfile?.attributes.is_pending ?? false;
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -162,7 +163,7 @@ export const TeamActionButtons = ({
     <>
       <Modal
         isOpen={isTeamUpdateModalOpen}
-        setIsOpen={setIsTeamUpdateModalOpen}
+        closeModal={() => setIsTeamUpdateModalOpen(false)}
         title={role === "founder" ? "Edit team" : "Invite players"}
         isClosable
         Footer={
@@ -192,7 +193,7 @@ export const TeamActionButtons = ({
       </Modal>
       <Modal
         isOpen={isDestructiveModalOpen}
-        setIsOpen={setIsDestructiveModalOpen}
+        closeModal={() => setIsDestructiveModalOpen(false)}
         title="Are you sure?"
         description={
           role === "founder"
@@ -225,7 +226,7 @@ export const TeamActionButtons = ({
       />
 
       <div className="flex justify-end w-full gap-4">
-        {role && role !== "member" && (
+        {!isPending && role && role !== "member" && (
           <Button
             variant={"secondary"}
             title={role === "founder" ? "Edit team" : "Invite players"}
@@ -234,31 +235,33 @@ export const TeamActionButtons = ({
             }}
           />
         )}
-        <Button
-          variant={"delete"}
-          title={role === "founder" ? "Delete team" : "Leave team"}
-          onClick={() => {
-            if (role === "founder") {
-              if (isTeamDeletable) {
-                setIsDestructiveModalOpen(true);
+        {!isPending && role && (
+          <Button
+            variant={"delete"}
+            title={role === "founder" ? "Delete team" : "Leave team"}
+            onClick={() => {
+              if (role === "founder") {
+                if (isTeamDeletable) {
+                  setIsDestructiveModalOpen(true);
+                } else {
+                  addToast({
+                    type: "error",
+                    message: "You cannot delete a team with upcoming games",
+                  });
+                }
               } else {
-                addToast({
-                  type: "error",
-                  message: "You cannot delete a team with upcoming games",
-                });
+                if (isPlayerPendingGames) {
+                  addToast({
+                    type: "error",
+                    message: "You cannot leave a team with upcoming games",
+                  });
+                } else {
+                  setIsDestructiveModalOpen(true);
+                }
               }
-            } else {
-              if (isPlayerPendingGames) {
-                addToast({
-                  type: "error",
-                  message: "You cannot leave a team with upcoming games",
-                });
-              } else {
-                setIsDestructiveModalOpen(true);
-              }
-            }
-          }}
-        />
+            }}
+          />
+        )}
       </div>
     </>
   );

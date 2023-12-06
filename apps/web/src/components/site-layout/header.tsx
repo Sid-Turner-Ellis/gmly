@@ -17,6 +17,8 @@ import { ProfileButtons } from "./profile-buttons";
 import { useAuth } from "@/hooks/use-auth";
 import { GlobalSearchBar } from "../../features/global-search/components/global-search-bar";
 import { useTailwindBreakpoint } from "@/hooks/use-tailwind-breakpoint";
+import { NotificationBell } from "@/features/notification/components/notification-bell";
+import { NotificationsHeaderButton } from "@/features/notification/components/notification-header-button";
 
 type HeaderProps = {
   openSidebar: () => void;
@@ -28,10 +30,12 @@ export const THIRDWEB_CONNECT_BUTTON_CLASSNAME =
 
 export const Header = ({ openSidebar, className }: HeaderProps) => {
   const { user, logout } = useAuth();
+
   const shouldShowProfileButtons =
     user && user.data?.profile.username && user.data.profile.region;
-  const isDesktop = useTailwindBreakpoint("md");
 
+  const isDesktop = useTailwindBreakpoint("md");
+  const shouldShowNotificationsButton = useTailwindBreakpoint("lg");
   const handleOnConnect = async () => {
     const thirdwebButton = document.querySelector(
       `.${THIRDWEB_CONNECT_BUTTON_CLASSNAME}`
@@ -62,11 +66,8 @@ export const Header = ({ openSidebar, className }: HeaderProps) => {
         <div className="relative w-40 h-full xs:w-56 md:w-96">
           <GlobalSearchBar />
         </div>
-        <Button
-          variant="secondary"
-          icon="bell"
-          className="hidden h-full px-3 lg:block"
-        />
+
+        {shouldShowNotificationsButton && <NotificationsHeaderButton />}
 
         {!shouldShowProfileButtons && (
           <>

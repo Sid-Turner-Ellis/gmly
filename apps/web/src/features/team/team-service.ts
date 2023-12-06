@@ -22,6 +22,7 @@ export type TeamProfileEntity = StrapiEntity<{
   rank: number;
   profile: StrapiRelation<ProfileEntity>;
   team: StrapiRelation<TeamEntity>;
+  invited_by: StrapiRelation<ProfileEntity>;
 }>;
 
 const transformTeamResponse = (tr: TeamResponse) => {
@@ -62,6 +63,7 @@ type TeamResponseParts = {
     {
       team: never;
       profile: TeamResponseParts["profile"];
+      invited_by: never;
     }
   >;
 };
@@ -129,6 +131,7 @@ export class TeamService {
       filters: {
         team_profiles: {
           profile: profileId,
+          is_pending: false,
         },
       },
     });
@@ -199,5 +202,14 @@ export class TeamService {
       }
     );
   }
-  static async updateRole() {}
+
+  static async respondToInvite(teamProfileId: number, accept: boolean) {
+    if (accept) {
+      await strapiApi.update("team-profiles", teamProfileId, {
+        is_pending: false,
+      });
+    } else {
+      await strapiApi.delete("team-profiles", teamProfileId);
+    }
+  }
 }

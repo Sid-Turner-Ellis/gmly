@@ -3,11 +3,11 @@ import {
   ModifyEntity,
   OmitEntityAttributes,
   StrapiEntity,
+  StrapiImage,
   StrapiImageResponse,
   StrapiRelation,
 } from "@/types/strapi-types";
 import { StrapiError } from "@/utils/strapi-error";
-import { TeamEntity } from "../team/team-service";
 
 // TODO: If I can't use the GameResponse type for the other API requests then set the strapi.find type not to
 // automatically type the data as an array
@@ -16,15 +16,22 @@ import { TeamEntity } from "../team/team-service";
 
 // TODO: Stop using a class and use separate files e.g. games/getGames.ts as it will make types less annoying
 
-export type GameEntity = StrapiEntity<{
+type GameWithoutRelations = {
   title: string;
-  card_image: StrapiImageResponse;
-  cover_image: StrapiImageResponse;
   slug: string;
-  teams: StrapiRelation<TeamEntity[]>;
-}>;
+};
 
-export type GameResponse = ModifyEntity<GameEntity, "teams", {}>;
+export type Game = GameWithoutRelations & {
+  card_image: StrapiRelation<StrapiEntity<StrapiImage>>;
+  cover_image: StrapiRelation<StrapiEntity<StrapiImage>>;
+};
+
+export type GameResponse = StrapiEntity<{
+  title: string;
+  card_image: StrapiRelation<StrapiEntity<StrapiImage>>;
+  cover_image: StrapiRelation<StrapiEntity<StrapiImage>>;
+  slug: string;
+}>;
 
 export type GetGamesSort = "date" | "title";
 

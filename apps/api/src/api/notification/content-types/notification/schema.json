@@ -39,11 +39,6 @@
       "type": "boolean",
       "default": false,
       "required": true
-    },
-    "team_profile": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::team-profile.team-profile"
     }
   }
 }

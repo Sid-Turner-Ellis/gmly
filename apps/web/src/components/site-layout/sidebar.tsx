@@ -1,30 +1,35 @@
 import { useTailwindBreakpoint } from "@/hooks/use-tailwind-breakpoint";
 import { cn } from "@/utils/cn";
-import { usePathname } from "next/navigation";
 import { PropsWithChildren, useMemo, useState } from "react";
-import { Heading } from "../heading";
-import { Text } from "../text";
 import { SidebarButton, SidebarButtonProps } from "./sidebar-button";
-import Link from "next/link";
 import { ClassValue } from "clsx";
 import { useRouter } from "next/router";
-import { Clickable } from "../clickable";
 import { SidebarGroup, SidebarGroupSkeleton } from "./sidebar-group";
 import { useAuth } from "@/hooks/use-auth";
-import { IconType } from "../icon";
-import { TeamResponse } from "@/features/team/team-service";
 import { isStrapiRelationDefined } from "@/types/strapi-types";
 import { CreateTeamModal } from "@/features/team/components/create-team-modal/create-team-modal";
+import { NotificationBell } from "@/features/notification/components/notification-bell";
+import { useNotifications } from "@/features/notification/use-notifications";
+import { NotificationsModal } from "@/features/notification/components/notifications-modal";
 
 type SidebarProps = {
   className?: ClassValue;
+  closeSidebar: () => void;
 };
 
-export const Sidebar = ({ className }: PropsWithChildren<SidebarProps>) => {
+export const Sidebar = ({
+  className,
+  closeSidebar,
+}: PropsWithChildren<SidebarProps>) => {
   const { pathname, asPath } = useRouter();
   const route = pathname.split("/")[1] || "home";
   const { user, isUserLoading, signIn } = useAuth();
   const [isCreateTeamModalOpen, setIsCreateTeamModalOpen] = useState(false);
+  const isDesktop = useTailwindBreakpoint("lg", { fallback: true });
+  const { hasUnseenNotifications } = useNotifications();
+  const [isNotificationsModalOpen, setIsNotificationsModalOpen] =
+    useState(false);
+
   const teamButtons: SidebarButtonProps[] = useMemo(() => {
     const teamProfiles = user?.data.profile.team_profiles.data || [];
 
@@ -66,6 +71,11 @@ export const Sidebar = ({ className }: PropsWithChildren<SidebarProps>) => {
 
   return (
     <>
+      <NotificationsModal
+        isOpen={isNotificationsModalOpen}
+        setIsOpen={setIsNotificationsModalOpen}
+      />
+
       {user && (
         <CreateTeamModal
           user={user}
@@ -120,11 +130,31 @@ export const Sidebar = ({ className }: PropsWithChildren<SidebarProps>) => {
                 action: "/playground",
                 isActive: route === "playground",
               },
+              ...(!isDesktop
+                ? [
+                    {
+                      label: "Notifications",
+                      icon: (
+                        <NotificationBell
+                          hasNotifications={hasUnseenNotifications}
+                        />
+                      ),
+                      action: () => {
+                        if (user) {
+                          setIsNotificationsModalOpen(true);
+                        } else {
+                          signIn(false);
+                        }
+                        closeSidebar();
+                      },
+                    },
+                  ]
+                : []),
             ]}
           />
 
           {isUserLoading && <SidebarGroupSkeleton />}
-          {!isUserLoading && teamButtons && (
+          {!isUserLoading && teamButtons.length && (
             <SidebarGroup
               title="Teams"
               collapsable={true}

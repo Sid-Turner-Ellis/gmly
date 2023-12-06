@@ -8,29 +8,25 @@ import {
 import { TeamEntity, TeamProfileEntity } from "../team/team-service";
 import { strapiApi } from "@/lib/strapi";
 
+/**
+ * Note the types here don't fit the usual pattern of declaring an entity and then a response
+ */
+
 enum NOTIFICATION_TYPES {
-  TeamInvite = "TEAM_INVITE_RECEIVED",
+  TeamInviteReceived = "TEAM_INVITE_RECEIVED",
 }
 
 type SharedNotificationAttributes = {
   read: boolean;
+  seen: boolean;
   type: NOTIFICATION_TYPES;
 };
 
-type TeamInviteReceivedNotification = StrapiEntity<
+export type TeamInviteReceivedNotificationResponse = StrapiEntity<
   SharedNotificationAttributes & {
-    team: StrapiRelation<TeamEntity>;
-    team_profile: StrapiRelation<TeamProfileEntity>;
-  }
->;
-
-export type TeamInviteReceivedNotificationResponse = ModifyEntity<
-  NotificationEntity,
-  "team" | "team_profile",
-  {
-    team: PickEntityAttributes<TeamEntity, "name">;
-    // Only need the team profile id to validate it still exists
-    team_profile: PickEntityAttributes<TeamProfileEntity, never>;
+    team: StrapiRelation<
+      PickEntityAttributes<TeamEntity, "name" | "game" | "image">
+    >;
   }
 >;
 
@@ -38,30 +34,30 @@ export const isTeamInviteReceivedNotification = (
   v: unknown
 ): v is TeamInviteReceivedNotificationResponse => {
   const value = v as TeamInviteReceivedNotificationResponse;
-  const isCorrectType = value.attributes.type === NOTIFICATION_TYPES.TeamInvite;
-  const hasLinkedTeam = typeof value.attributes?.team?.id === "number";
-  const hasLinkedTeamProfile =
-    typeof value.attributes?.team_profile?.id === "number";
+  const isCorrectType =
+    value.attributes.type === NOTIFICATION_TYPES.TeamInviteReceived;
+  const hasLinkedTeam = typeof value.attributes?.team?.data?.id === "number";
 
-  return isCorrectType && hasLinkedTeam && hasLinkedTeamProfile;
+  return isCorrectType && hasLinkedTeam;
 };
 
-type NotificationEntity = TeamInviteReceivedNotification;
+export type NotificationResponse = TeamInviteReceivedNotificationResponse;
 
-export type NotificationResponse = ModifyEntity<
-  NotificationEntity,
-  "team",
-  { team: PickEntityAttributes<TeamEntity, "name"> }
->;
-
-const populate = ["team", "team_profile"];
+const populate = ["team", "team_profile", "team.image"];
 
 export class NotificationService {
   static async getUnreadNotificationsForProfile(profileId: number) {
-    const notificationsResponse = await strapiApi.find("notifications", {
-      populate,
-      filters: { read: false, profile: profileId },
-    });
+    const notificationsResponse = await strapiApi.find<NotificationResponse>(
+      "notifications",
+      {
+        populate,
+        filters: { read: false, profile: profileId },
+        pagination: {
+          pageSize: 6,
+          page: 1,
+        },
+      }
+    );
 
     return notificationsResponse;
   }
