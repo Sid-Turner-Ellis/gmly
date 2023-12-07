@@ -754,7 +754,6 @@ export interface ApiNotificationNotification extends Schema.CollectionType {
     draftAndPublish: false;
   };
   attributes: {
-    read: Attribute.Boolean & Attribute.Required & Attribute.DefaultTo<false>;
     type: Attribute.Enumeration<['TEAM_INVITE_RECEIVED']> & Attribute.Required;
     profile: Attribute.Relation<
       'api::notification.notification',

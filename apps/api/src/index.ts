@@ -54,7 +54,6 @@ export default {
         await strapi.db.query("api::notification.notification").delete({
           where: {
             type: "TEAM_INVITE_RECEIVED",
-            read: false,
             team: teamProfileToBeDeleted.team.id,
             profile: teamProfileToBeDeleted.profile.id,
           },

@@ -15,6 +15,7 @@ import {
 import { Badge } from "@/components/badge";
 import { GamerTag } from "./gamer-tag";
 import { Skeleton } from "@/components/skeleton";
+import { Clickable } from "@/components/clickable";
 
 type TeamMembersTableProps = {
   team: TeamResponse;
@@ -54,49 +55,51 @@ const DesktopTableRows = ({
         </TableCell>
       </TableRow>
       {teamProfiles.map((profile, ind) => (
-        <TableRow isDark={ind % 2 === 0} key={ind}>
-          <TableCell className="w-[14%]">
-            <Text>{profile.attributes.rank}</Text>
-          </TableCell>
+        <Clickable action={`/profile/${profile.attributes.profile.data?.id}`}>
+          <TableRow isDark={ind % 2 === 0} key={ind}>
+            <TableCell className="w-[14%]">
+              <Text>{profile.attributes.rank}</Text>
+            </TableCell>
 
-          <TableCell className="w-[30%]">
-            <div className="flex items-center gap-4">
-              <div className="w-[28px] h-[28px] relative rounded-sm overflow-hidden">
-                <Image
-                  alt={profile.attributes.profile.data?.attributes.username!}
-                  src={resolveStrapiImage(
-                    profile.attributes.profile.data?.attributes.avatar ?? null
-                  )}
-                />
+            <TableCell className="w-[30%]">
+              <div className="flex items-center gap-4">
+                <div className="w-[28px] h-[28px] relative rounded-sm overflow-hidden">
+                  <Image
+                    alt={profile.attributes.profile.data?.attributes.username!}
+                    src={resolveStrapiImage(
+                      profile.attributes.profile.data?.attributes.avatar ?? null
+                    )}
+                  />
+                </div>
+                <Text className="text-brand-white">
+                  {profile.attributes.profile.data?.attributes.username!}
+                </Text>
               </div>
-              <Text className="text-brand-white">
-                {profile.attributes.profile.data?.attributes.username!}
+            </TableCell>
+
+            <TableCell className="w-[14%]" isCentered>
+              <GamerTag tag="gamerTag" />
+            </TableCell>
+
+            <TableCell className="w-[14%]" isCentered>
+              <Text>{toPascalCase(profile.attributes.role)}</Text>
+            </TableCell>
+
+            <TableCell className="w-[14%]" isCentered>
+              <Text className={"text-brand-primary text-center"}>
+                $
+                {profile.attributes.earnings.toLocaleString("en-US", {
+                  style: "decimal",
+                  maximumFractionDigits: 0,
+                })}
               </Text>
-            </div>
-          </TableCell>
+            </TableCell>
 
-          <TableCell className="w-[14%]" isCentered>
-            <GamerTag tag="gamerTag" />
-          </TableCell>
-
-          <TableCell className="w-[14%]" isCentered>
-            <Text>{toPascalCase(profile.attributes.role)}</Text>
-          </TableCell>
-
-          <TableCell className="w-[14%]" isCentered>
-            <Text className={"text-brand-primary text-center"}>
-              $
-              {profile.attributes.earnings.toLocaleString("en-US", {
-                style: "decimal",
-                maximumFractionDigits: 0,
-              })}
-            </Text>
-          </TableCell>
-
-          <TableCell className="w-[14%]" isCentered>
-            <Text className={"text-center"}>{profile.attributes.xp}</Text>
-          </TableCell>
-        </TableRow>
+            <TableCell className="w-[14%]" isCentered>
+              <Text className={"text-center"}>{profile.attributes.xp}</Text>
+            </TableCell>
+          </TableRow>
+        </Clickable>
       ))}
     </div>
   );

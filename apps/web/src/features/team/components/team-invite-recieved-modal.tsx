@@ -5,7 +5,7 @@ import { TeamService } from "../team-service";
 import { useToast } from "@/providers/toast-provider";
 import { useRouter } from "next/router";
 
-// TODO: readirect to the team page if accepts
+// TODO: redirect to the team page if accepts
 
 type TeamInviteReceivedModalProps = {
   teamName: string;

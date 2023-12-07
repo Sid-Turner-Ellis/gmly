@@ -9,17 +9,17 @@ export const useNotifications = () => {
   const profileId = user?.data.profile.id;
   const queryClient = useQueryClient();
 
-  const { data: unreadNotificationsData } = useAuthenticatedQuery(
+  const { data: notificationsData } = useAuthenticatedQuery(
     ["notifications", profileId],
-    () => NotificationService.getUnreadNotificationsForProfile(profileId!),
+    () => NotificationService.getNotificationsForProfile(profileId!),
     {
       enabled: !!profileId,
     }
   );
 
-  const unreadNotifications = useMemo(
-    () => unreadNotificationsData?.data ?? [],
-    [unreadNotificationsData]
+  const notifications = useMemo(
+    () => notificationsData?.data ?? [],
+    [notificationsData]
   );
 
   const invalidateNotifications = () => {
@@ -29,7 +29,7 @@ export const useNotifications = () => {
 
   const markAllAsRead = async () => {
     await Promise.all(
-      unreadNotifications.map((n) => NotificationService.markAsRead(n.id))
+      notifications.map((n) => NotificationService.markAsRead(n.id))
     );
 
     invalidateNotifications();
@@ -46,11 +46,11 @@ export const useNotifications = () => {
   };
 
   const hasUnseenNotifications = useMemo(
-    () => (unreadNotifications ?? []).some((n) => n.attributes.seen === false),
-    [unreadNotifications]
+    () => (notifications ?? []).some((n) => n.attributes.seen === false),
+    [notifications]
   );
   return {
-    unreadNotifications,
+    notifications,
     markAllAsRead,
     markAsRead,
     invalidateNotifications,

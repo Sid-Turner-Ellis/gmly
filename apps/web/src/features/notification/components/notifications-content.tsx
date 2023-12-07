@@ -20,14 +20,14 @@ export const NotificationsContent = ({
   className,
 }: NotificationsContent) => {
   const {
-    unreadNotifications,
+    notifications,
     markAllAsRead,
     markAllAsSeen,
     hasUnseenNotifications,
   } = useNotifications();
   const router = useRouter();
 
-  const totalNotifications = unreadNotifications.length;
+  const totalNotifications = notifications.length;
   useEffect(() => {
     if (hasUnseenNotifications) {
       markAllAsSeen();
@@ -57,12 +57,12 @@ export const NotificationsContent = ({
           <div className="absolute left-0 w-full bottom-0 bg-white/10 h-[1px]" />
         </div>
 
-        {!unreadNotifications?.length && (
+        {!notifications?.length && (
           <Text className="py-4 px-3">No notifications</Text>
         )}
 
         <div>
-          {unreadNotifications?.map((notification, index) => {
+          {notifications?.map((notification, index) => {
             const isFinalNotification = index === totalNotifications - 1;
             if (isTeamInviteReceivedNotification(notification)) {
               return (

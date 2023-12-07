@@ -19,7 +19,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ClassValue } from "clsx";
 import { PropsWithChildren, ReactNode, useState } from "react";
 
-const PAGE_SIZE = 3;
+const PAGE_SIZE = 5;
 
 type TeamsTableProps = {
   profileId: number;

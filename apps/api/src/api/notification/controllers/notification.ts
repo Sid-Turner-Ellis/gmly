@@ -8,6 +8,25 @@ import { factories } from "@strapi/strapi";
 export default factories.createCoreController(
   "api::notification.notification",
   {
+    async delete(ctx) {
+      const { id } = ctx.params;
+      const profile = await strapi
+        .service("api::profile.profile")
+        .findOneByWalletAddress(ctx.state.wallet_address);
+
+      const notification = await strapi
+        .service("api::notification.notification")
+        .findOne(id, {
+          populate: { profile: true },
+        });
+
+      if (!profile || notification.profile.id !== profile.id) {
+        throw new errors.UnauthorizedError();
+      }
+
+      return await super.delete(ctx);
+    },
+
     async markAllAsSeen(ctx) {
       const { profile: profileId } = ctx.request.body.data ?? {};
 
@@ -35,7 +54,7 @@ export default factories.createCoreController(
     async update(ctx) {
       const data = ctx.request.body.data ?? {};
       const fieldsToUpdate = Object.keys(data);
-      const updatableFields = ["read", "seen"];
+      const updatableFields = ["seen"];
 
       for (const fieldToUpdate of fieldsToUpdate) {
         console.log(

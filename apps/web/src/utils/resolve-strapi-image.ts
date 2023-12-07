@@ -11,7 +11,7 @@ const addUrl = (url: string) =>
 const isStrapiRelationImage = (
   v: unknown
 ): v is StrapiRelation<StrapiEntity<StrapiImage>> =>
-  !!(v as StrapiRelation<StrapiEntity<StrapiImage>>).data;
+  !!(v as StrapiRelation<StrapiEntity<StrapiImage>>)?.data;
 
 export const resolveStrapiImage = (
   image:
@@ -22,7 +22,7 @@ export const resolveStrapiImage = (
   format?: keyof NonNullable<StrapiImage["formats"]>
 ) => {
   const imageData = isStrapiRelationImage(image)
-    ? image.data?.attributes
+    ? image?.data?.attributes
     : image;
 
   const defaultUrl = imageData?.url;

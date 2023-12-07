@@ -7,7 +7,6 @@ enum NOTIFICATION_TYPES {
 }
 
 type SharedNotificationAttributes = {
-  read: boolean;
   seen: boolean;
   type: NOTIFICATION_TYPES;
 };
@@ -36,12 +35,12 @@ export type NotificationResponse = TeamInviteReceivedNotificationResponse;
 const populate = ["team", "team.image"];
 
 export class NotificationService {
-  static async getUnreadNotificationsForProfile(profileId: number) {
+  static async getNotificationsForProfile(profileId: number) {
     const notificationsResponse = await strapiApi.find<NotificationResponse>(
       "notifications",
       {
         populate,
-        filters: { read: false, profile: profileId },
+        filters: { profile: profileId },
         pagination: {
           pageSize: 6,
           page: 1,
@@ -53,7 +52,12 @@ export class NotificationService {
   }
 
   static async markAsRead(notificationId: number) {
-    await strapiApi.update("notifications", notificationId, { read: true }, {});
+    const deletedNotification = await strapiApi.delete<NotificationResponse>(
+      "notifications",
+      notificationId,
+      {}
+    );
+    return deletedNotification;
   }
 
   static async markAllAsSeen(profileId: number) {
