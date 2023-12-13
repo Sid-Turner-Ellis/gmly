@@ -4,6 +4,7 @@ import {
   SetStateAction,
   createContext,
   useContext,
+  useEffect,
   useId,
   useRef,
   useState,
@@ -66,6 +67,13 @@ export const useGlobalModal = (staticId?: string) => {
 export const GlobalModalProvider = ({ children }: { children: ReactNode }) => {
   const [modals, setModals] = useState<GlobalModalType[]>([]);
   const activeModal = modals.length > 0 ? modals[modals.length - 1] : null;
+  const [container, setContainer] = useState<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    setContainer(
+      document.getElementById("global-modal-root") as HTMLDivElement
+    );
+  }, []);
 
   const openModal = (props: GlobalModalType) => {
     setModals((prev) => [
@@ -99,7 +107,7 @@ export const GlobalModalProvider = ({ children }: { children: ReactNode }) => {
       }}
     >
       <DialogPrimitives.Root open={!!activeModal}>
-        <DialogPrimitives.Portal>
+        <DialogPrimitives.Portal container={container}>
           <div className="relative z-0">
             <ModalOverlay
               className="z-10"
@@ -122,7 +130,7 @@ export const GlobalModalProvider = ({ children }: { children: ReactNode }) => {
                     onClick={() => {
                       closeModal(activeModal.id);
                     }}
-                    className="absolute top-[10px] right-[10px] inline-flex h-7 w-7  appearance-none items-center transition justify-center rounded-full focus:outline-none text-brand-gray hover:bg-white/10"
+                    className="absolute top-[10px] right-[10px] inline-flex h-7 w-7  appearance-none items-center transition justify-center rounded-full focus:outline-none text-brand-gray hover:bg-white/10 z-10"
                     aria-label="Close"
                   >
                     <Cross2Icon aria-label="Close" />

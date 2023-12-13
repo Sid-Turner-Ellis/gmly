@@ -96,14 +96,19 @@ export class TeamService {
 
   static async getTeamsForProfile(
     profileId: number,
-    page: number,
-    pageSize: number
+    {
+      page,
+      pageSize,
+    }: Partial<{
+      page: number;
+      pageSize: number;
+    }> = {}
   ) {
     const teams = await strapiApi.find<TeamResponse>("teams", {
       populate,
       pagination: {
-        page,
-        pageSize,
+        page: page ?? 1,
+        pageSize: pageSize ?? 100,
       },
       filters: {
         team_profiles: {

@@ -38,12 +38,14 @@ export default factories.createCoreController(
       const teamProfileId = ctx.params.id;
       const teamProfile = await strapi.services[
         "api::team-profile.team-profile"
-      ].findOne(teamProfileId, { populate: { profile: true } });
+      ].findOne(teamProfileId, {
+        populate: { profile: true, team: { populate: { game: true } } },
+      });
+
       const profile = await strapi
         .service("api::profile.profile")
         .findOneByWalletAddress(wallet_address);
 
-      console.log(teamProfileId, teamProfile, profile);
       if (!profile || teamProfile.profile.id !== profile.id) {
         throw new errors.UnauthorizedError();
       }
@@ -58,6 +60,28 @@ export default factories.createCoreController(
 
       if (teamProfile.role === "founder") {
         return ctx.badRequest("Cannot set pending for founders");
+      }
+
+      // Don't allow them to accept an invite if they are already on a team for that game
+      const {
+        pagination: { total: teamProfilesForGame },
+      } = await strapi.service("api::team-profile.team-profile").find({
+        filters: {
+          $and: [
+            { id: { $ne: teamProfile.id } },
+            { profile: profile.id },
+            {
+              team: {
+                game: teamProfile.team.game.id,
+              },
+            },
+            { is_pending: false },
+          ],
+        },
+      });
+
+      if (teamProfilesForGame > 0) {
+        return ctx.badRequest("You are already on a team for this game");
       }
 
       return await super.update(ctx);

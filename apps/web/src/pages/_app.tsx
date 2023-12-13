@@ -30,8 +30,8 @@ export default function App({ Component, pageProps }: AppProps) {
       <ThirdwebProvider>
         <TokenProvider>
           <QueryClientProvider>
-            <GlobalModalProvider>
-              <ToastProvider>
+            <ToastProvider>
+              <GlobalModalProvider>
                 <ConditionallyWrap
                   condition={!pageProps.hideSidebar}
                   Wrapper={SiteLayout}
@@ -45,8 +45,8 @@ export default function App({ Component, pageProps }: AppProps) {
                     </ErrorBoundary>
                   </RegistrationModalProvider>
                 </ConditionallyWrap>
-              </ToastProvider>
-            </GlobalModalProvider>
+              </GlobalModalProvider>
+            </ToastProvider>
           </QueryClientProvider>
         </TokenProvider>
       </ThirdwebProvider>

@@ -43,6 +43,7 @@ export const TeamPageContent = ({ team, teamProfile }: TeamPageContent) => {
         <TeamInviteReceivedModal
           gameName="NOT IMPLEMENTED"
           teamId={team.id}
+          gameId={team.attributes.game.data?.id!}
           teamProfileId={teamProfile.id}
           teamName={team.attributes.name}
           invitedBy={

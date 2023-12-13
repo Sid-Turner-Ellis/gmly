@@ -1,3 +1,4 @@
+import { Button } from "@/components/button";
 import { Icon, IconType } from "@/components/icon";
 import { Text } from "@/components/text";
 import { cn } from "@/utils/cn";
@@ -8,11 +9,15 @@ import { v4 } from "uuid";
 type BasicToast = {
   type: "success" | "error" | "warning";
   message: string;
+  button?: {
+    label: string;
+    onClick: () => void;
+  };
 };
 type CustomToast = ReactNode;
 type Toast = BasicToast | CustomToast;
 
-const BasicToastComponent = ({ type, message }: BasicToast) => {
+const BasicToastComponent = ({ type, message, button }: BasicToast) => {
   const icon = {
     success: "thumb",
     error: "thumb",
@@ -44,21 +49,34 @@ const BasicToastComponent = ({ type, message }: BasicToast) => {
       <Text variant="p" className="font-medium text-brand-white">
         {message}
       </Text>
+      {button && (
+        <ToastPrimitives.Close>
+          <Button
+            title={button.label}
+            onClick={button.onClick}
+            size="sm"
+            className={[
+              "bg-transparent hover:bg-transparent",
+              "rounded-md",
+              "py-1 px-2",
+              "whitespace-nowrap",
+              "border-brand-white border text-brand-white active:border-brand-white",
+            ]}
+          />
+        </ToastPrimitives.Close>
+      )}
     </div>
   );
 };
 
-const isBasicToast = (toast: Toast): toast is BasicToast => {
-  return (
-    (toast as BasicToast).type !== undefined &&
-    (toast as BasicToast).message !== undefined
-  );
-};
+const isBasicToast = (toast: Toast): toast is BasicToast =>
+  (toast as BasicToast).type !== undefined &&
+  (toast as BasicToast).message !== undefined;
 
 const ToastContext = createContext<{
-  addToast: (toast: Toast) => string;
+  addToast: (toast: Toast, customId?: string) => string;
 }>({
-  addToast: (toast: Toast) => "",
+  addToast: (toast: Toast, customId?: string) => "",
 });
 
 export const useToast = () => {
@@ -70,10 +88,10 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
     []
   );
 
-  const addToast = (newToast: Toast) => {
-    const id = v4();
+  const addToast = (newToast: Toast, customId?: string) => {
+    const id = customId ?? v4();
     setToasts((prev) => [
-      ...prev,
+      ...prev.filter((t) => t.id !== id),
       {
         id,
         Component: isBasicToast(newToast) ? (
@@ -106,6 +124,7 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
             {toast.Component}
           </ToastPrimitives.Root>
         ))}
+
         <ToastPrimitives.Viewport className="[--viewport-padding:_25px] fixed bottom-0 z-50 right-0 max-w-md flex flex-col gap-2  p-[var(--viewport-padding)]" />
         {children}
       </ToastContext.Provider>

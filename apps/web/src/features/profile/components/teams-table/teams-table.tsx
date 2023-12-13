@@ -214,7 +214,10 @@ export const TeamsTable = ({ profileId }: TeamsTableProps) => {
     ["teams-for-profile", profileId, page],
     async () => {
       await new Promise((resolve) => setTimeout(resolve, 500));
-      return TeamService.getTeamsForProfile(profileId, page, PAGE_SIZE);
+      return TeamService.getTeamsForProfile(profileId, {
+        page,
+        pageSize: PAGE_SIZE,
+      });
     },
     {
       enabled: !!profileId,

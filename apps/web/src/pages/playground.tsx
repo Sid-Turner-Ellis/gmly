@@ -20,6 +20,9 @@ import { useGlobalModal } from "@/providers/global-modal-provider";
 import { ModalCard } from "@/components/modal/modal-card";
 import { SimpleSelect } from "@/components/simple-select";
 import { Icon } from "@/components/icon";
+import { useToast } from "@/providers/toast-provider";
+import { useRouter } from "next/router";
+import { Modal } from "@/components/modal/modal";
 
 /**
  * Facets are like tags
@@ -56,37 +59,5 @@ export const getServerSideProps = async () => {
 };
 
 export default function Page() {
-  const [value, setValue] = useState<string | undefined>("hello");
-
-  const newSetValue = (value: any) => {
-    console.log({ value });
-    if (value === "Ownership") {
-      console.log("Ownership");
-    } else {
-      setValue(value);
-    }
-  };
-
-  return (
-    <div>
-      <Icon icon="crown" className="text-brand-gray" />
-      <SimpleSelect
-        value={value}
-        setValue={newSetValue}
-        options={[
-          "hello",
-          {
-            option: "Ownership",
-            icon: "crown",
-            optionClassName: "cursor-pointer",
-          },
-          {
-            option: "Remove",
-            optionClassName:
-              "bg-brand-red data-[highlighted]:bg-brand-red-dark text-brand-white cursor-pointer",
-          },
-        ]}
-      />
-    </div>
-  );
+  return <div> page </div>;
 }

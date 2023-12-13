@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import * as DialogPrimitives from "@radix-ui/react-dialog";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { ModalOverlay } from "./modal-overlay";
@@ -24,10 +24,17 @@ export const Modal = ({
   size,
   Footer,
 }: ModalProps) => {
+  const [container, setContainer] = useState<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    setContainer(
+      document.getElementById("global-modal-root") as HTMLDivElement
+    );
+  }, []);
   return (
     <div className="relative z-0">
       <DialogPrimitives.Root open={isOpen}>
-        <DialogPrimitives.Portal>
+        <DialogPrimitives.Portal container={container}>
           <div className="z-0 relative">
             <ModalOverlay
               className="z-0"
@@ -45,7 +52,7 @@ export const Modal = ({
                 <DialogPrimitives.Close asChild>
                   <button
                     onClick={() => closeModal()}
-                    className="absolute top-[10px] right-[10px] inline-flex h-7 w-7  appearance-none items-center transition justify-center rounded-full focus:outline-none text-brand-gray hover:bg-white/10"
+                    className="absolute top-[10px] right-[10px] inline-flex h-7 w-7  appearance-none items-center transition justify-center rounded-full focus:outline-none text-brand-gray hover:bg-white/10 z-10"
                     aria-label="Close"
                   >
                     <Cross2Icon aria-label="Close" />
