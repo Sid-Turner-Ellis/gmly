@@ -149,11 +149,6 @@ export default factories.createCoreController(
 
       const requestersRole = requesterTeamProfile?.role;
 
-      const updatesContainFounder =
-        teamProfilesToCreate.some((tptc) => tptc.role === "founder") ||
-        teamProfilesToUpdate.some((tptu) => tptu.role === "founder") ||
-        teamProfilesToDelete.some((tptd) => tptd.role === "founder");
-
       const playersWereDeleted = teamProfilesToDelete.length > 0;
       const playersWereUpdated = teamProfilesToUpdate.length > 0;
 
@@ -162,12 +157,16 @@ export default factories.createCoreController(
         teamProfilesToUpdate.some((tptu) => tptu.role === "leader") ||
         teamProfilesToDelete.some((tptd) => tptd.role === "leader");
 
-      if (requestersRole === "member") {
-        throw new errors.UnauthorizedError();
+      const numberOfFoundersInUpdates =
+        teamProfilesToCreate.filter((tptc) => tptc.role === "founder").length +
+        teamProfilesToUpdate.filter((tptu) => tptu.role === "founder");
+
+      if (numberOfFoundersInUpdates > 1) {
+        return ctx.badRequest("Only one founder is allowed");
       }
 
-      if (updatesContainFounder) {
-        return ctx.badRequest("Roles can not include founders");
+      if (requestersRole === "member") {
+        throw new errors.UnauthorizedError();
       }
 
       if (

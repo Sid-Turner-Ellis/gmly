@@ -11,10 +11,13 @@ import { Skeleton } from "@/components/skeleton";
 import { TeamMemberEditItem } from "./team-member-edit-item";
 import { MAX_TEAM_MEMBERS } from "../constants";
 import { TeamMemberUpdate } from "../types";
+import { useGlobalModal } from "@/providers/global-modal-provider";
+import { TransferOwnershipModal } from "./transfer-ownership-modal";
+import { useAuth } from "@/hooks/use-auth";
 
 type TeamMemberEdit = {
-  inviteOnly?: boolean;
   teamMemberInvites: TeamMemberUpdate[];
+  allowOwnershipTransfer?: boolean;
   setTeamMemberInvites: React.Dispatch<
     React.SetStateAction<TeamMemberUpdate[]>
   >;
@@ -22,9 +25,12 @@ type TeamMemberEdit = {
 
 export const TeamMemberEdit = ({
   teamMemberInvites,
-  inviteOnly,
+  allowOwnershipTransfer,
   setTeamMemberInvites,
 }: TeamMemberEdit) => {
+  const { openModal, closeModal } = useGlobalModal();
+  const { user } = useAuth();
+
   const { results, isNoResults, ...searchDropdownProps } = useSearchDropdown(
     "global-profiles",
     async (query) => {
@@ -39,10 +45,15 @@ export const TeamMemberEdit = ({
     }
   );
 
-  const filteredResults = results.filter((h) => {
-    const foundItem = teamMemberInvites.find((tmi) => tmi.userId === h.id);
+  // Filter any results that are already in the teamMemberInvites
+  const filteredResults = results.filter((hits) => {
+    const foundItem = teamMemberInvites.find((tmi) => tmi.userId === hits.id);
     return !foundItem;
   });
+
+  const teamProfileOfCurrentUser = teamMemberInvites.find(
+    (tmi) => tmi.userId === user?.data.profile.id
+  );
 
   const inviteTeamMember = (
     userId: number,
@@ -55,6 +66,7 @@ export const TeamMemberEdit = ({
         userId,
         username,
         role: "member",
+        isPending: true,
         image,
       } as TeamMemberUpdate,
     ]);
@@ -62,7 +74,7 @@ export const TeamMemberEdit = ({
 
   const updateTeamMemberRole = (
     userId: number,
-    newRole: TeamRoles | "Remove"
+    newRole: TeamRoles | "Remove" | "Ownership"
   ) => {
     const teamMemberInvite = teamMemberInvites.find(
       (tmi) => tmi.userId === userId
@@ -72,6 +84,27 @@ export const TeamMemberEdit = ({
     if (newRole === "Remove") {
       setTeamMemberInvites(
         teamMemberInvites.filter((tmi) => tmi.userId !== userId)
+      );
+    } else if (newRole === "Ownership") {
+      openModal(
+        <TransferOwnershipModal
+          closeModal={closeModal}
+          onConfirm={() => {
+            // Set the current founder to a leader
+            const currentFounder = teamMemberInvites.find(
+              (tmi) => tmi.role === "founder"
+            )!;
+            currentFounder.role = "leader";
+
+            // Set the new user to a founder
+            teamMemberInvite.role = "founder";
+            setTeamMemberInvites([...teamMemberInvites]);
+            closeModal();
+          }}
+        />,
+        {
+          isClosable: true,
+        }
       );
     } else {
       teamMemberInvite.role = newRole;
@@ -121,10 +154,20 @@ export const TeamMemberEdit = ({
           <TeamMemberEditItem
             key={teamMemberInvite.userId}
             {...teamMemberInvite}
-            disabled={inviteOnly}
-            setRole={(role) =>
-              updateTeamMemberRole(teamMemberInvite.userId, role)
+            disabled={
+              user?.data.profile.id === teamMemberInvite.userId ||
+              teamProfileOfCurrentUser?.role !== "founder"
             }
+            allowOwnershipTransfer={
+              allowOwnershipTransfer &&
+              teamMemberInvites.find(
+                (tmi) => tmi.userId === user?.data.profile.id
+              )?.role === "founder" &&
+              teamMemberInvite.isPending === false
+            }
+            setRole={(role) => {
+              updateTeamMemberRole(teamMemberInvite.userId, role);
+            }}
           />
         ))}
       </div>

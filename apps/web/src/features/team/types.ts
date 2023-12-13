@@ -6,4 +6,5 @@ export type TeamMemberUpdate = {
   username: string;
   userId: number;
   role: TeamRoles;
+  isPending: boolean;
 };

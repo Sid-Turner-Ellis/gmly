@@ -42,6 +42,7 @@ export const CreateTeamModal = ({
       image: user.data.profile.avatar?.data?.attributes ?? null,
       username: user.data.profile.username!,
       userId: user.data.profile.id,
+      isPending: false,
       role: "founder",
     },
   ];

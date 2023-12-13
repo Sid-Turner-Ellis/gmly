@@ -151,6 +151,7 @@ export const TeamActionButtons = ({
         username: tp.attributes.profile.data?.attributes.username!,
         userId: tp.attributes.profile.data?.id!,
         role: tp.attributes.role,
+        isPending: tp.attributes.is_pending,
       }))
     );
   }, [team.attributes.team_profiles.data, isTeamUpdateModalOpen]);
@@ -188,7 +189,7 @@ export const TeamActionButtons = ({
         <TeamMemberEdit
           teamMemberInvites={teamSelection}
           setTeamMemberInvites={setTeamSelection}
-          inviteOnly={role !== "founder"}
+          allowOwnershipTransfer
         />
       </Modal>
       <Modal

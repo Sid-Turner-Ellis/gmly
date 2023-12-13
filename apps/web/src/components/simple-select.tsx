@@ -1,7 +1,7 @@
 import { cn } from "@/utils/cn";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { textVariantClassnames } from "./text";
-import { Icon } from "./icon";
+import { Icon, IconType } from "./icon";
 import { ClassValue } from "clsx";
 import { useMemo } from "react";
 
@@ -9,6 +9,7 @@ type CustomOption = {
   option: string;
   triggerClassName?: ClassValue;
   optionClassName?: ClassValue;
+  icon?: IconType;
 };
 
 type Option = string | CustomOption;
@@ -80,7 +81,7 @@ export const SimpleSelect = ({
           side="bottom"
         >
           <SelectPrimitive.Viewport className="w-full overflow-hidden rounded bg-brand-navy-light">
-            {resolvedOptions.map(({ option, optionClassName }) => {
+            {resolvedOptions.map(({ option, optionClassName, icon }) => {
               return (
                 <SelectPrimitive.Item
                   value={option}
@@ -88,7 +89,7 @@ export const SimpleSelect = ({
                   disabled={isOptionDisabled(option)}
                   className={cn(
                     textVariantClassnames.p,
-                    "w-full gap-12 p-1 border-2 border-transparent transition-all bg-brand-navy-light  data-[highlighted]:outline-none data-[highlighted]:bg-white/5 outline-none data-[disabled]:opacity-50 cursor-default",
+                    "flex gap-3 justify-start items-center w-full p-1 border-2 border-transparent transition-all bg-brand-navy-light  data-[highlighted]:outline-none data-[highlighted]:bg-white/5 outline-none data-[disabled]:opacity-50 cursor-default",
                     isOptionDisabled(option) && "hidden",
                     optionClassName
                   )}
@@ -96,6 +97,7 @@ export const SimpleSelect = ({
                   <SelectPrimitive.ItemText>
                     {getOptionLabel(option)}
                   </SelectPrimitive.ItemText>
+                  {icon && <Icon icon="crown" size={14} />}
                 </SelectPrimitive.Item>
               );
             })}

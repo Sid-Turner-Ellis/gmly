@@ -21,6 +21,7 @@ const ICONS = [
   "arrow-left",
   "image",
   "search",
+  "crown",
   "plus",
 ] as const;
 
@@ -547,6 +548,47 @@ const ICON_MAP: Record<
         strokeWidth={2}
         d="M10.665 6H1.332M5.999 10.667 1.332 6.001l4.667-4.667"
       />
+    </svg>
+  ),
+  crown: ({ boxSize, prefix }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      xmlnsXlink="http://www.w3.org/1999/xlink"
+      fill="none"
+      {...getWidthAndHeight({ width: 14, height: 14, size: boxSize })}
+    >
+      <mask
+        id={`${prefix}-b`}
+        width={14}
+        height={14}
+        x={0}
+        y={0}
+        maskUnits="userSpaceOnUse"
+        style={{
+          maskType: "alpha",
+        }}
+      >
+        <path fill={`url(#${prefix}-a)`} d="M0 0h14v14H0z" />
+      </mask>
+      <g mask={`url(#${prefix}-b)`}>
+        <path fill="currentColor" d="M0 0h14v14H0z" opacity={1} />
+      </g>
+      <defs>
+        <pattern
+          id={`${prefix}-a`}
+          width={1}
+          height={1}
+          patternContentUnits="objectBoundingBox"
+        >
+          <use xlinkHref={`#${prefix}-c`} transform="scale(.01)" />
+        </pattern>
+        <image
+          xlinkHref="data:image/png;base64,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"
+          id={`${prefix}-c`}
+          width={100}
+          height={100}
+        />
+      </defs>
     </svg>
   ),
 };
