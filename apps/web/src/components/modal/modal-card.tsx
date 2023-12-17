@@ -5,9 +5,6 @@ import { Text } from "../text";
 import { Spinner } from "../spinner";
 import { VariantProps, cva } from "class-variance-authority";
 import { cn } from "@/utils/cn";
-import { Cross2Icon } from "@radix-ui/react-icons";
-import { ModalOverlay } from "./modal-overlay";
-import { ModalContent } from "./modal-content";
 import { ModalFooter } from "./modal-footer";
 
 const modalVariants = cva("max-h-[85vh] w-full", {
@@ -24,6 +21,7 @@ const modalVariants = cva("max-h-[85vh] w-full", {
 });
 
 export type ModalCardProps = {
+  Top?: ReactNode;
   title: string;
   description?: string;
   children?: ReactNode;
@@ -32,6 +30,7 @@ export type ModalCardProps = {
 } & VariantProps<typeof modalVariants>;
 
 export const ModalCard = ({
+  Top,
   title,
   description,
   isLoading,
@@ -47,6 +46,7 @@ export const ModalCard = ({
         modalVariants({ size })
       )}
     >
+      {!!Top && <div className="px-7 mb-3">{Top}</div>}
       <DialogPrimitives.Title className="px-7">
         <Heading variant="h2" className="mb-3">
           {title}

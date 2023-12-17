@@ -3,17 +3,25 @@ import { Button } from "../button";
 import * as Avatar from "@radix-ui/react-avatar";
 import { useTailwindBreakpoint } from "@/hooks/use-tailwind-breakpoint";
 import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
+import { useState } from "react";
+import { WalletModal } from "../wallet-modal";
 
 type ProfileButtonsProps = {};
 
 export const ProfileButtons = ({}: ProfileButtonsProps) => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const isDesktop = useTailwindBreakpoint("md");
+  const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
   const username = user?.data?.profile?.username ?? "User";
   return (
     <div className="relative z-0 flex h-full gap-2 lg:gap-3">
+      <WalletModal
+        isOpen={isWalletModalOpen}
+        closeModal={() => setIsWalletModalOpen(false)}
+      />
       <Button
         title={"$150"}
+        onClick={() => setIsWalletModalOpen(true)}
         variant={"primary"}
         icon={isDesktop ? "usdc" : undefined}
       />
@@ -22,6 +30,7 @@ export const ProfileButtons = ({}: ProfileButtonsProps) => {
           variant="secondary"
           title={isDesktop ? username ?? "Profile" : undefined}
           className="h-full"
+          onClick={logout}
           icon={
             <Avatar.Root className="inline-flex items-center justify-center w-full h-full overflow-hidden rounded-full select-none">
               <Avatar.Image

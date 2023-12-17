@@ -100,15 +100,7 @@ export const Header = ({ openSidebar, className }: HeaderProps) => {
             </div>
           </>
         )}
-        {shouldShowProfileButtons && (
-          <span
-            onClick={() => {
-              logout();
-            }}
-          >
-            <ProfileButtons />
-          </span>
-        )}
+        {shouldShowProfileButtons && <ProfileButtons />}
       </div>
     </div>
   );

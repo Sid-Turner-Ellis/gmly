@@ -18,6 +18,7 @@ export const Modal = ({
   title,
   isClosable,
   description,
+  Top,
   isLoading,
   children,
   onOverlayClick,
@@ -60,6 +61,7 @@ export const Modal = ({
                 </DialogPrimitives.Close>
               )}
               <ModalCard
+                Top={Top}
                 title={title}
                 description={description}
                 Footer={Footer}
