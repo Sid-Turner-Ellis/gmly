@@ -79,68 +79,9 @@ export default function Page() {
 
   return (
     <div className="text-white">
-      <Modal
-        title={isWithdraw ? "Withdraw" : "Deposit"}
-        description="Deposit USDC into Gamerly and withdraw anytime."
-        isOpen={isOpen}
-        closeModal={() => setIsOpen(false)}
-        Top={
-          <div className="inline-flex border mb-3 border-solid border-brand-navy-light-accent-light rounded overflow-hidden p-[4px] items-center bg-brand-navy -ml-1">
-            <Text
-              onClick={() => setIsWithdraw(false)}
-              className={cn(
-                "px-5 cursor-pointer text-brand-white py-2 transition rounded",
-                !isWithdraw && "bg-brand-navy-accent-light"
-              )}
-            >
-              Deposit
-            </Text>
-
-            <Text
-              onClick={() => setIsWithdraw(true)}
-              className={cn(
-                "px-5 cursor-pointer text-brand-white py-2 transition rounded",
-                isWithdraw && "bg-brand-navy-accent-light"
-              )}
-            >
-              Withdraw
-            </Text>
-          </div>
-        }
-        Footer={
-          <div className="flex items-center justify-end gap-3">
-            <Button title="Cancel" variant={"secondary"} />
-            <Button title="Confirm" variant={"primary"} disabled={amount < 1} />
-          </div>
-        }
-      >
-        <div>
-          <div className="inline-flex p-[2px] bg-brand-navy rounded overflow-hidden">
-            <div>
-              <Text className="py-2 px-2 font-medium bg-brand-navy-accent-light rounded-l">
-                $
-              </Text>
-            </div>
-            <input
-              onChange={(e) => {
-                const inputWithNumbersOnly = e.target.value.replace(
-                  /[^0-9]/g,
-                  ""
-                );
-                const parsedNumber = parseInt(inputWithNumbersOnly);
-                const number = Number.isNaN(parsedNumber) ? 0 : parsedNumber;
-                setAmount(number);
-              }}
-              value={amount}
-              className={cn(
-                textVariantClassnames.p,
-                "bg-transparent outline-none text-emerald-400 px-2"
-              )}
-              type="text"
-            />
-          </div>
-        </div>
-      </Modal>
+      <Button variant={"primary"}>
+        <div className="h-3 w-6 animate-pulse bg-brand-primary-dark rounded-md" />
+      </Button>
     </div>
   );
 }

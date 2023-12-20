@@ -8,7 +8,7 @@ import { queryClient } from "./query-provider";
 export const ThirdwebProvider = ({ children }: { children: ReactNode }) => {
   return (
     <TWProvider
-      activeChain="goerli"
+      activeChain="localhost"
       clientId="dd889be01a6b364576a50984107b357d"
       supportedWallets={[metamaskWallet()]}
       authConfig={{

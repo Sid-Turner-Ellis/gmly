@@ -41,6 +41,7 @@ const buttonVariants = cva(
 type ButtonProps = {
   className?: ClassValue;
   icon?: IconType | ReactNode;
+  children?: ReactNode;
   title?: string;
   onClick?: () => void;
 } & VariantProps<typeof buttonVariants>;
@@ -49,6 +50,7 @@ export const Button = ({
   title,
   onClick,
   disabled,
+  children,
   icon,
   variant,
   className,
@@ -68,6 +70,7 @@ export const Button = ({
         </div>
       )}
       {title && <p>{title}</p>}
+      {children}
     </button>
   );
 };

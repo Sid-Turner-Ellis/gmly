@@ -3,6 +3,9 @@ import { Modal } from "./modal/modal";
 import { Text, textVariantClassnames } from "./text";
 import { Button } from "./button";
 import { cn } from "@/utils/cn";
+import { useContract, useContractRead } from "@thirdweb-dev/react";
+import { useGamerlyContract } from "@/hooks/use-gamerly-contract";
+import { useToast } from "@/providers/toast-provider";
 
 type WalletModalProps = {
   isOpen: boolean;
@@ -12,16 +15,57 @@ type WalletModalProps = {
 export const WalletModal = ({ isOpen, closeModal }: WalletModalProps) => {
   const [isWithdraw, setIsWithdraw] = useState(false);
   const [amount, setAmount] = useState(0);
+  const { addToast } = useToast();
+  const {
+    deposit,
+    depositIsError,
+    depositIsLoading,
+    depositError,
+    withdraw,
+    withdrawIsLoading,
+    withdrawIsError,
+    withdrawError,
+  } = useGamerlyContract();
+  const isLoading = withdrawIsLoading || depositIsLoading;
+
+  useEffect(() => {
+    if (withdrawIsError || depositIsError) {
+      const errorMessage =
+        (withdrawError as any)?.reason ?? (depositError as any)?.reason;
+
+      addToast({
+        type: "error",
+        message:
+          errorMessage ?? "Something went wrong. Please try again later.",
+      });
+    }
+  }, [withdrawIsError, depositIsError]);
 
   useEffect(() => {
     setAmount(0);
   }, [isWithdraw, isOpen]);
 
-  const onConfirm = () => {};
+  const onConfirm = async () => {
+    try {
+      if (isWithdraw) {
+        await withdraw({ args: [amount] });
+      } else {
+        await deposit({ args: [amount] });
+      }
+      addToast({
+        type: "success",
+        message: "Transaction successful.",
+      });
+    } catch (error) {
+    } finally {
+      closeModal();
+    }
+  };
 
   return (
     <div className="text-white">
       <Modal
+        isLoading={isLoading}
         title={isWithdraw ? "Withdraw" : "Deposit"}
         description="Deposit USDC into Gamerly and withdraw anytime."
         isOpen={isOpen}

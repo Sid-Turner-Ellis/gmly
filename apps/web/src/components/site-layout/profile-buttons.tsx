@@ -5,6 +5,7 @@ import { useTailwindBreakpoint } from "@/hooks/use-tailwind-breakpoint";
 import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
 import { useState } from "react";
 import { WalletModal } from "../wallet-modal";
+import { useGamerlyContract } from "@/hooks/use-gamerly-contract";
 
 type ProfileButtonsProps = {};
 
@@ -12,19 +13,27 @@ export const ProfileButtons = ({}: ProfileButtonsProps) => {
   const { user, logout } = useAuth();
   const isDesktop = useTailwindBreakpoint("md");
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
+  const { balance, isBalanceLoading } = useGamerlyContract();
   const username = user?.data?.profile?.username ?? "User";
+
   return (
     <div className="relative z-0 flex h-full gap-2 lg:gap-3">
       <WalletModal
         isOpen={isWalletModalOpen}
         closeModal={() => setIsWalletModalOpen(false)}
       />
+
       <Button
-        title={"$150"}
+        title={typeof balance === "number" ? `$${balance}` : undefined}
         onClick={() => setIsWalletModalOpen(true)}
         variant={"primary"}
-        icon={isDesktop ? "usdc" : undefined}
-      />
+        icon={isDesktop && !isBalanceLoading ? "usdc" : undefined}
+      >
+        {isBalanceLoading && (
+          <div className="h-3 w-12 animate-pulse bg-brand-primary-dark rounded-md" />
+        )}
+      </Button>
+
       <div className="h-full">
         <Button
           variant="secondary"

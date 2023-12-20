@@ -12,6 +12,9 @@ module.exports = {
     },
   },
   networks: {
+    hardhat: {
+      chainId: 1337,
+    },
     zksync_testnet: {
       url: "https://zksync2-testnet.zksync.dev",
       ethNetwork: "goerli",
