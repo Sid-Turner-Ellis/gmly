@@ -55,7 +55,7 @@ const DesktopTableRows = ({
         </TableCell>
       </TableRow>
       {teamProfiles.map((profile, ind) => (
-        <Clickable action={`/profile/${profile.attributes.profile.data?.id}`}>
+        <Clickable action={`/profile/${profile.attributes.profile.data?.id}`} key={ind}>
           <TableRow isDark={ind % 2 === 0} key={ind}>
             <TableCell className="w-[14%]">
               <Text>{profile.attributes.rank}</Text>
