@@ -12,7 +12,7 @@ const getExtraSmallImageFromEntry = (entry: any, key: string) => {
   }
 };
 
-export default {
+export default ({ env }) => ({
   "schemas-to-ts": {
     enabled: false,
   },
@@ -27,8 +27,8 @@ export default {
   },
   meilisearch: {
     config: {
-      host: "http://0.0.0.0:7700/",
-      apiKey: "MASTER_KEY",
+      host: env("MEILISEARCH_URL", "http://0.0.0.0:7700/"),
+      apiKey: env("MEILISEARCH_API_KEY", "MASTER_KEY"),
       game: {
         indexName: "global",
         settings: {
@@ -67,4 +67,4 @@ export default {
       },
     },
   },
-};
+});

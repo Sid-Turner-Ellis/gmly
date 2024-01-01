@@ -7,7 +7,7 @@ import { useMemo } from "react";
 
 export const useGamerlyContract = () => {
   const { contract } = useContract(
-    "0x4ed7c70F96B99c776995fB64377f0d4aB3B0e1C1"
+    "0x4A679253410272dd5232B3Ff7cF5dbB88f295319"
   );
 
   const { data, isLoading: isBalanceLoading } = useContractRead(

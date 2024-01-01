@@ -10,9 +10,8 @@ export type GlobalIndexHit = {
 };
 
 const meilisearchClient = new MeiliSearch({
-  host: "http://127.0.0.1:7700",
-  apiKey: "7d9083e1f96ce169ffffcff007bd5ec46e150df26fae99d358ce4f97e759b115",
-  // apiKey: "3c6a9acf38532daa40802ab684137a889a97c4ef88ffc76bdd710ffdb9658688",
+  host: process.env.NEXT_PUBLIC_MEILISEARCH_URL!,
+  apiKey: process.env.NEXT_PUBLIC_MEILISEARCH_MASTER_KEY!,
 });
 
 export const globalMelilisearchIndex =
