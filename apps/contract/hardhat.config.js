@@ -1,45 +1,21 @@
-require("@matterlabs/hardhat-zksync-solc");
+/** @type import('hardhat/config').HardhatUserConfig */
+require("@nomicfoundation/hardhat-toolbox");
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-  zksolc: {
-    version: "1.3.9",
-    compilerSource: "binary",
-    settings: {
-      optimizer: {
-        enabled: true,
-      },
-    },
-  },
+  solidity: "0.8.19",
+
   networks: {
     hardhat: {
       chainId: 1337,
-    },
-    zksync_testnet: {
-      url: "https://zksync2-testnet.zksync.dev",
-      ethNetwork: "goerli",
-      chainId: 280,
-      zksync: true,
-    },
-    zksync_mainnet: {
-      url: "https://zksync2-mainnet.zksync.io/",
-      ethNetwork: "mainnet",
-      chainId: 324,
-      zksync: true,
-    },
-  },
-  paths: {
-    artifacts: "./artifacts-zk",
-    cache: "./cache-zk",
-    sources: "./contracts",
-    tests: "./test",
-  },
-  solidity: {
-    version: "0.8.17",
-    settings: {
-      optimizer: {
+      mining: {
+        auto: true,
+        interval: 5000,
+      },
+      forking: {
         enabled: true,
-        runs: 200,
+        url: "https://eth-mainnet.g.alchemy.com/v2/h8_Wc3TFyCUAfAgsNrOqI4dEr36SKyR9",
+        // blockNumber: 18912483,
       },
     },
   },

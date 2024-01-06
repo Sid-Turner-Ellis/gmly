@@ -65,6 +65,12 @@
       "relation": "oneToMany",
       "target": "api::notification.notification",
       "mappedBy": "profile"
+    },
+    "transactions": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::transaction.transaction",
+      "mappedBy": "profile"
     }
   }
 }

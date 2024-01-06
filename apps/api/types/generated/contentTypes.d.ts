@@ -820,6 +820,11 @@ export interface ApiProfileProfile extends Schema.CollectionType {
       'oneToMany',
       'api::notification.notification'
     >;
+    transactions: Attribute.Relation<
+      'api::profile.profile',
+      'oneToMany',
+      'api::transaction.transaction'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -915,6 +920,47 @@ export interface ApiTeamProfileTeamProfile extends Schema.CollectionType {
   };
 }
 
+export interface ApiTransactionTransaction extends Schema.CollectionType {
+  collectionName: 'transactions';
+  info: {
+    singularName: 'transaction';
+    pluralName: 'transactions';
+    displayName: 'Transaction';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    confirmed: Attribute.Boolean &
+      Attribute.Required &
+      Attribute.DefaultTo<false>;
+    type: Attribute.Enumeration<['deposit', 'withdraw', 'in', 'out']> &
+      Attribute.Required;
+    amount: Attribute.Integer & Attribute.Required;
+    profile: Attribute.Relation<
+      'api::transaction.transaction',
+      'manyToOne',
+      'api::profile.profile'
+    >;
+    txHash: Attribute.String & Attribute.Unique;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::transaction.transaction',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::transaction.transaction',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 declare module '@strapi/types' {
   export module Shared {
     export interface ContentTypes {
@@ -937,6 +983,7 @@ declare module '@strapi/types' {
       'api::profile.profile': ApiProfileProfile;
       'api::team.team': ApiTeamTeam;
       'api::team-profile.team-profile': ApiTeamProfileTeamProfile;
+      'api::transaction.transaction': ApiTransactionTransaction;
     }
   }
 }

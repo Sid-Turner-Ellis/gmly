@@ -1,3 +1,5 @@
+import { ethers } from "ethers";
+
 export const cronTasks = {
   inviteExpiryJob: {
     async task({ strapi }) {
@@ -26,11 +28,60 @@ export const cronTasks = {
       await Promise.all(
         expiredInvites.map(async ({ id }) => {
           await strapi.service("api::team-profile.team-profile").delete(id);
-        })
+        }),
       );
     },
     options: {
       rule: "0 * * * *", // start of every hour
+    },
+  },
+  confirmTransactions: {
+    async task({ strapi }) {
+      const provider = new ethers.providers.JsonRpcProvider(
+        "https://30fa-138-199-53-241.ngrok-free.app",
+      );
+      await provider.ready;
+      const { results: unconfirmedTransactions } = await strapi.services[
+        "api::transaction.transaction"
+      ].find({
+        filters: {
+          confirmed: false,
+        },
+      });
+
+      await Promise.all(
+        unconfirmedTransactions.map(async (transaction) => {
+          if (!transaction.txHash) {
+            return;
+          }
+
+          console.log(
+            "found unconfirmed transaction: ",
+            transaction.txHash,
+            "checking...",
+          );
+          // errors here are crashing the server???
+          const web3Transaction = await provider.getTransaction(
+            transaction.txHash,
+          );
+
+          // TODO: this should be more like 180
+          if (web3Transaction.confirmations >= 1) {
+            await strapi
+              .service("api::transaction.transaction")
+              .update(transaction.id, {
+                data: {
+                  confirmed: true,
+                },
+              });
+
+            console.log("transaction has been comfirmed: ", transaction.txHash);
+          }
+        }),
+      );
+    },
+    options: {
+      rule: "* * * * *", // start of minute
     },
   },
 };

@@ -5,7 +5,22 @@ import {
 } from "@thirdweb-dev/react";
 import { useMemo } from "react";
 
+const mockReturn = {
+  balance: 0,
+  isBalanceLoading: false,
+  deposit: async () => {},
+  depositIsLoading: false,
+  depositIsError: false,
+  depositError: null,
+  withdraw: async () => {},
+  withdrawIsLoading: false,
+  withdrawIsError: false,
+  withdrawError: null,
+} as const;
+
 export const useGamerlyContract = () => {
+  return mockReturn;
+
   const { contract } = useContract(
     "0x4A679253410272dd5232B3Ff7cF5dbB88f295319"
   );
