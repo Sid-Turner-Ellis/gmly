@@ -3,12 +3,18 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "hardhat:dev": "APP_ENV=development hardhat",
+    "hardhat:staging": "APP_ENV=staging hardhat --network mumbai",
+    "hardhat:prod": "APP_ENV=production hardhat --network polygon"
+  },
   "dependencies": {
+    "dotenv": "^16.3.1",
     "hardhat": "^2.19.4"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
-    "@nomicfoundation/hardhat-ethers": "^3.0.0",
+  "@nomicfoundation/hardhat-ethers": "^3.0.0",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.0",
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
     "@nomicfoundation/hardhat-verify": "^2.0.0",

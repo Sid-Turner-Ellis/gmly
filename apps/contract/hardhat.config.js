@@ -1,10 +1,25 @@
 /** @type import('hardhat/config').HardhatUserConfig */
 require("@nomicfoundation/hardhat-toolbox");
 
+const getEnvFileName = () => {
+  const env = process.env.APP_ENV
+
+  if(!env || env === "development") {
+    return ".env"
+  }
+
+  return `.${env}.env`
+}
+
+require("dotenv").config({
+  path: `../../${getEnvFileName()}`,
+});
+
 /** @type import('hardhat/config').HardhatUserConfig */
+
+// TODO: Add the polygon network
 module.exports = {
   solidity: "0.8.19",
-
   networks: {
     hardhat: {
       chainId: 1337,
@@ -14,9 +29,13 @@ module.exports = {
       },
       forking: {
         enabled: true,
-        url: "https://eth-mainnet.g.alchemy.com/v2/h8_Wc3TFyCUAfAgsNrOqI4dEr36SKyR9",
-        // blockNumber: 18912483,
+        url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`,
+        blockNumber: 18912483,
       },
     },
+    mumbai: {
+      url: `https://polygon-mumbai.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
+      accounts: [process.env.GAMERLY_SMART_CONTRACT_OWNER_PRIVATE_KEY],
+    }
   },
 };

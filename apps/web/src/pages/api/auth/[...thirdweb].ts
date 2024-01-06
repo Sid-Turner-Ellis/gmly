@@ -37,7 +37,7 @@ const getTokenFromCookie = (req: NextRequest) => {
 
 export const { ThirdwebAuthHandler, getUser } = ThirdwebAuth({
   domain: "gamerly.app",
-  wallet: new PrivateKeyWallet(process.env.THIRDWEB_AUTH_PRIVATE_KEY || ""),
+  wallet: new PrivateKeyWallet(process.env.GAMERLY_SMART_CONTRACT_OWNER_PRIVATE_KEY || ""),
   authOptions: {
     refreshIntervalInSeconds: 60 * 60 * 3, // Note that refreshing occurs whenever /user endpoint is hit
     tokenDurationInSeconds: 60 * 60 * 24 * 7,

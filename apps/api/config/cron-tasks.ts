@@ -37,8 +37,9 @@ export const cronTasks = {
   },
   confirmTransactions: {
     async task({ strapi }) {
+      // Make the request to the smart contract
       const provider = new ethers.providers.JsonRpcProvider(
-        "https://30fa-138-199-53-241.ngrok-free.app",
+        process.env.JSON_RPC_URL,
       );
       await provider.ready;
       const { results: unconfirmedTransactions } = await strapi.services[
@@ -66,6 +67,7 @@ export const cronTasks = {
           );
 
           // TODO: this should be more like 180
+          // What happens if we can't find a transaction because it was just created?
           if (web3Transaction.confirmations >= 1) {
             await strapi
               .service("api::transaction.transaction")

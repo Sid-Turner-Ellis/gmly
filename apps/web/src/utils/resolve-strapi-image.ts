@@ -6,7 +6,7 @@ import {
 } from "@/types/strapi-types";
 
 const addUrl = (url: string) =>
-  `${process.env.NEXT_PUBLIC_STRAPI_PROTOCOL}://${process.env.NEXT_PUBLIC_STRAPI_HOSTNAME}${url}`;
+  `${process.env.NEXT_PUBLIC_API_PROTOCOL}://${process.env.NEXT_PUBLIC_API_HOST_NAME}${url}`;
 
 const isStrapiRelationImage = (
   v: unknown

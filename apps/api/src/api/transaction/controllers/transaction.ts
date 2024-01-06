@@ -90,6 +90,24 @@ export default factories.createCoreController(
   "api::transaction.transaction",
   ({ strapi }) => ({
     async deposit(ctx) {
+      // const xprovider = new ethers.providers.JsonRpcProvider(
+      //   process.env.JSON_RPC_URL,
+      // );
+      // await xprovider.ready;
+
+      // const xownerWallet = new ethers.Wallet(
+      //   process.env.GAMERLY_SMART_CONTRACT_OWNER_PRIVATE_KEY,
+      //   xprovider,
+      // );
+
+      // const xgamerlyContract = new ethers.Contract(
+      //   process.env.GAMERLY_SMART_CONTRACT_ADDRESS,
+      //   gamerlyAbi,
+      // );
+
+      // console.log(xgamerlyContract.deposit);
+
+      // return Promise.resolve(true);
       const { amount } = ctx.request.body?.data || { amount: 0 };
 
       if (amount <= 0) {
@@ -114,17 +132,17 @@ export default factories.createCoreController(
 
       // Make the request to the smart contract
       const provider = new ethers.providers.JsonRpcProvider(
-        "https://30fa-138-199-53-241.ngrok-free.app",
+        process.env.JSON_RPC_URL,
       );
       await provider.ready;
 
       const ownerWallet = new ethers.Wallet(
-        "ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
+        process.env.GAMERLY_SMART_CONTRACT_OWNER_PRIVATE_KEY,
         provider,
       );
 
       const gamerlyContract = new ethers.Contract(
-        "0x9DBb24B10502aD166c198Dbeb5AB54d2d13AfcFd",
+        process.env.GAMERLY_SMART_CONTRACT_ADDRESS,
         gamerlyAbi,
       );
 
@@ -145,6 +163,8 @@ export default factories.createCoreController(
         );
         const txHash = receipt.hash;
 
+        console.log(receipt);
+
         await strapi
           .service("api::transaction.transaction")
           .update(newlyCreatedTransaction.id, {
@@ -153,6 +173,7 @@ export default factories.createCoreController(
             },
           });
       } catch (error) {
+        // TODO: Send a failure notification
         await strapi
           .service("api::transaction.transaction")
           .delete(newlyCreatedTransaction.id);
@@ -188,17 +209,17 @@ export default factories.createCoreController(
 
       // Make the request to the smart contract
       const provider = new ethers.providers.JsonRpcProvider(
-        "https://30fa-138-199-53-241.ngrok-free.app",
+        process.env.JSON_RPC_URL,
       );
       await provider.ready;
 
       const ownerWallet = new ethers.Wallet(
-        "ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
+        process.env.GAMERLY_SMART_CONTRACT_OWNER_PRIVATE_KEY,
         provider,
       );
 
       const gamerlyContract = new ethers.Contract(
-        "0x9DBb24B10502aD166c198Dbeb5AB54d2d13AfcFd",
+        process.env.GAMERLY_SMART_CONTRACT_ADDRESS,
         gamerlyAbi,
       );
 

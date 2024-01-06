@@ -24,7 +24,7 @@ export const useStrapiImageUpload = () => {
   const uppy = useMemo(
     () =>
       new Uppy().use(XHR, {
-        endpoint: `${process.env.NEXT_PUBLIC_STRAPI_PROTOCOL}://${process.env.NEXT_PUBLIC_STRAPI_HOSTNAME}/api/upload`,
+        endpoint: `${process.env.NEXT_PUBLIC_API_PROTOCOL}://${process.env.NEXT_PUBLIC_API_HOST_NAME}/api/upload`,
         formData: true,
         fieldName: "files", // Strapi expects the file field to be called "files"
       }),

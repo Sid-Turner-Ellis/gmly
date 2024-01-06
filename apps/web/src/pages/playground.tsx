@@ -54,6 +54,14 @@ export default function Page() {
   const [amount, setAmount] = useState(0);
   const [withdrawAmount, setWithdrawAmount] = useState(0);
   const usdcContract = useContract(USDC.address, USDC.abi);
+
+  useEffect(() => {
+    //
+    window.addEventListener("beforeunload", (e) => {
+      e.preventDefault();
+      e.returnValue = "";
+    });
+  }, []);
   const { mutateAsync: approveMutateAsync } = useContractWrite(
     usdcContract.contract,
     "approve"
@@ -187,7 +195,7 @@ export default function Page() {
 }
 
 const USDC = {
-  address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+  address: process.env.NEXT_PUBLIC_USDC_SMART_CONTRACT_ADDRESS,
   abi: [
     {
       constant: true,
@@ -595,7 +603,7 @@ const USDC = {
 };
 
 const GAMERLY = {
-  address: "0x9DBb24B10502aD166c198Dbeb5AB54d2d13AfcFd",
+  address: process.env.NEXT_PUBLIC_GAMERLY_SMART_CONTRACT_ADDRESS,
   abi: [
     {
       inputs: [],

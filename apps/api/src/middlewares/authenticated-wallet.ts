@@ -3,7 +3,7 @@ import { ThirdwebAuth } from "@thirdweb-dev/auth";
 import { PrivateKeyWallet } from "@thirdweb-dev/auth/evm";
 
 const wallet = new PrivateKeyWallet(
-  process.env.THIRDWEB_AUTH_PRIVATE_KEY || ""
+  process.env.GAMERLY_SMART_CONTRACT_OWNER_PRIVATE_KEY || ""
 );
 
 // Per engineering: we have a verify function in the auth sdk. You need both addresses (backend wallet address and the user wallet address)

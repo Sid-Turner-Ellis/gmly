@@ -1,13 +1,15 @@
 const hre = require("hardhat");
 
+const env = process.env.APP_ENV
 async function main() {
-  console.log("Deploying...");
+  console.log(`Deploying to ${env}...`);
   const gamerlyContract = await hre.ethers.deployContract("GamerlyContract");
 
   console.log("Waiting...");
   await gamerlyContract.waitForDeployment();
 
-  console.log("Deployment complete", gamerlyContract.address, gamerlyContract);
+  // TODO: Get and store the ABI somewhere
+  console.log(`Deployment to ${env} complete`, gamerlyContract.address, gamerlyContract);
 }
 
 main().catch((error) => {

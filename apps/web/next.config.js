@@ -1,15 +1,17 @@
 /** @type {import('next').NextConfig} */
+
+console.log("hi", process.env.APP_ENV, process.env.NEXT_PUBLIC_API_HOST_NAME);
 const nextConfig = {
   reactStrictMode: true,
   images: {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: process.env.NEXT_PUBLIC_STRAPI_HOSTNAME,
+        hostname: process.env.NEXT_PUBLIC_API_HOST_NAME,
       },
       {
         protocol: "http",
-        hostname: process.env.NEXT_PUBLIC_STRAPI_HOSTNAME,
+        hostname: process.env.NEXT_PUBLIC_API_HOST_NAME,
       },
       {
         protocol: "http",
