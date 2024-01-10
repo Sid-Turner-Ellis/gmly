@@ -109,6 +109,7 @@ export default factories.createCoreController(
 
       // return Promise.resolve(true);
       const { amount } = ctx.request.body?.data || { amount: 0 };
+      // TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:!!! We should not delete the transaction if it fails as it might fail if the transaction already exists
 
       if (amount <= 0) {
         return ctx.badRequest("Amount must be greater than 0");

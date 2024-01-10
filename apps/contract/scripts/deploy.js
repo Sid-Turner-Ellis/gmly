@@ -1,15 +1,26 @@
-const hre = require("hardhat");
+const { ethers, upgrades } = require("hardhat");
 
-const env = process.env.APP_ENV
+const env = process.env.APP_ENV;
+
 async function main() {
   console.log(`Deploying to ${env}...`);
-  const gamerlyContract = await hre.ethers.deployContract("GamerlyContract");
+
+  const GamerlyContractFactory = await ethers.getContractFactory("Gamerly");
+  const gamerlyContract = await upgrades.deployProxy(GamerlyContractFactory, [
+    process.env.USDC_SMART_CONTRACT_ADDRESS,
+  ]);
 
   console.log("Waiting...");
   await gamerlyContract.waitForDeployment();
 
+  const gamerlyContractAddress = await gamerlyContract.getAddress();
+
   // TODO: Get and store the ABI somewhere
-  console.log(`Deployment to ${env} complete`, gamerlyContract.address, gamerlyContract);
+  console.log(
+    `Deployment to ${env} complete`,
+    gamerlyContractAddress,
+    gamerlyContract
+  );
 }
 
 main().catch((error) => {

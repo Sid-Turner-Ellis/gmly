@@ -1,15 +1,17 @@
 /** @type import('hardhat/config').HardhatUserConfig */
 require("@nomicfoundation/hardhat-toolbox");
+require("@openzeppelin/hardhat-upgrades");
+require("@nomicfoundation/hardhat-chai-matchers");
 
 const getEnvFileName = () => {
-  const env = process.env.APP_ENV
+  const env = process.env.APP_ENV;
 
-  if(!env || env === "development") {
-    return ".env"
+  if (!env || env === "development") {
+    return ".env";
   }
 
-  return `.${env}.env`
-}
+  return `.${env}.env`;
+};
 
 require("dotenv").config({
   path: `../../${getEnvFileName()}`,
@@ -19,7 +21,7 @@ require("dotenv").config({
 
 // TODO: Add the polygon network
 module.exports = {
-  solidity: "0.8.19",
+  solidity: "0.8.20",
   networks: {
     hardhat: {
       chainId: 1337,
@@ -36,6 +38,6 @@ module.exports = {
     mumbai: {
       url: `https://polygon-mumbai.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
       accounts: [process.env.GAMERLY_SMART_CONTRACT_OWNER_PRIVATE_KEY],
-    }
+    },
   },
 };

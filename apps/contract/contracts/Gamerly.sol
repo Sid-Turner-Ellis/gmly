@@ -1,87 +1,82 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.2;
+
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "./IERC20.sol";
 import "hardhat/console.sol";
 
-contract GamerlyContract {
-    address private owner;
+contract Gamerly is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     IERC20 private USDC;
-    string private globalSomething;
 
-    enum TransactionType {
-        Deposit,
-        Withdraw
-    }
+    enum TransactionType { Deposit, Withdraw }
 
     struct Transaction {
-        string id;
+        uint256 id;
         TransactionType transactionType;
         address profileAddress;
         uint256 amount;
+        bool valid;
     }
 
-    mapping(string => Transaction) private transactions;
-    mapping(address => string[]) private transactionsForAddress;
+    mapping(uint256 => Transaction) private transactions;
+    uint256[] private transactionIds;
 
-    modifier onlyOwner {
-      require(msg.sender == owner);
+    modifier validateTransaction(uint256 transactionId, address profileAddress, uint256 amount) {
+        require(!transactions[transactionId].valid, "Transaction ID already exists");
         _;
     }
 
-    constructor()  {
-        owner = msg.sender;
-        // This is for eth mainnet right now - we'll likely want to make this configurable for different networks
-        USDC = IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
-    }
- 
-    function writeSomething(string memory something) public onlyOwner() {
-        globalSomething = something;
+    modifier hasSufficientBalance(address account, uint256 amount) {
+        require(USDC.balanceOf(account) >= amount, "Insufficient balance");
+        _;
     }
 
-    function readSomething() public view returns (string memory) {
-        return globalSomething;
+    modifier hasSufficientAllowance(address account, uint256 amount) {
+        require(USDC.allowance(account, address(this)) >= amount, "Insufficient allowance");
+        _;
     }
 
-    function deposit(string memory transactionId, address profileAddress, uint256 amount) public onlyOwner() {
-        // get the allowance    
-        uint256 profileUsdcBalance = USDC.balanceOf(msg.sender);
-        console.log('deposit', transactionId, profileAddress, amount);
-        console.log('profileUsdcBalance', profileUsdcBalance);
-        require(profileUsdcBalance >= amount, "Insufficient USDC balance");
+    function initialize(address _usdcAddress) initializer public {
+        __Ownable_init(msg.sender);
+        __UUPSUpgradeable_init();
+        USDC = IERC20(_usdcAddress);
+    }
 
-        // Check if the sender has approved the contract to spend at least the deposit amount
-        uint256 allowance = USDC.allowance(profileAddress, address(this));
-        console.log('allowance', allowance);
-        require(allowance >= amount, "Insufficient allowance for contract to transfer USDC");
+    function _authorizeUpgrade(address) internal override onlyOwner {}
+
+    function deposit(uint256 transactionId, address profileAddress, uint256 amount)
+        external onlyOwner validateTransaction(transactionId, profileAddress, amount)
+        hasSufficientBalance(profileAddress, amount) hasSufficientAllowance(profileAddress, amount)
+    {
         require(USDC.transferFrom(profileAddress, address(this), amount), "Transfer failed");
-
-        // TODO: make sure the transaction id is unique
-        Transaction memory newTransaction = Transaction(transactionId, TransactionType.Deposit, profileAddress, amount);
-        transactions[transactionId] = newTransaction;
-        transactionsForAddress[profileAddress].push(transactionId);
+        _recordTransaction(transactionId, TransactionType.Deposit, profileAddress, amount);
     }
 
-    function withdraw(string memory transactionId, address profileAddress, uint256 amount) public onlyOwner() {
-        // get the allowance    
-        uint256 contractUsdcBalance = USDC.balanceOf(address(this));
-        console.log('withdraw', transactionId, profileAddress, amount);
-        console.log('contractUsdcBalance', contractUsdcBalance);
-        require(contractUsdcBalance >= amount, "Insufficient USDC balance");
-
-        // TODO: need to check this - not sure if it would be the caller (our server) or the smart contract
-        // require(USDC.transferFrom(address(this), profileAddress, amount), "Transfer failed");
-        // TODO: Check that transfer will transfer from this smart contract rather than our smart contract wallet
+    function withdraw(uint256 transactionId, address profileAddress, uint256 amount)
+        external onlyOwner validateTransaction(transactionId, profileAddress, amount)
+        hasSufficientBalance(address(this),amount)
+    {
         require(USDC.transfer(profileAddress, amount), "Transfer failed");
-
-        Transaction memory newTransaction = Transaction(transactionId, TransactionType.Withdraw, profileAddress, amount);
-        transactions[transactionId] = newTransaction;
-        transactionsForAddress[profileAddress].push(transactionId);
+        _recordTransaction(transactionId, TransactionType.Withdraw, profileAddress, amount);
     }
 
+    function withdrawToOwner(uint256 amount) external onlyOwner hasSufficientBalance(address(this),amount) {
+        require(USDC.transfer(owner(), amount), "Transfer failed");
+    }
 
-    // TODO: Function that moves the USDC to the owner's address
-    // Use view not pure
+    function getTransaction(uint256 transactionId) external onlyOwner view returns (Transaction memory transaction){
+        return transactions[transactionId];
+    }
 
+    function getTransactionIds() external onlyOwner view returns (uint256[] memory){
+        return transactionIds;
+    }
 
+    function _recordTransaction(uint256 transactionId, TransactionType transactionType, address profileAddress, uint256 amount) internal {
+        Transaction memory newTransaction = Transaction(transactionId, transactionType, profileAddress, amount, true);
+        transactions[transactionId] = newTransaction;
+        transactionIds.push(transactionId);
+    }
 }
-
