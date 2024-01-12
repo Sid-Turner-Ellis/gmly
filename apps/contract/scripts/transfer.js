@@ -1,8 +1,13 @@
 const { ethers, network } = require("hardhat");
 
-// TODO: This wont work on other networks
-const USDC = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+const env = process.env.APP_ENV;
 
+if (env !== "development") {
+  console.log("This script is only for development");
+  process.exitCode = 1;
+}
+
+const USDC = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
 const USDC_WHALE = "0x13134B8d770907eCb263cB88a67F9AF833007aFc";
 const RECEIVER = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8";
 

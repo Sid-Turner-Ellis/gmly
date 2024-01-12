@@ -130,7 +130,10 @@ describe("Gamerly contract", function () {
           ethers.Wallet.createRandom().address,
           ethers.parseUnits("50", 6)
         )
-      ).to.be.revertedWith("Transaction ID already exists");
+      ).to.be.revertedWithCustomError(
+        gamerlyContract,
+        "TransactionIdAlreadyExists"
+      );
 
       // Expect the original transaction to remain unchanged
       expect(await gamerlyContract.getTransaction(52)).to.deep.equal([
@@ -150,7 +153,7 @@ describe("Gamerly contract", function () {
       // No allowance set
       await expect(
         gamerlyContract.deposit(1, wallet.address, ethers.parseUnits("500", 6))
-      ).to.be.revertedWith("Insufficient allowance");
+      ).to.be.revertedWithCustomError(gamerlyContract, "InsufficientAllowance");
     });
 
     it("insufficient balance throws", async () => {
@@ -164,7 +167,7 @@ describe("Gamerly contract", function () {
 
       await expect(
         gamerlyContract.deposit(1, wallet.address, ethers.parseUnits("500", 6))
-      ).to.be.revertedWith("Insufficient balance");
+      ).to.be.revertedWithCustomError(gamerlyContract, "InsufficientBalance");
     });
   });
   describe("withdraw", async () => {
@@ -238,7 +241,10 @@ describe("Gamerly contract", function () {
           ethers.Wallet.createRandom().address,
           ethers.parseUnits("50", 6)
         )
-      ).to.be.revertedWith("Transaction ID already exists");
+      ).to.be.revertedWithCustomError(
+        gamerlyContract,
+        "TransactionIdAlreadyExists"
+      );
 
       // Expect the original transaction to remain unchanged
       expect(await gamerlyContract.getTransaction(32)).to.deep.equal([

@@ -23,18 +23,23 @@ contract Gamerly is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     mapping(uint256 => Transaction) private transactions;
     uint256[] private transactionIds;
 
+    error TransactionIdAlreadyExists();
+    error InsufficientBalance();
+    error InsufficientAllowance();
+    error TransferFailed();
+
     modifier validateTransaction(uint256 transactionId, address profileAddress, uint256 amount) {
-        require(!transactions[transactionId].valid, "Transaction ID already exists");
+        if (transactions[transactionId].valid) revert TransactionIdAlreadyExists();
         _;
     }
 
     modifier hasSufficientBalance(address account, uint256 amount) {
-        require(USDC.balanceOf(account) >= amount, "Insufficient balance");
+        if (USDC.balanceOf(account) < amount) revert InsufficientBalance();
         _;
     }
 
     modifier hasSufficientAllowance(address account, uint256 amount) {
-        require(USDC.allowance(account, address(this)) >= amount, "Insufficient allowance");
+        if (USDC.allowance(account, address(this)) < amount) revert InsufficientAllowance();
         _;
     }
 
@@ -50,27 +55,27 @@ contract Gamerly is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         external onlyOwner validateTransaction(transactionId, profileAddress, amount)
         hasSufficientBalance(profileAddress, amount) hasSufficientAllowance(profileAddress, amount)
     {
-        require(USDC.transferFrom(profileAddress, address(this), amount), "Transfer failed");
+        if (!USDC.transferFrom(profileAddress, address(this), amount)) revert TransferFailed();
         _recordTransaction(transactionId, TransactionType.Deposit, profileAddress, amount);
     }
 
     function withdraw(uint256 transactionId, address profileAddress, uint256 amount)
         external onlyOwner validateTransaction(transactionId, profileAddress, amount)
-        hasSufficientBalance(address(this),amount)
+        hasSufficientBalance(address(this), amount)
     {
-        require(USDC.transfer(profileAddress, amount), "Transfer failed");
+        if (!USDC.transfer(profileAddress, amount)) revert TransferFailed();
         _recordTransaction(transactionId, TransactionType.Withdraw, profileAddress, amount);
     }
 
-    function withdrawToOwner(uint256 amount) external onlyOwner hasSufficientBalance(address(this),amount) {
-        require(USDC.transfer(owner(), amount), "Transfer failed");
+    function withdrawToOwner(uint256 amount) external onlyOwner hasSufficientBalance(address(this), amount) {
+        if (!USDC.transfer(owner(), amount)) revert TransferFailed();
     }
 
-    function getTransaction(uint256 transactionId) external onlyOwner view returns (Transaction memory transaction){
+    function getTransaction(uint256 transactionId) external onlyOwner view returns (Transaction memory transaction) {
         return transactions[transactionId];
     }
 
-    function getTransactionIds() external onlyOwner view returns (uint256[] memory){
+    function getTransactionIds() external onlyOwner view returns (uint256[] memory) {
         return transactionIds;
     }
 
