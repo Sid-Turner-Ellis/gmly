@@ -12,17 +12,13 @@ const USDC_WHALE = "0x13134B8d770907eCb263cB88a67F9AF833007aFc";
 const RECEIVER = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8";
 
 async function main() {
-  // Start impersonating the whale
   await network.provider.request({
     method: "hardhat_impersonateAccount",
     params: [USDC_WHALE],
   });
 
-  // A signer is like an an authenticated wallet. Anything that can sign wallets
   const whale = await ethers.getSigner(USDC_WHALE);
 
-  // We can either provide the name of a local interface or paste in the contracts ABI - this is required by hardhat before interacting with ANY contract
-  // If you provide the name of a local interface then it will compile it and figure out the ABI that way
   const usdc = await ethers.getContractAt("IERC20", USDC);
 
   const attacker = await ethers.getSigner(RECEIVER);
@@ -45,10 +41,9 @@ async function main() {
 
   await attacker.sendTransaction({
     to: whale.address,
-    value: ethers.parseEther("50.0"), // Sends exactly 50.0 ether
+    value: ethers.parseEther("50.0"),
   });
 
-  // Connect will execute a contracts method from the specified ethereum account (in this case the whale)
   await usdc.connect(whale).transfer(attacker.address, USDC_AMOUNT);
 
   let newWhaleBal = await usdc.balanceOf(USDC_WHALE);

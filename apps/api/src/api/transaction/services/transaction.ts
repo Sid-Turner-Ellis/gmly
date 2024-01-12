@@ -2,6 +2,9 @@
  * transaction service
  */
 
-import { factories } from '@strapi/strapi';
+import { factories } from "@strapi/strapi";
 
-export default factories.createCoreService('api::transaction.transaction');
+export default factories.createCoreService(
+  "api::transaction.transaction",
+  ({ strapi }) => ({}),
+);

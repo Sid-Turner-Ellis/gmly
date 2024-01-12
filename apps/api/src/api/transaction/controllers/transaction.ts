@@ -2,260 +2,123 @@
  * transaction controller
  */
 
-import { factories } from "@strapi/strapi";
+import { RequestContext, factories } from "@strapi/strapi";
 import { ethers } from "ethers";
+import { getEthersProvider, getGamerlyContract } from "../../../eth-utils";
 
-const gamerlyAbi = [
-  {
-    inputs: [],
-    stateMutability: "nonpayable",
-    type: "constructor",
-  },
-  {
-    inputs: [
-      {
-        internalType: "string",
-        name: "transactionId",
-        type: "string",
-      },
-      {
-        internalType: "address",
-        name: "profileAddress",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
-    ],
-    name: "deposit",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "readSomething",
-    outputs: [
-      {
-        internalType: "string",
-        name: "",
-        type: "string",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "string",
-        name: "transactionId",
-        type: "string",
-      },
-      {
-        internalType: "address",
-        name: "profileAddress",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
-    ],
-    name: "withdraw",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "string",
-        name: "something",
-        type: "string",
-      },
-    ],
-    name: "writeSomething",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-];
+const getBadRequestMessage = async (
+  profileId: number,
+  amount: number,
+): Promise<string | null> => {
+  if (amount <= 0) {
+    return "Amount must be greater than 0";
+  }
 
-// TODO: i'll put the setup ethers in bootstrap and then attach it to context or something
+  if (amount % 1 !== 0) {
+    return "Amount must be a whole number";
+  }
+
+  const pendingTransactionsForProfile = await strapi
+    .service("api::transaction.transaction")
+    .find({
+      pagination: {
+        pageSize: 1,
+      },
+      filters: {
+        profile: profileId,
+        confirmed: false,
+      },
+    });
+
+  if (pendingTransactionsForProfile.results.length > 0) {
+    return "You already have a pending transaction, please wait for it to be confirmed";
+  }
+
+  return null;
+};
+
 export default factories.createCoreController(
   "api::transaction.transaction",
   ({ strapi }) => ({
     async deposit(ctx) {
-      // const xprovider = new ethers.providers.JsonRpcProvider(
-      //   process.env.JSON_RPC_URL,
-      // );
-      // await xprovider.ready;
-
-      // const xownerWallet = new ethers.Wallet(
-      //   process.env.GAMERLY_SMART_CONTRACT_OWNER_PRIVATE_KEY,
-      //   xprovider,
-      // );
-
-      // const xgamerlyContract = new ethers.Contract(
-      //   process.env.GAMERLY_SMART_CONTRACT_ADDRESS,
-      //   gamerlyAbi,
-      // );
-
-      // console.log(xgamerlyContract.deposit);
-
-      // return Promise.resolve(true);
       const { amount } = ctx.request.body?.data || { amount: 0 };
-      // TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:!!! We should not delete the transaction if it fails as it might fail if the transaction already exists
 
-      if (amount <= 0) {
-        return ctx.badRequest("Amount must be greater than 0");
-      }
-
-      const profile = await await strapi
+      const profile = await strapi
         .service("api::profile.profile")
         .findOneByWalletAddress(ctx.state.wallet_address);
 
-      // create the new transaction record
-      const newlyCreatedTransaction = await strapi
-        .service("api::transaction.transaction")
-        .create({
-          data: {
-            amount,
-            profile: profile.id,
-            type: "deposit",
-            confirmed: false,
-          },
-        });
+      const badRequestMessage = await getBadRequestMessage(profile.id, amount);
 
-      // Make the request to the smart contract
-      const provider = new ethers.providers.JsonRpcProvider(
-        process.env.JSON_RPC_URL,
-      );
-      await provider.ready;
-
-      const ownerWallet = new ethers.Wallet(
-        process.env.GAMERLY_SMART_CONTRACT_OWNER_PRIVATE_KEY,
-        provider,
-      );
-
-      const gamerlyContract = new ethers.Contract(
-        process.env.GAMERLY_SMART_CONTRACT_ADDRESS,
-        gamerlyAbi,
-      );
-
-      const connectedGamerlyContract = gamerlyContract.connect(ownerWallet);
-
-      // TODO: will use a gas reporter to estimate this better
-      const gasLimit = 500000;
-
-      try {
-        // TODO: Start storing the transaction hash in the transaction
-        const receipt = await connectedGamerlyContract.deposit(
-          newlyCreatedTransaction.id.toString(),
-          ctx.state.wallet_address,
-          amount * 1000000,
-          {
-            gasLimit: ethers.BigNumber.from(gasLimit),
-          },
-        );
-        const txHash = receipt.hash;
-
-        console.log(receipt);
-
-        await strapi
-          .service("api::transaction.transaction")
-          .update(newlyCreatedTransaction.id, {
-            data: {
-              txHash,
-            },
-          });
-      } catch (error) {
-        // TODO: Send a failure notification
-        await strapi
-          .service("api::transaction.transaction")
-          .delete(newlyCreatedTransaction.id);
-
-        throw error;
+      if (badRequestMessage) {
+        return ctx.badRequest(badRequestMessage);
       }
 
-      return Promise.resolve(true);
+      const provider = await getEthersProvider();
+      const currentBlockNumber = await provider.getBlockNumber();
+
+      await strapi.service("api::transaction.transaction").create({
+        data: {
+          amount,
+          profile: profile.id,
+          type: "deposit",
+          confirmed: false,
+          allowanceTxBlockNumber: currentBlockNumber,
+        },
+      });
+
+      ctx.response.status = 200;
     },
 
     async withdraw(ctx) {
       const { amount } = ctx.request.body?.data || { amount: 0 };
 
-      // TODO: check no pending withdrawals and balance
-
-      const profile = await await strapi
+      const profile = await strapi
         .service("api::profile.profile")
         .findOneByWalletAddress(ctx.state.wallet_address);
 
-      // create the new transaction record
-      //   TODO: I reckon we should normalise the amount of decimal places as it will cause a mismatch
-      // happy to put this in the contract tbh.
+      const badRequestMessage = await getBadRequestMessage(profile.id, amount);
+
+      if (badRequestMessage) {
+        return ctx.badRequest(badRequestMessage);
+      }
+
       const newlyCreatedTransaction = await strapi
         .service("api::transaction.transaction")
         .create({
           data: {
-            amount,
+            amount: amount,
             profile: profile.id,
             type: "withdraw",
             confirmed: false,
           },
         });
 
-      // Make the request to the smart contract
-      const provider = new ethers.providers.JsonRpcProvider(
-        process.env.JSON_RPC_URL,
-      );
-      await provider.ready;
-
-      const ownerWallet = new ethers.Wallet(
-        process.env.GAMERLY_SMART_CONTRACT_OWNER_PRIVATE_KEY,
-        provider,
-      );
-
-      const gamerlyContract = new ethers.Contract(
-        process.env.GAMERLY_SMART_CONTRACT_ADDRESS,
-        gamerlyAbi,
-      );
-
-      const connectedGamerlyContract = gamerlyContract.connect(ownerWallet);
-
       const gasLimit = 500000;
 
       try {
-        const receipt = await connectedGamerlyContract.withdraw(
-          newlyCreatedTransaction.id.toString(),
-          ctx.state.wallet_address,
-          amount * 1000000,
-          {
-            gasLimit: ethers.BigNumber.from(gasLimit),
-          },
-        );
-
-        const txHash = receipt.hash;
+        const gamerlyContract = await getGamerlyContract();
+        const tx = await (
+          await gamerlyContract.withdraw(
+            newlyCreatedTransaction.id,
+            ctx.state.wallet_address,
+            amount * 1000000,
+            {
+              gasLimit: ethers.BigNumber.from(gasLimit),
+            },
+          )
+        ).wait();
 
         await strapi
           .service("api::transaction.transaction")
           .update(newlyCreatedTransaction.id, {
             data: {
-              txHash,
+              txHash: tx.transactionHash,
+              txBlockNumber: tx.blockNumber,
             },
           });
-      } catch (error) {
-        await strapi
-          .service("api::transaction.transaction")
-          .delete(newlyCreatedTransaction.id);
+      } catch (error) {}
 
-        throw error;
-      }
-
-      return Promise.resolve(true);
+      ctx.response.status = 200;
     },
   }),
 );

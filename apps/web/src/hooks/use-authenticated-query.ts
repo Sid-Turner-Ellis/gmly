@@ -8,7 +8,7 @@ import {
   UseQueryResult,
 } from "@tanstack/react-query";
 
-// TODO: It makes sense to handle the error here as well tbh
+// TODO: It makes sense to handle the error here as well
 
 type UseQueryParams = Parameters<typeof useQuery>;
 

@@ -36,12 +36,11 @@ export const useAuth = () => {
     const router = useRouter();
     const disconnectWallet = useDisconnect();
     const user = isAuthenticatedUser(untypedUser) ? untypedUser : null;
-    // const authStatus = "loading";
     const authStatus = isLoading
       ? "loading"
       : user
-      ? "authenticated"
-      : "unauthenticated";
+        ? "authenticated"
+        : "unauthenticated";
     const completedRegistration =
       user?.data.profile.username && user?.data.profile.region;
 

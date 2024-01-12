@@ -4,9 +4,6 @@ import { useTailwindBreakpoint } from "@/hooks/use-tailwind-breakpoint";
 import { cn } from "@/utils/cn";
 import { useRouter } from "next/router";
 import { Sidebar } from "./sidebar";
-import { Button } from "../button";
-import { Icon } from "../icon";
-import { twMerge } from "tailwind-merge";
 import { Header } from "./header";
 
 const sharedPageWidthClasses = "px-6 lg:pl-10 lg:pr-16";

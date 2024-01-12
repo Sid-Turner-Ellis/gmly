@@ -3,8 +3,6 @@ import defaultTheme from "tailwindcss/defaultTheme";
 
 // Typescript asChild - https://www.radix-ui.com/primitives/docs/guides/styling#extending-a-primitive
 
-// TODO: Create a script to get the correct node_modules path (find the closest node_modules folder with flowbite)
-
 export default {
   darkMode: ["class"],
   mode: "jit",
@@ -106,7 +104,7 @@ export default {
         },
       },
       // Animations
-      // TODO: Most of these are for specific components so make sure to name them accor
+      // TODO: Most of these are for specific components so make sure to name them accordingly
       keyframes: {
         overlayShow: {
           from: { opacity: "0" },

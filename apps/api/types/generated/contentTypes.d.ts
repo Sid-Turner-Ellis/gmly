@@ -754,7 +754,10 @@ export interface ApiNotificationNotification extends Schema.CollectionType {
     draftAndPublish: false;
   };
   attributes: {
-    type: Attribute.Enumeration<['TEAM_INVITE_RECEIVED']> & Attribute.Required;
+    type: Attribute.Enumeration<
+      ['TEAM_INVITE_RECEIVED', 'TRANSACTION_FAILED', 'TRANSACTION_SUCCEEDED']
+    > &
+      Attribute.Required;
     profile: Attribute.Relation<
       'api::notification.notification',
       'manyToOne',
@@ -766,6 +769,7 @@ export interface ApiNotificationNotification extends Schema.CollectionType {
       'api::team.team'
     >;
     seen: Attribute.Boolean & Attribute.Required & Attribute.DefaultTo<false>;
+    transaction_data: Attribute.JSON;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -825,6 +829,7 @@ export interface ApiProfileProfile extends Schema.CollectionType {
       'oneToMany',
       'api::transaction.transaction'
     >;
+    balance: Attribute.Integer & Attribute.DefaultTo<0>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -944,6 +949,9 @@ export interface ApiTransactionTransaction extends Schema.CollectionType {
       'api::profile.profile'
     >;
     txHash: Attribute.String & Attribute.Unique;
+    txBlockNumber: Attribute.BigInteger;
+    allowanceTxBlockNumber: Attribute.BigInteger;
+    onChainSinceBlockNumber: Attribute.BigInteger;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<

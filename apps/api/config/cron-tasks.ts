@@ -10,6 +10,9 @@ export const cronTasks = {
       const { results: expiredInvites } = await strapi.services[
         "api::team-profile.team-profile"
       ].find({
+        pagination: {
+          pageSize: 250,
+        },
         filters: {
           $and: [
             {
@@ -33,57 +36,6 @@ export const cronTasks = {
     },
     options: {
       rule: "0 * * * *", // start of every hour
-    },
-  },
-  confirmTransactions: {
-    async task({ strapi }) {
-      // Make the request to the smart contract
-      const provider = new ethers.providers.JsonRpcProvider(
-        process.env.JSON_RPC_URL,
-      );
-      await provider.ready;
-      const { results: unconfirmedTransactions } = await strapi.services[
-        "api::transaction.transaction"
-      ].find({
-        filters: {
-          confirmed: false,
-        },
-      });
-
-      await Promise.all(
-        unconfirmedTransactions.map(async (transaction) => {
-          if (!transaction.txHash) {
-            return;
-          }
-
-          console.log(
-            "found unconfirmed transaction: ",
-            transaction.txHash,
-            "checking...",
-          );
-          // errors here are crashing the server???
-          const web3Transaction = await provider.getTransaction(
-            transaction.txHash,
-          );
-
-          // TODO: this should be more like 180
-          // What happens if we can't find a transaction because it was just created?
-          if (web3Transaction.confirmations >= 1) {
-            await strapi
-              .service("api::transaction.transaction")
-              .update(transaction.id, {
-                data: {
-                  confirmed: true,
-                },
-              });
-
-            console.log("transaction has been comfirmed: ", transaction.txHash);
-          }
-        }),
-      );
-    },
-    options: {
-      rule: "* * * * *", // start of minute
     },
   },
 };

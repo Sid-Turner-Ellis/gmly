@@ -15,7 +15,9 @@
     "type": {
       "type": "enumeration",
       "enum": [
-        "TEAM_INVITE_RECEIVED"
+        "TEAM_INVITE_RECEIVED",
+        "TRANSACTION_FAILED",
+        "TRANSACTION_SUCCEEDED"
       ],
       "required": true
     },
@@ -34,6 +36,9 @@
       "type": "boolean",
       "default": false,
       "required": true
+    },
+    "transaction_data": {
+      "type": "json"
     }
   }
 }

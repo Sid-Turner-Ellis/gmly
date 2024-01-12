@@ -60,7 +60,7 @@ export default factories.createCoreController(
 
       const sanitizedUpdatedCreatedTeam = await this.sanitizeOutput(
         updatedCreatedTeam,
-        ctx
+        ctx,
       );
       // Puts it in the data/meta format
       return this.transformResponse(sanitizedUpdatedCreatedTeam);
@@ -106,21 +106,21 @@ export default factories.createCoreController(
 
       // Team profile is in the request data but not the original team
       const teamProfilesToCreate = teamMemberUpdates.filter(
-        (tmu) => !teamProfiles.some((tp) => tp.profile.id === tmu.profile)
+        (tmu) => !teamProfiles.some((tp) => tp.profile.id === tmu.profile),
       );
 
-      // // Team profile is in the original team but not the request data
+      // Team profile is in the original team but not the request data
       const teamProfilesToDelete = teamProfiles
         .filter(
           (tp) =>
-            !teamMemberUpdates.some((tmu) => tmu.profile === tp.profile.id)
+            !teamMemberUpdates.some((tmu) => tmu.profile === tp.profile.id),
         )
         .map((tp) => ({ id: tp.id, role: tp.role, profile: tp.profile.id }));
 
       const teamProfilesToUpdate = teamProfiles
         .map((tp) => {
           const teamMemberUpdate = teamMemberUpdates.find(
-            (tmu) => tp.profile.id === tmu.profile
+            (tmu) => tp.profile.id === tmu.profile,
           );
 
           if (teamMemberUpdate && teamMemberUpdate.role !== tp.role) {
@@ -144,7 +144,7 @@ export default factories.createCoreController(
       }
 
       const requesterTeamProfile = teamProfiles.find(
-        (tp) => tp.profile.id === profile.id
+        (tp) => tp.profile.id === profile.id,
       );
 
       const requestersRole = requesterTeamProfile?.role;
@@ -188,7 +188,7 @@ export default factories.createCoreController(
               invited_by: profile.id,
             },
           });
-        })
+        }),
       );
 
       // Apply updates
@@ -200,14 +200,14 @@ export default factories.createCoreController(
               role,
             },
           });
-        })
+        }),
       );
 
       // Apply deletes
       await Promise.all(
         teamProfilesToDelete.map(async ({ id }) => {
           await strapi.service("api::team-profile.team-profile").delete(id);
-        })
+        }),
       );
 
       const refreshedTeam = await strapi
@@ -216,10 +216,10 @@ export default factories.createCoreController(
 
       const sanitizedRefreshedTeam = await this.sanitizeOutput(
         refreshedTeam,
-        ctx
+        ctx,
       );
 
       return this.transformResponse(sanitizedRefreshedTeam);
     },
-  })
+  }),
 );

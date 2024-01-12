@@ -7,7 +7,7 @@ type PaginationProps = {
   page: number;
   setPage: (page: number) => void;
   maxPages: number;
-  visiblePageCount?: number; // Added this to control the number of visible page buttons
+  visiblePageCount?: number;
   className?: ClassValue;
 };
 

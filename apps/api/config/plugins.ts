@@ -1,4 +1,4 @@
-// TODO: add other image sizes to this too so that I can use it for the home page search too
+// TODO: add other image sizes to this too so that we can use it for the home page search too
 
 const getExtraSmallImageFromEntry = (entry: any, key: string) => {
   try {

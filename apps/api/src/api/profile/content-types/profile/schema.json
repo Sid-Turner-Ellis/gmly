@@ -71,6 +71,10 @@
       "relation": "oneToMany",
       "target": "api::transaction.transaction",
       "mappedBy": "profile"
+    },
+    "balance": {
+      "type": "integer",
+      "default": 0
     }
   }
 }

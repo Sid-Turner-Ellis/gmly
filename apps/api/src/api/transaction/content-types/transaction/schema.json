@@ -41,6 +41,15 @@
       "type": "string",
       "unique": true,
       "required": false
+    },
+    "txBlockNumber": {
+      "type": "biginteger"
+    },
+    "allowanceTxBlockNumber": {
+      "type": "biginteger"
+    },
+    "onChainSinceBlockNumber": {
+      "type": "biginteger"
     }
   }
 }

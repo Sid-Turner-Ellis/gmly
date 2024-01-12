@@ -2,8 +2,6 @@ const { expect, use } = require("chai");
 const { ethers, network, upgrades } = require("hardhat");
 const helpers = require("@nomicfoundation/hardhat-toolbox/network-helpers");
 
-// TODO: Can I test the actual deploy script here?
-
 const TransactionType = {
   Deposit: 0,
   Withdraw: 1,

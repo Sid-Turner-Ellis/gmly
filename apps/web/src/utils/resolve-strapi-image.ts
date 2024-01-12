@@ -36,7 +36,6 @@ export const resolveStrapiImage = (
   }
 
   // TODO: Start choosing nearest format to the requested one
-
   const formatUrl = imageData?.formats?.[format]?.url;
   return addUrl(formatUrl || defaultUrl);
 };

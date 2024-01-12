@@ -11,6 +11,7 @@ import {
 } from "../team/team-service";
 
 // TODO: Consider updating the strapi service so that we don't deal with profileIDs but rather addresses
+
 export type Regions = "Europe" | "NA" | "Asia" | "Oceania";
 
 export type ProfileWithoutRelations = {
