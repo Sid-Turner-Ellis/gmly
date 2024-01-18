@@ -20,6 +20,7 @@ export type ProfileWithoutRelations = {
   username: string | null;
   wager_mode: boolean;
   trust_mode: boolean;
+  balance: number;
   bio: string | null;
 };
 

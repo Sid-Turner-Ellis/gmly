@@ -4,6 +4,7 @@ import { Team, TeamWithoutRelations } from "../team/team-service";
 
 enum NOTIFICATION_TYPES {
   TeamInviteReceived = "TEAM_INVITE_RECEIVED",
+  TransactionResult = "TRANSACTION_RESULT",
 }
 
 type SharedNotificationAttributes = {
@@ -19,6 +20,16 @@ export type TeamInviteReceivedNotificationResponse = StrapiEntity<
   }
 >;
 
+export type TransactionResultNotificationResponse = StrapiEntity<
+  SharedNotificationAttributes & {
+    transaction_result_details: {
+      didFail: boolean;
+      type: "deposit" | "withdraw";
+      amount: number;
+    };
+  }
+>;
+
 export const isTeamInviteReceivedNotification = (
   v: unknown
 ): v is TeamInviteReceivedNotificationResponse => {
@@ -30,7 +41,26 @@ export const isTeamInviteReceivedNotification = (
   return isCorrectType && hasLinkedTeam;
 };
 
-export type NotificationResponse = TeamInviteReceivedNotificationResponse;
+export const isTransactionResultNotification = (
+  v: unknown
+): v is TransactionResultNotificationResponse => {
+  const value = v as TransactionResultNotificationResponse;
+  const isCorrectType =
+    value.attributes.type === NOTIFICATION_TYPES.TransactionResult;
+
+  const { amount, type, didFail } = value.attributes.transaction_result_details;
+
+  return (
+    isCorrectType &&
+    typeof amount === "number" &&
+    typeof type === "string" &&
+    typeof didFail === "boolean"
+  );
+};
+
+export type NotificationResponse =
+  | TeamInviteReceivedNotificationResponse
+  | TransactionResultNotificationResponse;
 
 const populate = ["team", "team.image"];
 

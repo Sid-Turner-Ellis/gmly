@@ -38,7 +38,6 @@ export const ModalCard = ({
   size,
   Footer,
 }: ModalCardProps) => {
-  console.log(Footer);
   return (
     <div
       className={cn(
@@ -46,7 +45,7 @@ export const ModalCard = ({
         modalVariants({ size })
       )}
     >
-      {!!Top && <div className="px-7 mb-3">{Top}</div>}
+      {!!Top && <div className="mb-3 px-7">{Top}</div>}
       <DialogPrimitives.Title className="px-7">
         <Heading variant="h2" className="mb-3">
           {title}

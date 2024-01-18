@@ -9,7 +9,6 @@ export default {
     throw new ApplicationError("Cannot update many transactions");
   },
   async beforeUpdate({ params: { data } }) {
-    console.log("afterUpdate", data);
     const initialTransaction = await strapi
       .service("api::transaction.transaction")
       .findOne(data.id);
@@ -23,8 +22,9 @@ export default {
     if (transactionWasConfirmed) {
       await strapi.service("api::notification.notification").create({
         data: {
-          type: "TRANSACTION_SUCCEEDED",
-          transaction_data: {
+          type: "TRANSACTION_RESULT",
+          transaction_result_details: {
+            didFail: false,
             type: initialTransaction.type,
             amount: initialTransaction.amount,
           },
@@ -32,14 +32,12 @@ export default {
       });
     }
   },
-  afterCreate() {},
   async afterDelete({ result }) {
-    console.log("afterDelete", result);
-
     await strapi.service("api::notification.notification").create({
       data: {
-        type: "TRANSACTION_FAILED",
-        transaction_data: {
+        type: "TRANSACTION_RESULT",
+        transaction_result_details: {
+          didFail: true,
           type: result.type,
           amount: result.amount,
         },

@@ -37,7 +37,9 @@ const getTokenFromCookie = (req: NextRequest) => {
 
 export const { ThirdwebAuthHandler, getUser } = ThirdwebAuth({
   domain: "gamerly.app",
-  wallet: new PrivateKeyWallet(process.env.GAMERLY_SMART_CONTRACT_OWNER_PRIVATE_KEY || ""),
+  wallet: new PrivateKeyWallet(
+    process.env.GAMERLY_SMART_CONTRACT_OWNER_PRIVATE_KEY || ""
+  ),
   authOptions: {
     refreshIntervalInSeconds: 60 * 60 * 3, // Note that refreshing occurs whenever /user endpoint is hit
     tokenDurationInSeconds: 60 * 60 * 24 * 7,
@@ -62,6 +64,7 @@ export const { ThirdwebAuthHandler, getUser } = ThirdwebAuth({
           bio,
           createdAt,
           avatar,
+          balance,
           team_profiles,
         } = profileResponse.attributes;
 
@@ -74,6 +77,7 @@ export const { ThirdwebAuthHandler, getUser } = ThirdwebAuth({
           trust_mode,
           createdAt,
           bio,
+          balance,
           avatar,
           team_profiles,
         };
@@ -82,9 +86,8 @@ export const { ThirdwebAuthHandler, getUser } = ThirdwebAuth({
           StrapiError.isStrapiError(error) && error.error.status === 404;
 
         if (isProfileNotFound) {
-          const newProfileResponse = await ProfileService.createProfile(
-            address
-          );
+          const newProfileResponse =
+            await ProfileService.createProfile(address);
 
           profile = {
             id: newProfileResponse.id,
@@ -93,6 +96,7 @@ export const { ThirdwebAuthHandler, getUser } = ThirdwebAuth({
             username: null,
             wager_mode: false,
             trust_mode: false,
+            balance: 0,
             createdAt: newProfileResponse.attributes.createdAt,
             bio: null,
             avatar: null,

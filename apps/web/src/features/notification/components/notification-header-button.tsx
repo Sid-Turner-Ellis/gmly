@@ -32,7 +32,10 @@ export const NotificationsHeaderButton = () => {
           className="w-96 will-change-[transform,opacity] data-[state=open]:data-[side=top]:animate-slideDownAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade "
           sideOffset={14}
         >
-          <NotificationsContent onMarkAllReadClick={() => setIsOpen(false)} />
+          <NotificationsContent
+            onMarkAllReadClick={() => setIsOpen(false)}
+            onNotificationClick={() => setIsOpen(false)}
+          />
           <PopoverPrimitives.Arrow className="fill-brand-navy-light" />
         </PopoverPrimitives.Content>
       </PopoverPrimitives.Portal>

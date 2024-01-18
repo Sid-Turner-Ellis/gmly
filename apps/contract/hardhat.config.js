@@ -2,6 +2,7 @@
 require("@nomicfoundation/hardhat-toolbox");
 require("@openzeppelin/hardhat-upgrades");
 require("@nomicfoundation/hardhat-chai-matchers");
+require("hardhat-gas-reporter");
 
 const getEnvFileName = () => {
   const env = process.env.APP_ENV;
@@ -21,6 +22,9 @@ require("dotenv").config({
 
 module.exports = {
   solidity: "0.8.20",
+  gasReporter: {
+    enabled: true,
+  },
   networks: {
     hardhat: {
       chainId: 1337,

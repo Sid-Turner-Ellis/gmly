@@ -1,5 +1,8 @@
 import { Heading } from "@/components/heading";
-import { isTeamInviteReceivedNotification } from "../notification-service";
+import {
+  isTeamInviteReceivedNotification,
+  isTransactionResultNotification,
+} from "../notification-service";
 import { Text } from "@/components/text";
 import { useEffect, useState } from "react";
 import { useNotifications } from "../use-notifications";
@@ -7,6 +10,8 @@ import { useRouter } from "next/router";
 import { NotificationItem } from "./notification-item";
 import { ClassValue } from "clsx";
 import { cn } from "@/utils/cn";
+import { useAuth } from "@/hooks/use-auth";
+import { toUsdString } from "@/utils/to-usd-string";
 
 type NotificationsContent = {
   onNotificationClick?: () => void;
@@ -26,13 +31,17 @@ export const NotificationsContent = ({
     hasUnseenNotifications,
   } = useNotifications();
   const router = useRouter();
+  const { user } = useAuth();
 
   const totalNotifications = notifications.length;
+
   useEffect(() => {
     if (hasUnseenNotifications) {
       markAllAsSeen();
     }
   }, []);
+
+  console.log(notifications);
 
   return (
     <>
@@ -40,7 +49,7 @@ export const NotificationsContent = ({
         className={cn("bg-brand-navy-light rounded shadow h-full", className)}
       >
         <div className="relative">
-          <div className="flex justify-between items-center py-4 px-3">
+          <div className="flex items-center justify-between px-3 py-4">
             <Heading variant={"h3"} className={"mb-0"}>
               Notifications
             </Heading>
@@ -58,7 +67,7 @@ export const NotificationsContent = ({
         </div>
 
         {!notifications?.length && (
-          <Text className="py-4 px-3">No notifications</Text>
+          <Text className="px-3 py-4">No notifications</Text>
         )}
 
         <div>
@@ -89,6 +98,30 @@ export const NotificationsContent = ({
                     {notification.attributes.team.data?.attributes.name}
                   </strong>{" "}
                   team
+                </NotificationItem>
+              );
+            }
+
+            if (isTransactionResultNotification(notification)) {
+              const { type, amount, didFail } =
+                notification.attributes.transaction_result_details;
+              return (
+                <NotificationItem
+                  key={notification.id}
+                  onNotificationClick={() => {
+                    console.log("thisebeing clicked tho");
+                    onNotificationClick?.();
+                  }}
+                  notification={notification}
+                  image={user?.data.profile.avatar!}
+                  hideBottomBorder={isFinalNotification}
+                >
+                  Your{" "}
+                  <strong>
+                    {type === "withdraw" ? "withdrawal" : "deposit"}
+                  </strong>{" "}
+                  of {toUsdString(amount)}{" "}
+                  <strong>{didFail ? "failed" : "succeeded"}</strong>
                 </NotificationItem>
               );
             }

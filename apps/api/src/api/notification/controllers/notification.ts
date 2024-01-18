@@ -47,7 +47,7 @@ export default factories.createCoreController(
           await strapi
             .service("api::notification.notification")
             .update(id, { data: { seen: true } });
-        })
+        }),
       );
     },
 
@@ -60,7 +60,7 @@ export default factories.createCoreController(
         console.log(
           updatableFields,
           fieldToUpdate,
-          updatableFields.includes(fieldToUpdate)
+          updatableFields.includes(fieldToUpdate),
         );
         if (!updatableFields.includes(fieldToUpdate)) {
           return ctx.badRequest(`Cannot update ${fieldToUpdate}`);
@@ -84,5 +84,5 @@ export default factories.createCoreController(
 
       return await super.find(ctx);
     },
-  }
+  },
 );

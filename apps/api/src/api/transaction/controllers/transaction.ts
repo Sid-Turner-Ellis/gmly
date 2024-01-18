@@ -4,18 +4,19 @@
 
 import { RequestContext, factories } from "@strapi/strapi";
 import { ethers } from "ethers";
-import { getEthersProvider, getGamerlyContract } from "../../../eth-utils";
+import {
+  getEthersProvider,
+  getGamerlyContract,
+  getUsdcTransactionData,
+} from "../../../eth-utils";
 
+// TODO: Create package for sharing errors between web and api
 const getBadRequestMessage = async (
   profileId: number,
   amount: number,
 ): Promise<string | null> => {
-  if (amount <= 0) {
-    return "Amount must be greater than 0";
-  }
-
-  if (amount % 1 !== 0) {
-    return "Amount must be a whole number";
+  if (amount <= 0 || amount % 1 !== 0) {
+    return "InvalidAmount";
   }
 
   const pendingTransactionsForProfile = await strapi
@@ -31,7 +32,7 @@ const getBadRequestMessage = async (
     });
 
   if (pendingTransactionsForProfile.results.length > 0) {
-    return "You already have a pending transaction, please wait for it to be confirmed";
+    return "AlreadyPendingTransaction";
   }
 
   return null;
@@ -43,12 +44,25 @@ export default factories.createCoreController(
     async deposit(ctx) {
       const { amount } = ctx.request.body?.data || { amount: 0 };
 
+      // TODO: If we want to stop including the entire transaction on the chain
+      // then we will have to validate the allowance transactions addresses and amount
+      // console.log(allowanceTransactionHash)
+
+      // try {
+      //   const provider = await getEthersProvider();
+      //   const tx = await provider.getTransaction(allowanceTransactionHash)
+      //   console.log('found tx', tx)
+      //   console.log('data', getUsdcTransactionData(tx.data))
+      // } catch (error) {
+      //   console.log(error)
+      // }
+
       const profile = await strapi
         .service("api::profile.profile")
         .findOneByWalletAddress(ctx.state.wallet_address);
 
       const badRequestMessage = await getBadRequestMessage(profile.id, amount);
-
+      console.log({ badRequestMessage });
       if (badRequestMessage) {
         return ctx.badRequest(badRequestMessage);
       }

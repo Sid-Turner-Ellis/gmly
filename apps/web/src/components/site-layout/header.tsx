@@ -19,7 +19,6 @@ import { GlobalSearchBar } from "../../features/global-search/components/global-
 import { useTailwindBreakpoint } from "@/hooks/use-tailwind-breakpoint";
 import { NotificationBell } from "@/features/notification/components/notification-bell";
 import { NotificationsHeaderButton } from "@/features/notification/components/notification-header-button";
-import { useGamerlyContract } from "@/hooks/use-gamerly-contract";
 
 type HeaderProps = {
   openSidebar: () => void;

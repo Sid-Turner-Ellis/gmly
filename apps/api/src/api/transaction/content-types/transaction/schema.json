@@ -40,16 +40,20 @@
     "txHash": {
       "type": "string",
       "unique": true,
-      "required": false
+      "required": false,
+      "private": true
     },
     "txBlockNumber": {
-      "type": "biginteger"
+      "type": "biginteger",
+      "private": true
     },
     "allowanceTxBlockNumber": {
-      "type": "biginteger"
+      "type": "biginteger",
+      "private": true
     },
     "onChainSinceBlockNumber": {
-      "type": "biginteger"
+      "type": "biginteger",
+      "private": true
     }
   }
 }
