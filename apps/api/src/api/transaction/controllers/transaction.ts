@@ -62,7 +62,7 @@ export default factories.createCoreController(
         .findOneByWalletAddress(ctx.state.wallet_address);
 
       const badRequestMessage = await getBadRequestMessage(profile.id, amount);
-      console.log({ badRequestMessage });
+
       if (badRequestMessage) {
         return ctx.badRequest(badRequestMessage);
       }
@@ -89,6 +89,10 @@ export default factories.createCoreController(
       const profile = await strapi
         .service("api::profile.profile")
         .findOneByWalletAddress(ctx.state.wallet_address);
+
+      if (amount > profile.balance) {
+        return ctx.badRequest("InsufficientBalance");
+      }
 
       const badRequestMessage = await getBadRequestMessage(profile.id, amount);
 
