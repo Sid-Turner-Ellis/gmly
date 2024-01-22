@@ -55,8 +55,6 @@ export default {
       where: { id },
     },
   }) {
-    // TODO: use the db layer instead here
-    console.log("why the hell is this running");
     const teamProfileToBeDeleted = await strapi
       .service("api::team-profile.team-profile")
       .findOne(id, { populate: { team: true, profile: true } });

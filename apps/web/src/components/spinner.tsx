@@ -6,7 +6,7 @@ export const Spinner = ({ className }: { className?: ClassValue }) => {
     <div role="status" className={cn("w-8", className)}>
       <svg
         aria-hidden="true"
-        className="text-gray-200 animate-spin dark:text-gray-600 fill-brand-primary"
+        className="text-gray-200 animate-[spin_600ms_infinite_forwards_linear] dark:text-gray-600 fill-brand-primary"
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

@@ -10,18 +10,20 @@ export const getEthersProvider = async () => {
     ethersProvider = new ethers.providers.JsonRpcProvider(
       process.env.JSON_RPC_URL,
     );
+
+    await Promise.race([
+      ethersProvider.ready,
+      new Promise(async (_, reject) => {
+        await wait(7);
+        console.warn("Ethers provider is taking longer than expected...");
+        await wait(8);
+        reject(
+          `Couldn't connect to ethers provider on url: ${ethersProvider.connection.url}`,
+        );
+      }),
+    ]);
   }
-  await Promise.race([
-    ethersProvider.ready,
-    new Promise(async (_, reject) => {
-      await wait(7);
-      console.warn("Ethers provider is taking longer than expected...");
-      await wait(8);
-      reject(
-        `Couldn't connect to ethers provider on url: ${ethersProvider.connection.url}`,
-      );
-    }),
-  ]);
+
   return ethersProvider;
 };
 
@@ -620,19 +622,19 @@ const gamerlyAbi = [
   {
     inputs: [
       {
-        internalType: "uint256",
+        internalType: "uint64",
         name: "transactionId",
+        type: "uint64",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
         type: "uint256",
       },
       {
         internalType: "address",
         name: "profileAddress",
         type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
       },
     ],
     name: "deposit",
@@ -643,9 +645,9 @@ const gamerlyAbi = [
   {
     inputs: [
       {
-        internalType: "uint256",
+        internalType: "uint64",
         name: "transactionId",
-        type: "uint256",
+        type: "uint64",
       },
     ],
     name: "getTransaction",
@@ -653,19 +655,9 @@ const gamerlyAbi = [
       {
         components: [
           {
-            internalType: "uint256",
+            internalType: "uint64",
             name: "id",
-            type: "uint256",
-          },
-          {
-            internalType: "enum Gamerly.TransactionType",
-            name: "transactionType",
-            type: "uint8",
-          },
-          {
-            internalType: "address",
-            name: "profileAddress",
-            type: "address",
+            type: "uint64",
           },
           {
             internalType: "uint256",
@@ -673,9 +665,14 @@ const gamerlyAbi = [
             type: "uint256",
           },
           {
-            internalType: "bool",
-            name: "valid",
-            type: "bool",
+            internalType: "address",
+            name: "profileAddress",
+            type: "address",
+          },
+          {
+            internalType: "enum Gamerly.TransactionType",
+            name: "transactionType",
+            type: "uint8",
           },
         ],
         internalType: "struct Gamerly.Transaction",
@@ -691,9 +688,9 @@ const gamerlyAbi = [
     name: "getTransactionIds",
     outputs: [
       {
-        internalType: "uint256[]",
+        internalType: "uint64[]",
         name: "",
-        type: "uint256[]",
+        type: "uint64[]",
       },
     ],
     stateMutability: "view",
@@ -779,19 +776,19 @@ const gamerlyAbi = [
   {
     inputs: [
       {
-        internalType: "uint256",
+        internalType: "uint64",
         name: "transactionId",
+        type: "uint64",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
         type: "uint256",
       },
       {
         internalType: "address",
         name: "profileAddress",
         type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
       },
     ],
     name: "withdraw",

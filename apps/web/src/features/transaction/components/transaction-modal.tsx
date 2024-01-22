@@ -1,13 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { cn } from "@/utils/cn";
-import {
-  useAddress,
-  useContract,
-  useContractRead,
-  useContractWrite,
-  useWallet,
-} from "@thirdweb-dev/react";
-import { useToast } from "@/providers/toast-provider";
+import { useAddress, useContract, useContractRead } from "@thirdweb-dev/react";
+import { BasicToast, useToast } from "@/providers/toast-provider";
 import { Text, textVariantClassnames } from "@/components/text";
 import { Modal } from "@/components/modal/modal";
 import { Button } from "@/components/button";
@@ -68,7 +62,12 @@ export const TransactionModal = ({
 
   useEffect(() => {
     setAmount(0);
-  }, [isWithdraw, isOpen]);
+  }, [isWithdraw]);
+
+  useEffect(() => {
+    setAmount(0);
+    setIsWithdraw(false);
+  }, [isOpen]);
 
   // TODO: Make deposit and withdraw a mutation
   const onConfirm = async () => {
@@ -94,8 +93,11 @@ export const TransactionModal = ({
       queryClient.invalidateQueries(["tw-cache", "user"]);
     } catch (error) {
       let toastMessage = "Something went wrong";
+      let toastType: BasicToast["type"] = "error";
+
       if (StrapiError.isStrapiError(error)) {
         const errorMessage = error.error.message;
+
         if (errorMessage === "AlreadyPendingTransaction") {
           toastMessage = "You already have a pending transaction";
         }
@@ -103,9 +105,18 @@ export const TransactionModal = ({
         if (errorMessage === "InvalidAmount") {
           toastMessage = "Amount must be an integer greater than 0";
         }
+        if (errorMessage === "WithdrawalLimitExceeded") {
+          toastMessage = "Withdrawal limit of $500 per day exceeded";
+        }
+      } else {
+        if ((error as any)?.reason.includes("rejected")) {
+          toastMessage = "Rejected the request.";
+          toastType = "warning";
+        }
       }
+
       addToast({
-        type: "error",
+        type: toastType,
         message: toastMessage,
       });
       closeModal();

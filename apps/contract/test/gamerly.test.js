@@ -72,8 +72,8 @@ describe("Gamerly contract", function () {
 
       const depositTx = await gamerlyContract.deposit(
         1,
-        wallet.address,
-        ethers.parseUnits("500", 6)
+        ethers.parseUnits("500", 6),
+        wallet.address
       );
 
       await depositTx.wait();
@@ -84,10 +84,9 @@ describe("Gamerly contract", function () {
 
       expect(await gamerlyContract.getTransaction(1)).to.deep.equal([
         1,
-        TransactionType.Deposit,
-        wallet.address,
         ethers.parseUnits("500", 6),
-        true,
+        wallet.address,
+        TransactionType.Deposit,
       ]);
       expect(await gamerlyContract.getTransactionIds()).to.deep.equal([1]);
     });
@@ -99,7 +98,7 @@ describe("Gamerly contract", function () {
       await expect(
         gamerlyContract
           .connect(wallet)
-          .deposit(1, wallet.address, ethers.parseUnits("500", 6))
+          .deposit(1, ethers.parseUnits("500", 6), wallet.address)
       ).to.be.reverted;
     });
     it("existing transaction ID throws", async () => {
@@ -115,8 +114,8 @@ describe("Gamerly contract", function () {
       // Add the first transaction
       const transaction1 = await gamerlyContract.deposit(
         52,
-        wallet.address,
-        ethers.parseUnits("1", 6)
+        ethers.parseUnits("1", 6),
+        wallet.address
       );
 
       await transaction1.wait();
@@ -125,8 +124,8 @@ describe("Gamerly contract", function () {
       await expect(
         gamerlyContract.deposit(
           52,
-          ethers.Wallet.createRandom().address,
-          ethers.parseUnits("50", 6)
+          ethers.parseUnits("50", 6),
+          ethers.Wallet.createRandom().address
         )
       ).to.be.revertedWithCustomError(
         gamerlyContract,
@@ -136,10 +135,9 @@ describe("Gamerly contract", function () {
       // Expect the original transaction to remain unchanged
       expect(await gamerlyContract.getTransaction(52)).to.deep.equal([
         52,
-        TransactionType.Deposit,
-        wallet.address,
         ethers.parseUnits("1", 6),
-        true,
+        wallet.address,
+        TransactionType.Deposit,
       ]);
     });
 
@@ -150,7 +148,7 @@ describe("Gamerly contract", function () {
 
       // No allowance set
       await expect(
-        gamerlyContract.deposit(1, wallet.address, ethers.parseUnits("500", 6))
+        gamerlyContract.deposit(1, ethers.parseUnits("500", 6), wallet.address)
       ).to.be.revertedWithCustomError(gamerlyContract, "InsufficientAllowance");
     });
 
@@ -164,7 +162,7 @@ describe("Gamerly contract", function () {
         .approve(gamerlyContractAddress, ethers.parseUnits("1000", 6));
 
       await expect(
-        gamerlyContract.deposit(1, wallet.address, ethers.parseUnits("500", 6))
+        gamerlyContract.deposit(1, ethers.parseUnits("500", 6), wallet.address)
       ).to.be.revertedWithCustomError(gamerlyContract, "InsufficientBalance");
     });
   });
@@ -181,8 +179,8 @@ describe("Gamerly contract", function () {
       );
       const withdrawTx = await gamerlyContract.withdraw(
         1,
-        wallet.address,
-        ethers.parseUnits("500", 6)
+        ethers.parseUnits("500", 6),
+        wallet.address
       );
 
       await withdrawTx.wait();
@@ -200,10 +198,9 @@ describe("Gamerly contract", function () {
       expect(await gamerlyContract.getTransactionIds()).to.deep.equal([1]);
       expect(await gamerlyContract.getTransaction(1)).to.deep.equal([
         1,
-        TransactionType.Withdraw,
-        wallet.address,
         ethers.parseUnits("500", 6),
-        true,
+        wallet.address,
+        TransactionType.Withdraw,
       ]);
     });
 
@@ -215,7 +212,7 @@ describe("Gamerly contract", function () {
       await expect(
         gamerlyContract
           .connect(wallet)
-          .withdraw(1, wallet.address, ethers.parseUnits("500", 6))
+          .withdraw(1, ethers.parseUnits("500", 6), wallet.address)
       ).to.be.reverted;
     });
     it("existing transaction ID throws", async () => {
@@ -226,8 +223,8 @@ describe("Gamerly contract", function () {
       // Add the first transaction
       const transaction1 = await gamerlyContract.withdraw(
         32,
-        wallet.address,
-        ethers.parseUnits("1", 6)
+        ethers.parseUnits("1", 6),
+        wallet.address
       );
 
       await transaction1.wait();
@@ -236,8 +233,8 @@ describe("Gamerly contract", function () {
       await expect(
         gamerlyContract.withdraw(
           32,
-          ethers.Wallet.createRandom().address,
-          ethers.parseUnits("50", 6)
+          ethers.parseUnits("50", 6),
+          ethers.Wallet.createRandom().address
         )
       ).to.be.revertedWithCustomError(
         gamerlyContract,
@@ -247,10 +244,9 @@ describe("Gamerly contract", function () {
       // Expect the original transaction to remain unchanged
       expect(await gamerlyContract.getTransaction(32)).to.deep.equal([
         32,
-        TransactionType.Withdraw,
-        wallet.address,
         ethers.parseUnits("1", 6),
-        true,
+        wallet.address,
+        TransactionType.Withdraw,
       ]);
     });
   });
@@ -303,8 +299,8 @@ describe("Gamerly contract", function () {
       await addUSDCFunds(gamerlyContractAddress);
       const tx = await gamerlyContract.withdraw(
         1,
-        wallet.address,
-        ethers.parseUnits("500", 6)
+        ethers.parseUnits("500", 6),
+        wallet.address
       );
 
       await tx.wait();
@@ -313,10 +309,9 @@ describe("Gamerly contract", function () {
       expect(transactionId).to.equal(1);
       expect(await gamerlyContract.getTransaction(1)).to.deep.equal([
         1,
-        TransactionType.Withdraw,
-        wallet.address,
         ethers.parseUnits("500", 6),
-        true,
+        wallet.address,
+        TransactionType.Withdraw,
       ]);
 
       await expect(gamerlyContract.connect(wallet).getTransaction(1)).to.be
@@ -332,8 +327,8 @@ describe("Gamerly contract", function () {
       await addUSDCFunds(gamerlyContractAddress);
       const tx = await gamerlyContract.withdraw(
         1,
-        wallet.address,
-        ethers.parseUnits("500", 6)
+        ethers.parseUnits("500", 6),
+        wallet.address
       );
 
       await tx.wait();

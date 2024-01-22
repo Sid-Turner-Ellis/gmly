@@ -44,19 +44,6 @@ export default factories.createCoreController(
     async deposit(ctx) {
       const { amount } = ctx.request.body?.data || { amount: 0 };
 
-      // TODO: If we want to stop including the entire transaction on the chain
-      // then we will have to validate the allowance transactions addresses and amount
-      // console.log(allowanceTransactionHash)
-
-      // try {
-      //   const provider = await getEthersProvider();
-      //   const tx = await provider.getTransaction(allowanceTransactionHash)
-      //   console.log('found tx', tx)
-      //   console.log('data', getUsdcTransactionData(tx.data))
-      // } catch (error) {
-      //   console.log(error)
-      // }
-
       const profile = await strapi
         .service("api::profile.profile")
         .findOneByWalletAddress(ctx.state.wallet_address);
@@ -90,14 +77,40 @@ export default factories.createCoreController(
         .service("api::profile.profile")
         .findOneByWalletAddress(ctx.state.wallet_address);
 
-      if (amount > profile.balance) {
-        return ctx.badRequest("InsufficientBalance");
-      }
-
       const badRequestMessage = await getBadRequestMessage(profile.id, amount);
 
       if (badRequestMessage) {
         return ctx.badRequest(badRequestMessage);
+      }
+
+      if (amount > profile.balance) {
+        return ctx.badRequest("InsufficientBalance");
+      }
+
+      const dateMinusTwentyFourHours = new Date(
+        Date.now() - 1000 * 60 * 60 * 24,
+      ).toISOString();
+
+      const withdrawalsInLastTwentyFourHours = await strapi
+        .service("api::transaction.transaction")
+        .find({
+          filters: {
+            profile: profile.id,
+            type: "withdraw",
+            createdAt: { $gt: dateMinusTwentyFourHours },
+          },
+          pagination: {
+            pageSize: 250,
+          },
+        });
+
+      const sumOfWithdrawalsInLastTwentyFourHours =
+        withdrawalsInLastTwentyFourHours.results.reduce((acc, transaction) => {
+          return acc + transaction.amount;
+        }, 0);
+
+      if (sumOfWithdrawalsInLastTwentyFourHours + amount > 500) {
+        return ctx.badRequest("WithdrawalLimitExceeded");
       }
 
       const newlyCreatedTransaction = await strapi
@@ -118,8 +131,8 @@ export default factories.createCoreController(
         const tx = await (
           await gamerlyContract.withdraw(
             newlyCreatedTransaction.id,
-            ctx.state.wallet_address,
             amount * 1000000,
+            ctx.state.wallet_address,
             {
               gasLimit: ethers.BigNumber.from(gasLimit),
             },

@@ -162,19 +162,19 @@ export const GAMERLY_CONTRACT = {
     {
       inputs: [
         {
-          internalType: "uint256",
+          internalType: "uint64",
           name: "transactionId",
+          type: "uint64",
+        },
+        {
+          internalType: "uint256",
+          name: "amount",
           type: "uint256",
         },
         {
           internalType: "address",
           name: "profileAddress",
           type: "address",
-        },
-        {
-          internalType: "uint256",
-          name: "amount",
-          type: "uint256",
         },
       ],
       name: "deposit",
@@ -185,9 +185,9 @@ export const GAMERLY_CONTRACT = {
     {
       inputs: [
         {
-          internalType: "uint256",
+          internalType: "uint64",
           name: "transactionId",
-          type: "uint256",
+          type: "uint64",
         },
       ],
       name: "getTransaction",
@@ -195,19 +195,9 @@ export const GAMERLY_CONTRACT = {
         {
           components: [
             {
-              internalType: "uint256",
+              internalType: "uint64",
               name: "id",
-              type: "uint256",
-            },
-            {
-              internalType: "enum Gamerly.TransactionType",
-              name: "transactionType",
-              type: "uint8",
-            },
-            {
-              internalType: "address",
-              name: "profileAddress",
-              type: "address",
+              type: "uint64",
             },
             {
               internalType: "uint256",
@@ -215,9 +205,14 @@ export const GAMERLY_CONTRACT = {
               type: "uint256",
             },
             {
-              internalType: "bool",
-              name: "valid",
-              type: "bool",
+              internalType: "address",
+              name: "profileAddress",
+              type: "address",
+            },
+            {
+              internalType: "enum Gamerly.TransactionType",
+              name: "transactionType",
+              type: "uint8",
             },
           ],
           internalType: "struct Gamerly.Transaction",
@@ -233,9 +228,9 @@ export const GAMERLY_CONTRACT = {
       name: "getTransactionIds",
       outputs: [
         {
-          internalType: "uint256[]",
+          internalType: "uint64[]",
           name: "",
-          type: "uint256[]",
+          type: "uint64[]",
         },
       ],
       stateMutability: "view",
@@ -321,19 +316,19 @@ export const GAMERLY_CONTRACT = {
     {
       inputs: [
         {
-          internalType: "uint256",
+          internalType: "uint64",
           name: "transactionId",
+          type: "uint64",
+        },
+        {
+          internalType: "uint256",
+          name: "amount",
           type: "uint256",
         },
         {
           internalType: "address",
           name: "profileAddress",
           type: "address",
-        },
-        {
-          internalType: "uint256",
-          name: "amount",
-          type: "uint256",
         },
       ],
       name: "withdraw",

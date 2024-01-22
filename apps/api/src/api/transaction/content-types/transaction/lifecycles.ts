@@ -1,20 +1,28 @@
 import { errors } from "@strapi/utils";
 const { ApplicationError } = errors;
 
+// TODO: Allow these to fail without causing errors as they are not critical
+
 export default {
   beforeDeleteMany() {
-    throw new ApplicationError("Cannot delete many transactions");
+    // throw new ApplicationError("Cannot delete many transactions");
   },
   beforeUpdateMany() {
     throw new ApplicationError("Cannot update many transactions");
   },
-  async beforeUpdate({ params: { data } }) {
+
+  async beforeUpdate({
+    params: {
+      data,
+      where: { id },
+    },
+  }) {
     const initialTransaction = await strapi
       .service("api::transaction.transaction")
-      .findOne(data.id);
+      .findOne(id);
 
-    const initialConfirmValue = initialTransaction.confirmed;
-    const finalConfirmValue = data.confirmed;
+    const initialConfirmValue = initialTransaction?.confirmed;
+    const finalConfirmValue = data.confirmed ?? initialConfirmValue;
 
     const transactionWasConfirmed =
       initialConfirmValue === false && finalConfirmValue === true;

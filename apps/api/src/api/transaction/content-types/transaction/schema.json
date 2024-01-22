@@ -29,7 +29,8 @@
     },
     "amount": {
       "type": "integer",
-      "required": true
+      "required": true,
+      "min": 0
     },
     "profile": {
       "type": "relation",

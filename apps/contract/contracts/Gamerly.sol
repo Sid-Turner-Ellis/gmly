@@ -13,23 +13,23 @@ contract Gamerly is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     enum TransactionType { Deposit, Withdraw }
 
     struct Transaction {
-        uint256 id;
-        TransactionType transactionType;
-        address profileAddress;
+        uint64 id;
         uint256 amount;
-        bool valid;
+        address profileAddress;
+        TransactionType transactionType;
     }
 
-    mapping(uint256 => Transaction) private transactions;
-    uint256[] private transactionIds;
+    mapping(uint64 => Transaction) private transactions;
+    uint64[] private transactionIds;
 
     error TransactionIdAlreadyExists();
     error InsufficientBalance();
     error InsufficientAllowance();
     error TransferFailed();
 
-    modifier validateTransaction(uint256 transactionId, address profileAddress, uint256 amount) {
-        if (transactions[transactionId].valid) revert TransactionIdAlreadyExists();
+    modifier validateTransaction(uint64 transactionId, address profileAddress, uint256 amount) {
+        bool exists = transactions[transactionId].id == transactionId;
+        if (exists) revert TransactionIdAlreadyExists();
         _;
     }
 
@@ -51,36 +51,36 @@ contract Gamerly is Initializable, UUPSUpgradeable, OwnableUpgradeable {
 
     function _authorizeUpgrade(address) internal override onlyOwner {}
 
-    function deposit(uint256 transactionId, address profileAddress, uint256 amount)
+    function deposit(uint64 transactionId, uint256 amount, address profileAddress)
         external onlyOwner validateTransaction(transactionId, profileAddress, amount)
         hasSufficientBalance(profileAddress, amount) hasSufficientAllowance(profileAddress, amount)
     {
         if (!USDC.transferFrom(profileAddress, address(this), amount)) revert TransferFailed();
-        _recordTransaction(transactionId, TransactionType.Deposit, profileAddress, amount);
+        _recordTransaction(transactionId, amount, profileAddress, TransactionType.Deposit);
     }
 
-    function withdraw(uint256 transactionId, address profileAddress, uint256 amount)
+    function withdraw(uint64 transactionId, uint256 amount, address profileAddress)
         external onlyOwner validateTransaction(transactionId, profileAddress, amount)
         hasSufficientBalance(address(this), amount)
     {
         if (!USDC.transfer(profileAddress, amount)) revert TransferFailed();
-        _recordTransaction(transactionId, TransactionType.Withdraw, profileAddress, amount);
+        _recordTransaction(transactionId, amount, profileAddress, TransactionType.Withdraw);
     }
 
     function withdrawToOwner(uint256 amount) external onlyOwner hasSufficientBalance(address(this), amount) {
         if (!USDC.transfer(owner(), amount)) revert TransferFailed();
     }
 
-    function getTransaction(uint256 transactionId) external onlyOwner view returns (Transaction memory transaction) {
+    function getTransaction(uint64 transactionId) external onlyOwner view returns (Transaction memory transaction) {
         return transactions[transactionId];
     }
 
-    function getTransactionIds() external onlyOwner view returns (uint256[] memory) {
+    function getTransactionIds() external onlyOwner view returns (uint64[] memory) {
         return transactionIds;
     }
 
-    function _recordTransaction(uint256 transactionId, TransactionType transactionType, address profileAddress, uint256 amount) internal {
-        Transaction memory newTransaction = Transaction(transactionId, transactionType, profileAddress, amount, true);
+    function _recordTransaction(uint64 transactionId, uint256 amount, address profileAddress, TransactionType transactionType) internal {
+        Transaction memory newTransaction = Transaction(transactionId, amount, profileAddress, transactionType);
         transactions[transactionId] = newTransaction;
         transactionIds.push(transactionId);
     }

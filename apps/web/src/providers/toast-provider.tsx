@@ -6,7 +6,7 @@ import * as ToastPrimitives from "@radix-ui/react-toast";
 import { ReactNode, createContext, useContext, useState } from "react";
 import { v4 } from "uuid";
 
-type BasicToast = {
+export type BasicToast = {
   type: "success" | "error" | "warning";
   message: string;
   button?: {
