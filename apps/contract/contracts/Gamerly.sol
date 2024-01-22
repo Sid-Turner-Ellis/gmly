@@ -4,10 +4,11 @@ pragma solidity ^0.8.2;
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import "./IERC20.sol";
 import "hardhat/console.sol";
 
-contract Gamerly is Initializable, UUPSUpgradeable, OwnableUpgradeable {
+contract Gamerly is Initializable, UUPSUpgradeable, OwnableUpgradeable, ReentrancyGuardUpgradeable {
     IERC20 private USDC;
 
     enum TransactionType { Deposit, Withdraw }
@@ -46,13 +47,14 @@ contract Gamerly is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     function initialize(address _usdcAddress) initializer public {
         __Ownable_init(msg.sender);
         __UUPSUpgradeable_init();
+        __ReentrancyGuard_init();
         USDC = IERC20(_usdcAddress);
     }
 
     function _authorizeUpgrade(address) internal override onlyOwner {}
 
     function deposit(uint64 transactionId, uint256 amount, address profileAddress)
-        external onlyOwner validateTransaction(transactionId, profileAddress, amount)
+        external nonReentrant onlyOwner validateTransaction(transactionId, profileAddress, amount)
         hasSufficientBalance(profileAddress, amount) hasSufficientAllowance(profileAddress, amount)
     {
         if (!USDC.transferFrom(profileAddress, address(this), amount)) revert TransferFailed();
@@ -60,14 +62,14 @@ contract Gamerly is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     }
 
     function withdraw(uint64 transactionId, uint256 amount, address profileAddress)
-        external onlyOwner validateTransaction(transactionId, profileAddress, amount)
+        external nonReentrant onlyOwner validateTransaction(transactionId, profileAddress, amount)
         hasSufficientBalance(address(this), amount)
     {
         if (!USDC.transfer(profileAddress, amount)) revert TransferFailed();
         _recordTransaction(transactionId, amount, profileAddress, TransactionType.Withdraw);
     }
 
-    function withdrawToOwner(uint256 amount) external onlyOwner hasSufficientBalance(address(this), amount) {
+    function withdrawToOwner(uint256 amount) external nonReentrant onlyOwner hasSufficientBalance(address(this), amount) {
         if (!USDC.transfer(owner(), amount)) revert TransferFailed();
     }
 
