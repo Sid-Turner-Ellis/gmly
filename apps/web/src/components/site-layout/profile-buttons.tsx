@@ -1,5 +1,5 @@
 import { useAuth } from "@/hooks/use-auth";
-import { Button } from "../button";
+import { Button, buttonVariants } from "../button";
 import * as Avatar from "@radix-ui/react-avatar";
 import { useTailwindBreakpoint } from "@/hooks/use-tailwind-breakpoint";
 import { resolveStrapiImage } from "@/utils/resolve-strapi-image";
@@ -10,6 +10,7 @@ import { TransactionService } from "@/features/transaction/transaction-service";
 import { Spinner } from "../spinner";
 import { TransactionModal } from "@/features/transaction/components/transaction-modal";
 import { usePendingBalance } from "@/hooks/use-pending-balance";
+import { cn } from "@/utils/cn";
 
 type ProfileButtonsProps = {};
 
@@ -50,6 +51,7 @@ export const ProfileButtons = ({}: ProfileButtonsProps) => {
             title={isDesktop ? username ?? "Profile" : undefined}
             className="h-full"
             onClick={logout}
+            iconSize={20}
             icon={
               <Avatar.Root className="inline-flex items-center justify-center w-full h-full overflow-hidden rounded-full select-none">
                 <Avatar.Image

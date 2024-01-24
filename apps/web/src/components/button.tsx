@@ -5,7 +5,7 @@ import { cn } from "@/utils/cn";
 import { Text } from "./text";
 import { cva, VariantProps } from "class-variance-authority";
 
-const buttonVariants = cva(
+export const buttonVariants = cva(
   "cursor-pointer inline-flex items-center justify-center gap-3 border-2 border-transparent rounded transition",
   {
     variants: {
@@ -44,6 +44,7 @@ type ButtonProps = {
   children?: ReactNode;
   title?: string;
   onClick?: () => void;
+  iconSize?: number;
 } & VariantProps<typeof buttonVariants>;
 
 export const Button = ({
@@ -55,19 +56,24 @@ export const Button = ({
   variant,
   className,
   size,
+  iconSize = 16,
 }: ButtonProps) => {
+  const buttonSizeStyles = {
+    width: iconSize,
+    height: iconSize,
+    maxWidth: iconSize,
+    maxHeight: iconSize,
+  };
   return (
     <button
       onClick={onClick}
       className={cn(buttonVariants({ variant, disabled, size }), className)}
     >
       {icon && typeof icon === "string" && (
-        <Icon size={16} icon={icon as IconType} />
+        <Icon size={iconSize} icon={icon as IconType} />
       )}
       {icon && typeof icon !== "string" && (
-        <div className="w-[16px] h-[16px] max-w-[16px] max-h-[16px]">
-          {icon}
-        </div>
+        <div style={buttonSizeStyles}>{icon}</div>
       )}
       {title && <p>{title}</p>}
       {children}
