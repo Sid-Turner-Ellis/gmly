@@ -2,7 +2,7 @@ import { StrapiEntity, StrapiRelation } from "@/types/strapi-types";
 import { strapiApi } from "@/lib/strapi";
 import { Team, TeamWithoutRelations } from "../team/team-service";
 
-enum NOTIFICATION_TYPES {
+export enum NOTIFICATION_TYPES {
   TeamInviteReceived = "TEAM_INVITE_RECEIVED",
   TransactionResult = "TRANSACTION_RESULT",
 }

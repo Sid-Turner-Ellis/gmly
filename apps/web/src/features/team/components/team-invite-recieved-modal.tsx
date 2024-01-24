@@ -6,6 +6,11 @@ import { useToast } from "@/providers/toast-provider";
 import { useRouter } from "next/router";
 import { useAuth } from "@/hooks/use-auth";
 import { useId } from "react";
+import { useNotifications } from "@/features/notification/use-notifications";
+import {
+  NOTIFICATION_TYPES,
+  isTeamInviteReceivedNotification,
+} from "@/features/notification/notification-service";
 
 // TODO: redirect to the team page if accepts
 
@@ -34,6 +39,7 @@ export const TeamInviteReceivedModal = ({
   const router = useRouter();
   const { addToast } = useToast();
   const { user } = useAuth();
+  const { notifications, markAsRead } = useNotifications();
   const profileId = user?.data.profile.id;
   const {
     data: teamsForProfileData,
@@ -52,9 +58,17 @@ export const TeamInviteReceivedModal = ({
 
   const { mutate: respondToTeamInviteMutation } = useMutation(
     async ({ accept }: { accept: boolean }) => {
-      console.log(accept, teamProfileId);
+      const linkedTeamInviteReceivedNotification = notifications.find(
+        (n) =>
+          isTeamInviteReceivedNotification(n) &&
+          n.attributes.team.data?.id === teamId
+      );
+
       await TeamService.respondToInvite(teamProfileId, accept);
-      return undefined;
+
+      if (linkedTeamInviteReceivedNotification?.id) {
+        await markAsRead(linkedTeamInviteReceivedNotification.id);
+      }
     },
     {
       onSuccess(data, variables, context) {
@@ -116,7 +130,7 @@ export const TeamInviteReceivedModal = ({
       size="sm"
       description={`${invitedBy} has invited you to join their team, if you do not know this person decline this invite.`}
       Footer={
-        <div className="flex justify-end items-center gap-3">
+        <div className="flex items-center justify-end gap-3">
           <Button
             variant={"secondary"}
             title="Decline"

@@ -18,7 +18,12 @@ export const useNotifications = () => {
   );
 
   const notifications = useMemo(
-    () => notificationsData?.data ?? [],
+    () =>
+      notificationsData?.data.sort(
+        (n1, n2) =>
+          new Date(n2.attributes.createdAt).getSeconds() -
+          new Date(n1.attributes.createdAt).getSeconds()
+      ) ?? [],
     [notificationsData]
   );
 

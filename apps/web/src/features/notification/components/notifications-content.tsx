@@ -108,10 +108,6 @@ export const NotificationsContent = ({
               return (
                 <NotificationItem
                   key={notification.id}
-                  onNotificationClick={() => {
-                    console.log("thisebeing clicked tho");
-                    onNotificationClick?.();
-                  }}
                   notification={notification}
                   image={user?.data.profile.avatar!}
                   hideBottomBorder={isFinalNotification}

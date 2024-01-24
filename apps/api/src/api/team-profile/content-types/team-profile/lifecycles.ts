@@ -27,6 +27,8 @@ export default {
         },
       });
   },
+
+  // TODO: Consider the markAsRead notification logic here instead  - when the team profile goes from pending to not pending we can delete the notification
   async afterCreate({ params: { data }, result }) {
     // const ctx = strapi.requestContext.get();
     // const profile = await strapi
