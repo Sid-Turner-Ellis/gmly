@@ -29,7 +29,7 @@ const EditableImagePageSectionLayout = ({
       </div>
       <div>
         <div className="flex flex-col gap-1">
-          <div className="flex flex-col items-start gap-4 mb-2 sm:items-center sm:flex-row sm:mb-0">
+          <div className="flex flex-col items-start gap-2 mb-2 md:gap-4 xs:items-center xs:flex-row xs:mb-0">
             {TopRight}
           </div>
           {BottomRight}
@@ -42,7 +42,7 @@ const EditableImagePageSectionLayout = ({
 export const EditableImagePageSectionSkeleton = () => (
   <EditableImagePageSectionLayout
     Left={<Skeleton className="w-full h-full " type="image" />}
-    TopRight={<Skeleton className="w-24 xs:w-56 h-10 mb-2" />}
+    TopRight={<Skeleton className="w-24 h-10 mb-2 xs:w-56" />}
     BottomRight={
       <>
         <Skeleton className="h-4 mb-2 xs:w-96" />

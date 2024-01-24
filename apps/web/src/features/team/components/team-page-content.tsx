@@ -14,6 +14,7 @@ import { TeamMembersTable } from "./team-members-table";
 import { TeamActionButtons } from "./team-action-buttons";
 import { useGlobalModal } from "@/providers/global-modal-provider";
 import { TeamInviteReceivedModal } from "./team-invite-recieved-modal";
+import { Text } from "@/components/text";
 
 type TeamPageContent = {
   team: TeamResponse;
@@ -95,8 +96,8 @@ export const TeamPageContent = ({ team, teamProfile }: TeamPageContent) => {
           const errorMessage = StrapiError.isStrapiError(error)
             ? error.error.message
             : "message" in error && error?.message?.length
-            ? error.message
-            : "Something went wrong";
+              ? error.message
+              : "Something went wrong";
 
           addToast({
             type: "error",
@@ -174,7 +175,13 @@ export const TeamPageContent = ({ team, teamProfile }: TeamPageContent) => {
             </Heading>
           )
         }
-        ContentSection={<></>}
+        ContentSection={
+          <div>
+            <Text className={"text-xl"}>
+              {team.attributes.game.data?.attributes.title}
+            </Text>
+          </div>
+        }
         {...editableImageProps}
         setIsEditMode={setIsEditMode}
         showEditButton={role === "founder"}

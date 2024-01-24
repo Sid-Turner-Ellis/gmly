@@ -55,7 +55,10 @@ const DesktopTableRows = ({
         </TableCell>
       </TableRow>
       {teamProfiles.map((profile, ind) => (
-        <Clickable action={`/profile/${profile.attributes.profile.data?.id}`} key={ind}>
+        <Clickable
+          action={`/profile/${profile.attributes.profile.data?.id}`}
+          key={ind}
+        >
           <TableRow isDark={ind % 2 === 0} key={ind}>
             <TableCell className="w-[14%]">
               <Text>{profile.attributes.rank}</Text>
@@ -119,7 +122,10 @@ const MobileTableRows = ({
         <Text>Result</Text>
       </TableRow>
       {teamProfiles.map((profile, ind) => (
-        <div key={ind}>
+        <Clickable
+          action={`/profile/${profile.attributes.profile.data?.id}`}
+          key={ind}
+        >
           <TableRow isDark={ind % 2 === 0}>
             <div className="flex items-center w-full gap-3">
               <TableImage
@@ -144,7 +150,7 @@ const MobileTableRows = ({
               </div>
             </div>
           </TableRow>
-        </div>
+        </Clickable>
       ))}
     </div>
   );
