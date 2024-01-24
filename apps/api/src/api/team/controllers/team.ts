@@ -30,16 +30,37 @@ export default factories.createCoreController(
     },
 
     async create(ctx) {
-      const createdTeam = await super.create(ctx);
-
       // Get the profile making the request and create the founder
       const profile = await await strapi
         .service("api::profile.profile")
-        .findOneByWalletAddress(ctx.state.wallet_address);
+        .findOneByWalletAddress(ctx.state.wallet_address, {
+          populate: {
+            team_profiles: {
+              populate: {
+                team: {
+                  populate: {
+                    game: true,
+                  },
+                },
+              },
+            },
+          },
+        });
 
+      const gameIdsProfileHasTeamsFor = profile.team_profiles.map(
+        (tp) => tp.team.game.id,
+      );
+
+      if (gameIdsProfileHasTeamsFor.includes(ctx.request.body.data.game)) {
+        return ctx.badRequest("You already have a team for this game");
+      }
+
+      // TODO: This isn't necessary as we have protected middleware on all routes
       if (!profile) {
         throw new errors.UnauthorizedError();
       }
+
+      const createdTeam = await super.create(ctx);
 
       // Create the founder
       await strapi.service("api::team-profile.team-profile").create({
@@ -85,6 +106,7 @@ export default factories.createCoreController(
         .service("api::team-profile.team-profile")
         .delete(teamProfile.id);
     },
+
     async bulkUpdateMembers(ctx) {
       const query = await this.sanitizeQuery(ctx);
       const teamId = ctx.params.id;

@@ -55,7 +55,9 @@ export const CreateTeamModal = ({
   } = useQuery(["recursive-games"], () => GameService.recursivelyGetGames(), {
     cacheTime: 1000 * 60 * 60 * 24,
     staleTime: 1000 * 60 * 60 * 24,
+    enabled: isOpen,
   });
+
   const queryClient = useQueryClient();
   const {
     handleSubmit,
@@ -78,11 +80,25 @@ export const CreateTeamModal = ({
     setGameSelectError(false);
   }, [stringifiedGameId]);
 
-  const stringifiedGameOptionIds = useMemo(
+  const gameIdsProfileIsOnTeamFor = useMemo(
     () =>
-      gamesQueryData ? gamesQueryData.map((game) => game.id.toString()) : [],
-    [gamesQueryData]
+      user.data.profile.team_profiles.data?.map(
+        (tp) => tp.attributes.team.data?.attributes.game.data?.id
+      ),
+    [user.data.profile.team_profiles.data]
   );
+
+  const stringifiedGameOptionIds = useMemo(() => {
+    const gamesQueryDataWithoutGamesProfileIsOnTeamFor = gamesQueryData
+      ? gamesQueryData?.filter(
+          (game) => !gameIdsProfileIsOnTeamFor?.includes(game.id)
+        )
+      : [];
+
+    return gamesQueryDataWithoutGamesProfileIsOnTeamFor.map((game) =>
+      game.id.toString()
+    );
+  }, [gamesQueryData, gameIdsProfileIsOnTeamFor]);
 
   const getGameSelectLabelFromStringifiedGameId = useCallback(
     (stringId: string) => {
@@ -129,6 +145,7 @@ export const CreateTeamModal = ({
         image: imageId,
       });
 
+      console.log({ teamMemberInvites });
       await TeamService.bulkUpdateTeamMembers(
         newlyCreatedTeam.data.id,
         teamMemberInvites.map((tmi) => ({

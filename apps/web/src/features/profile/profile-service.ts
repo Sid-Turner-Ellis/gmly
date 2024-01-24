@@ -9,6 +9,7 @@ import {
   TeamProfileWithoutRelations,
   TeamWithoutRelations,
 } from "../team/team-service";
+import { GameWithoutRelations } from "../game/game-service";
 
 // TODO: Consider updating the strapi service so that we don't deal with profileIDs but rather addresses
 
@@ -34,6 +35,7 @@ export type Profile = ProfileWithoutRelations & {
           StrapiEntity<
             TeamWithoutRelations & {
               image: StrapiRelation<StrapiEntity<StrapiImage>>;
+              game: StrapiRelation<StrapiEntity<GameWithoutRelations>>;
             }
           >
         >;
@@ -47,6 +49,7 @@ export type ProfileResponse = StrapiEntity<Profile>;
 const populate = [
   "avatar",
   "team_profiles.team.image",
+  "team_profiles.team.game",
   "team_profiles.invited_by",
 ];
 
