@@ -73,18 +73,30 @@ export const ProfilePageContent = ({
   const onSave = () => {
     if (!isOwnProfile) return;
     if (imageUploadState.status === "uploading") return;
-
     const text = bioRef.current?.textContent ?? undefined;
+
+    if (text?.length && text.length > 248) {
+      let message = "Bio must be less than 248 characters";
+
+      addToast({
+        type: "error",
+        message,
+      });
+      throw new Error(message);
+    }
     const imageId =
       imageUploadState.status === "complete"
         ? imageUploadState.detail
         : undefined;
 
     if (isEditMode) {
+      const bioDidChange = text && bio !== text;
+      const avatarDidChange = imageId && imageId !== avatar?.data?.id;
+
       mutate({
         profileId: id,
-        bio: text,
-        avatar: imageId,
+        bio: bioDidChange ? text : undefined,
+        avatar: avatarDidChange ? imageId : undefined,
       });
     }
 

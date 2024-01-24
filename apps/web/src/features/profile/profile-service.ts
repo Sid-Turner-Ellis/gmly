@@ -13,7 +13,7 @@ import { GameWithoutRelations } from "../game/game-service";
 
 // TODO: Consider updating the strapi service so that we don't deal with profileIDs but rather addresses
 
-export type Regions = "Europe" | "NA" | "Asia" | "Oceania";
+export type Regions = "Europe" | "North America" | "Asia" | "Oceania";
 
 export type ProfileWithoutRelations = {
   wallet_address: string;

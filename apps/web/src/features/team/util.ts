@@ -42,11 +42,12 @@ export const createFakeTeamProfile = (
         id: 0,
         attributes: {
           wallet_address: "",
-          region: "NA",
+          region: "North America",
           username: val.username,
           wager_mode: false,
           trust_mode: false,
           bio: "",
+          balance: 0,
           avatar: null,
           createdAt: "",
         },

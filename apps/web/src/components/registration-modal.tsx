@@ -24,7 +24,7 @@ type FormInputs = {
   region: (typeof REGIONS)[0];
 };
 
-const REGIONS: Regions[] = ["Asia", "Europe", "NA", "Oceania"];
+const REGIONS: Regions[] = ["Asia", "Europe", "North America", "Oceania"];
 
 export const RegistrationModal = () => {
   const { isOpen, close } = useRegistrationModal();

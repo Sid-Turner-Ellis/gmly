@@ -13,7 +13,8 @@ export default factories.createCoreController(
   ({ strapi }) => ({
     async update(ctx) {
       const id = ctx.params.id;
-      const fieldsToUpdate = Object.keys(ctx.request.body.data);
+      const requestData = ctx.request.body.data ?? {};
+      const fieldsToUpdate = Object.keys(requestData);
 
       if (fieldsToUpdate.includes("wallet_address")) {
         ctx.badRequest("Cannot update wallet address");
@@ -33,10 +34,14 @@ export default factories.createCoreController(
         throw new errors.UnauthorizedError();
       }
 
+      if (requestData.bio?.length > 248) {
+        return ctx.badRequest("Bio cannot be longer than 248 characters");
+      }
+
       const { data, meta } = await super.update(ctx);
 
       // TODO: Sanitise and transform properly
       return { data, meta };
     },
-  })
+  }),
 );

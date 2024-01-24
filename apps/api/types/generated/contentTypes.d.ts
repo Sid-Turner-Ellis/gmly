@@ -755,12 +755,7 @@ export interface ApiNotificationNotification extends Schema.CollectionType {
   };
   attributes: {
     type: Attribute.Enumeration<
-      [
-        'TEAM_INVITE_RECEIVED',
-        'TRANSACTION_FAILED',
-        'TRANSACTION_SUCCEEDED',
-        'TRANSACTION_RESULT'
-      ]
+      ['TEAM_INVITE_RECEIVED', 'TRANSACTION_RESULT']
     > &
       Attribute.Required;
     profile: Attribute.Relation<
@@ -805,7 +800,9 @@ export interface ApiProfileProfile extends Schema.CollectionType {
   };
   attributes: {
     wallet_address: Attribute.String & Attribute.Required & Attribute.Unique;
-    region: Attribute.Enumeration<['Europe', 'NA', 'Asia', 'Oceania']>;
+    region: Attribute.Enumeration<
+      ['Europe', 'North America', 'Asia', 'Oceania']
+    >;
     username: Attribute.String &
       Attribute.Unique &
       Attribute.SetMinMaxLength<{
@@ -947,7 +944,11 @@ export interface ApiTransactionTransaction extends Schema.CollectionType {
       Attribute.DefaultTo<false>;
     type: Attribute.Enumeration<['deposit', 'withdraw', 'in', 'out']> &
       Attribute.Required;
-    amount: Attribute.Integer & Attribute.Required;
+    amount: Attribute.Integer &
+      Attribute.Required &
+      Attribute.SetMinMax<{
+        min: 0;
+      }>;
     profile: Attribute.Relation<
       'api::transaction.transaction',
       'manyToOne',

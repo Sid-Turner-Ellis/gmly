@@ -19,12 +19,7 @@
     },
     "region": {
       "type": "enumeration",
-      "enum": [
-        "Europe",
-        "NA",
-        "Asia",
-        "Oceania"
-      ],
+      "enum": ["Europe", "North America", "Asia", "Oceania"],
       "required": false
     },
     "username": {
@@ -36,9 +31,7 @@
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "images"
-      ]
+      "allowedTypes": ["images"]
     },
     "wager_mode": {
       "type": "boolean",

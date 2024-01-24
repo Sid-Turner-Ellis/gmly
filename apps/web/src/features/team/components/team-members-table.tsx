@@ -119,7 +119,7 @@ const MobileTableRows = ({
     <div className="grid grid-cols-1">
       <TableRow>
         <Text>Players</Text>
-        <Text>Result</Text>
+        <Text>Info</Text>
       </TableRow>
       {teamProfiles.map((profile, ind) => (
         <Clickable

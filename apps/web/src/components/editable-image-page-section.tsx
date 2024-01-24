@@ -10,7 +10,7 @@ type EditableImagePageSectionProps = {
   isEditMode: boolean;
   setIsEditMode: React.Dispatch<React.SetStateAction<boolean>>;
   showEditButton: boolean;
-  onSave?: () => void;
+  onSave?: (() => void) | (() => Promise<void>);
 } & Parameters<typeof EditableImage>[0];
 
 const EditableImagePageSectionLayout = ({
@@ -82,11 +82,14 @@ export const EditableImagePageSection = ({
           {showEditButton && (
             <Button
               disabled={imageUploadState.status === "uploading"}
-              onClick={() => {
-                setIsEditMode((prev) => !prev);
-
+              onClick={async () => {
                 if (isEditMode) {
-                  onSave?.();
+                  try {
+                    await onSave?.();
+                    setIsEditMode(false);
+                  } catch (error) {}
+                } else {
+                  setIsEditMode(true);
                 }
               }}
               title={isEditMode ? "Save" : "Edit"}
