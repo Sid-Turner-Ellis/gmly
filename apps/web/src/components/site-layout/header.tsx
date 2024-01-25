@@ -2,23 +2,15 @@ import { cn } from "@/utils/cn";
 import { Button } from "../button";
 import { Icon } from "../icon";
 import { ClassValue } from "clsx";
-import {
-  useAddress,
-  useMetamask,
-  useLogin,
-  useLogout,
-  useDisconnect,
-  useUser,
-  ConnectWallet,
-  useConnectionStatus,
-  darkTheme,
-} from "@thirdweb-dev/react";
+import { ConnectWallet, darkTheme } from "@thirdweb-dev/react";
 import { ProfileButtons } from "./profile-buttons";
 import { useAuth } from "@/hooks/use-auth";
 import { GlobalSearchBar } from "../../features/global-search/components/global-search-bar";
 import { useTailwindBreakpoint } from "@/hooks/use-tailwind-breakpoint";
 import { NotificationBell } from "@/features/notification/components/notification-bell";
 import { NotificationsHeaderButton } from "@/features/notification/components/notification-header-button";
+
+// TODO: We can replace the hacky thirdweb connect button with this - https://portal.thirdweb.com/references/react/v4/useSetIsWalletModalOpen
 
 type HeaderProps = {
   openSidebar: () => void;

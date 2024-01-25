@@ -11,6 +11,15 @@ import { Spinner } from "../spinner";
 import { TransactionModal } from "@/features/transaction/components/transaction-modal";
 import { usePendingBalance } from "@/hooks/use-pending-balance";
 import { cn } from "@/utils/cn";
+import {
+  useChain,
+  useChainId,
+  useNetworkMismatch,
+  useSetIsWalletModalOpen,
+  useSwitchChain,
+  ChainId,
+} from "@thirdweb-dev/react";
+import { Ethereum, Polygon, Localhost, Mumbai } from "@thirdweb-dev/chains";
 
 type ProfileButtonsProps = {};
 
@@ -19,6 +28,12 @@ export const ProfileButtons = ({}: ProfileButtonsProps) => {
   const isDesktop = useTailwindBreakpoint("md");
   const { balance, isBalanceLoading, hasPendingBalance } = usePendingBalance();
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
+
+  const one = useChain();
+  const two = useChainId();
+  const three = useNetworkMismatch();
+  const four = useSwitchChain();
+
   const username = user?.data?.profile?.username ?? "User";
   const profileImageUrl = user?.data.profile?.avatar
     ? resolveStrapiImage(user?.data.profile?.avatar ?? null, {
@@ -35,6 +50,12 @@ export const ProfileButtons = ({}: ProfileButtonsProps) => {
         />
       </div>
       <div className="relative z-0 flex h-full gap-2 lg:gap-3">
+        <Button
+          title="clicky"
+          onClick={() => {
+            four(Polygon.chainId);
+          }}
+        />
         <Button
           title={typeof balance === "number" ? toUsdString(balance) : undefined}
           onClick={() => setIsWalletModalOpen(true)}
