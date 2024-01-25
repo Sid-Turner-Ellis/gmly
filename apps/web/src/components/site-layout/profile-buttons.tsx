@@ -20,6 +20,11 @@ export const ProfileButtons = ({}: ProfileButtonsProps) => {
   const { balance, isBalanceLoading, hasPendingBalance } = usePendingBalance();
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
   const username = user?.data?.profile?.username ?? "User";
+  const profileImageUrl = user?.data.profile?.avatar
+    ? resolveStrapiImage(user?.data.profile?.avatar ?? null, {
+        noFallback: true,
+      })
+    : undefined;
 
   return (
     <>
@@ -49,25 +54,50 @@ export const ProfileButtons = ({}: ProfileButtonsProps) => {
           <Button
             variant="secondary"
             title={isDesktop ? username ?? "Profile" : undefined}
-            className="h-full"
+            className="relative h-full overflow-hidden"
             onClick={logout}
             iconSize={20}
             icon={
-              <Avatar.Root className="inline-flex items-center justify-center w-full h-full overflow-hidden rounded-full select-none">
-                <Avatar.Image
-                  className="h-full w-full rounded-[inherit] object-cover"
-                  src={resolveStrapiImage(user?.data.profile?.avatar ?? null)}
-                  alt={"Avatar"}
-                />
-                <Avatar.Fallback
-                  className="flex text-black bg-pink-400  text-[13px] font-medium h-full w-full relative"
-                  delayMs={600}
-                >
-                  <span className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
-                    {username[0].toUpperCase()}
-                  </span>
-                </Avatar.Fallback>
-              </Avatar.Root>
+              <>
+                {!isDesktop && (
+                  <div
+                    className={cn(
+                      "absolute inset-0 bg-cover",
+                      !profileImageUrl && "bg-pink-400"
+                    )}
+                    style={{
+                      backgroundImage: profileImageUrl
+                        ? `url("${profileImageUrl}")`
+                        : undefined,
+                    }}
+                  >
+                    {!profileImageUrl && (
+                      <div className="flex text-black bg-pink-400  text-[13px] font-medium h-full w-full relative">
+                        <span className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+                          {username[0].toUpperCase()}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
+                {isDesktop && (
+                  <Avatar.Root className="inline-flex items-center justify-center w-full h-full overflow-hidden rounded-full select-none">
+                    <Avatar.Image
+                      className="h-full w-full rounded-[inherit] object-cover"
+                      src={profileImageUrl}
+                      alt={"Avatar"}
+                    />
+                    <Avatar.Fallback
+                      className="flex text-black bg-pink-400  text-[13px] font-medium h-full w-full relative"
+                      delayMs={600}
+                    >
+                      <span className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+                        {username[0].toUpperCase()}
+                      </span>
+                    </Avatar.Fallback>
+                  </Avatar.Root>
+                )}
+              </>
             }
           />
         </div>

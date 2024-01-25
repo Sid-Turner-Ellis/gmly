@@ -57,7 +57,7 @@ export const SidebarButton = ({
         ) : icon && typeof icon === "object" && "data" in icon ? (
           <div className="w-[24px] h-[24px] rounded-sm shadow overflow-hidden">
             <Image
-              src={resolveStrapiImage(icon, "xsmall")}
+              src={resolveStrapiImage(icon, { format: "xsmall" })}
               alt={`Icon for ${label} button`}
             />
           </div>

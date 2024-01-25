@@ -19,7 +19,10 @@ export const resolveStrapiImage = (
     | StrapiRelation<StrapiEntity<StrapiImage>>
     | null
     | undefined,
-  format?: keyof NonNullable<StrapiImage["formats"]>
+  options: Partial<{
+    format: keyof NonNullable<StrapiImage["formats"]>;
+    noFallback: boolean;
+  }> = {}
 ) => {
   const imageData = isStrapiRelationImage(image)
     ? image?.data?.attributes
@@ -28,14 +31,17 @@ export const resolveStrapiImage = (
   const defaultUrl = imageData?.url;
 
   if (!defaultUrl) {
+    if (options.noFallback) {
+      return "";
+    }
     return "/image-placeholder.jpg";
   }
 
-  if (!format) {
+  if (!options.format) {
     return addUrl(defaultUrl);
   }
 
   // TODO: Start choosing nearest format to the requested one
-  const formatUrl = imageData?.formats?.[format]?.url;
+  const formatUrl = imageData?.formats?.[options.format]?.url;
   return addUrl(formatUrl || defaultUrl);
 };
