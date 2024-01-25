@@ -8,7 +8,7 @@ import { VariantProps, cva } from "class-variance-authority";
 export const headingVariants = cva("text-brand-white font-grotesque", {
   variants: {
     variant: {
-      h1: "text-4xl font-bold mb-10",
+      h1: "text-3xl md:text-4xl font-bold mb-10",
       h2: "text-2xl font-bold mb-0",
       h3: "text-xl font-semibold mb-3",
     },
