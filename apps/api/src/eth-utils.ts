@@ -22,6 +22,8 @@ export const getEthersProvider = async () => {
         );
       }),
     ]);
+
+    console.log("Ethers provider connected");
   }
 
   return ethersProvider;

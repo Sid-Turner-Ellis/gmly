@@ -4,6 +4,7 @@ import { getEthersProvider, getGamerlyContract } from "./eth-utils";
 // TODO: replace txBlockNumber and txHash with onChainSince
 
 const isDev = process.env.APP_ENV === "development";
+const isStage = process.env.APP_ENV === "staging";
 
 export const processTransactions = async (currentBlockNumber: number) => {
   const unconfirmedTransactions = await strapi
@@ -24,9 +25,9 @@ export const processTransactions = async (currentBlockNumber: number) => {
   const gasLimit = ethers.BigNumber.from(500000);
   const gamerlyContract = await getGamerlyContract();
   const requiredConfirmations = {
-    allowance: isDev ? 1 : 10,
-    transaction: isDev ? 2 : 180,
-    deletion: isDev ? 3 : 190,
+    allowance: isDev ? 1 : isStage ? 5: 10,
+    transaction: isDev ? 2 : isStage ? 10: 180,
+    deletion: isDev ? 3 : isStage ? 20: 190,
   };
 
   console.log("----- creating transactions -----");
