@@ -64,7 +64,6 @@
   },
   "devDependencies": {
     "@types/node": "^20",
-    "@tanstack/react-query-devtools": "^5.7.4",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
