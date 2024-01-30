@@ -4,9 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "hardhat:dev": "APP_ENV=development hardhat",
-    "hardhat:staging": "APP_ENV=staging hardhat --network mumbai",
-    "hardhat:prod": "APP_ENV=production hardhat --network polygon"
+    "hardhat:dev": "NEXT_PUBLIC_APP_ENV=development hardhat",
+    "hardhat:staging": "NEXT_PUBLIC_APP_ENV=staging hardhat --network mumbai",
+    "hardhat:prod": "NEXT_PUBLIC_APP_ENV=production hardhat --network polygon"
   },
   "dependencies": {
     "@nomicfoundation/hardhat-ethers": "^3.0.5",

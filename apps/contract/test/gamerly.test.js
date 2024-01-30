@@ -10,7 +10,7 @@ const TransactionType = {
 const deployGamerly = async () => {
   const GamerlyContractFactory = await ethers.getContractFactory("Gamerly");
   const gamerlyContract = await upgrades.deployProxy(GamerlyContractFactory, [
-    process.env.USDC_SMART_CONTRACT_ADDRESS,
+    process.env.NEXT_PUBLIC_USDC_SMART_CONTRACT_ADDRESS,
   ]);
   await gamerlyContract.waitForDeployment();
 
@@ -22,7 +22,7 @@ const deployGamerly = async () => {
 const getUSDCSmartContract = async () => {
   const usdcContract = await ethers.getContractAt(
     "IERC20",
-    process.env.USDC_SMART_CONTRACT_ADDRESS
+    process.env.NEXT_PUBLIC_USDC_SMART_CONTRACT_ADDRESS
   );
 
   return { usdcContract };

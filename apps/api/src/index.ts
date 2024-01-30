@@ -1,9 +1,8 @@
 import { getEthersProvider } from "./eth-utils";
 import { processTransactions } from "./process-transactions";
 
-const isDev = process.env.APP_ENV === "development";
-const isStage = process.env.APP_ENV === "staging";
-
+const isDev = process.env.NEXT_PUBLIC_APP_ENV === "development";
+const isStage = process.env.NEXT_PUBLIC_APP_ENV === "staging";
 
 export default {
   register(/*{ strapi }*/) {},
@@ -22,7 +21,7 @@ export default {
 
     const processInterval = isDev ? 1 : isStage ? 5 : 10;
     let nextBlockToProcess =
-      (await provider.getBlockNumber()) + (isDev ? 1 : isStage ? 15:30);
+      (await provider.getBlockNumber()) + (isDev ? 1 : isStage ? 15 : 30);
     let isProcessing = false;
 
     provider.on("block", async (blockNumber) => {

@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 
-console.log("hi", process.env.APP_ENV, process.env.NEXT_PUBLIC_API_HOST_NAME);
 const nextConfig = {
   reactStrictMode: true,
   images: {

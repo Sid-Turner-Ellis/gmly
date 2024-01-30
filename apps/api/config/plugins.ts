@@ -28,7 +28,7 @@ export default ({ env }) => {
     },
     meilisearch: {
       config: {
-        host: env("MEILISEARCH_URL", "http://0.0.0.0:7700/"),
+        host: env("NEXT_PUBLIC_MEILISEARCH_URL", "http://0.0.0.0:7700/"),
         apiKey: env("MEILISEARCH_PRIVATE_API_KEY", "MASTER_KEY"),
         game: {
           indexName: "global",

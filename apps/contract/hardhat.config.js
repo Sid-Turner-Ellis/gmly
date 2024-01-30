@@ -5,7 +5,7 @@ require("@nomicfoundation/hardhat-chai-matchers");
 require("hardhat-gas-reporter");
 
 const getEnvFileName = () => {
-  const env = process.env.APP_ENV;
+  const env = process.env.NEXT_PUBLIC_APP_ENV;
 
   if (!env || env === "development") {
     return ".env";

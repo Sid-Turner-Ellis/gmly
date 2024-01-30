@@ -37,7 +37,7 @@ export const getGamerlyContract = async () => {
   );
 
   const gamerlyContract = new ethers.Contract(
-    process.env.GAMERLY_SMART_CONTRACT_ADDRESS,
+    process.env.NEXT_PUBLIC_GAMERLY_SMART_CONTRACT_ADDRESS,
     gamerlyAbi,
   );
 

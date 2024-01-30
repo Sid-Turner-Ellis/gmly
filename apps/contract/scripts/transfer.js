@@ -1,6 +1,6 @@
 const { ethers, network } = require("hardhat");
 
-const env = process.env.APP_ENV;
+const env = process.env.NEXT_PUBLIC_APP_ENV;
 
 if (env !== "development") {
   console.log("This script is only for development");
