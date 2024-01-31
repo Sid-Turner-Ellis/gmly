@@ -9,21 +9,13 @@
   },
   "scripts": {
     "build": "strapi build",
-    "develop": "strapi develop",
+    "dev": "strapi develop",
     "start": "strapi start",
     "strapi": "strapi",
-    "dev:build": "ENV_PATH=../../.env strapi build",
-    "dev:develop": "ENV_PATH=../../.env strapi develop",
-    "dev:start": "ENV_PATH=../../.env strapi start",
-    "dev:strapi": "ENV_PATH=../../.env strapi",
-    "staging:build": "ENV_PATH=../../.staging.env strapi build",
-    "staging:develop": "ENV_PATH=../../.staging.env strapi develop",
-    "staging:start": "ENV_PATH=../../.staging.env strapi start",
-    "staging:strapi": "ENV_PATH=../../.staging.env strapi",
-    "production:build": "ENV_PATH=../../.production.env strapi build",
-    "production:develop": "ENV_PATH=../../.production.env strapi develop",
-    "production:start": "ENV_PATH=../../.production.env strapi start",
-    "production:strapi": "ENV_PATH=../../.production.env strapi"
+    "local:build": "ENV_PATH=../../.env strapi build",
+    "local:dev": "ENV_PATH=../../.env strapi develop",
+    "local:start": "ENV_PATH=../../.env strapi start",
+    "local:strapi": "ENV_PATH=../../.env strapi"
   },
   "dependencies": {
     "@strapi/plugin-i18n": "4.15.0",

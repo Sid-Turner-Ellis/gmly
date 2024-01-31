@@ -6,15 +6,9 @@
     "build": "next build",
     "dev": "next dev",
     "start": "next start",
-    "dev:build": "dotenv -e ../../.env next build",
-    "dev:dev": "dotenv -e ../../.env next dev",
-    "dev:start": "dotenv -e ../../.env next start",
-    "staging:build": "dotenv -e ../../.staging.env next build",
-    "staging:dev": "dotenv -e ../../.staging.env next dev",
-    "staging:start": "dotenv -e ../../.staging.env next start",
-    "production:build": "dotenv -e ../../.production.env next build",
-    "production:dev": "dotenv -e ../../.production.env next dev",
-    "production:start": "dotenv -e ../../.production.env next start"
+    "local:build": "dotenv -e ../../.env next build",
+    "local:dev": "dotenv -e ../../.env next dev",
+    "local:start": "dotenv -e ../../.env next start"
   },
   "dependencies": {
     "@2toad/profanity": "^2.2.0",

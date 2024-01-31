@@ -5,7 +5,11 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "remove-node-modules": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +"
+    "remove-node-modules": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +",
+    "build:web": "turbo run build --filter web",
+    "build:api": "turbo run build --filter api",
+    "start:web": "turbo run start --filter web",
+    "start:api": "turbo run start --filter api"
   },
   "devDependencies": {
     "eslint": "^8.48.0",
