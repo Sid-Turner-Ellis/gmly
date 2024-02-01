@@ -27,6 +27,14 @@ const getSumOfTransactionsByTypeAndProfileId = async (
   profileIdOrProfileIds: number | number[],
 ) => {
   const knex = strapi.db.connection;
+  const isMultipleProfiles = Array.isArray(profileIdOrProfileIds);
+
+  /**
+   * - Join the transaction with the profiles they are for
+   * - Select the profile Id and the transaction type
+   * - Group by the type
+   * - Filter by the profile IDs
+   */
   const query = knex("transactions")
     .join(
       "transactions_profile_links",
@@ -35,20 +43,26 @@ const getSumOfTransactionsByTypeAndProfileId = async (
       "transactions_profile_links.transaction_id",
     )
     .select(
-      "transactions.amount as amount",
-      "transactions.type as type",
+      "transactions.type",
       "transactions_profile_links.profile_id as profileId",
     )
-    .where({ confirmed: true })
-    .orWhere({ type: "withdraw" }) // we assume that withdrawals are always confirmed to be safe
-    .groupBy("type")
-    .sum("amount as confirmedBalance");
+    .where(function () {
+      this.where({ confirmed: true }).orWhere({ type: "withdraw" });
+    })
+    .sum("transactions.amount as confirmedBalance")
+    .groupBy("transactions.type");
 
-  if (Array.isArray(profileIdOrProfileIds)) {
+  if (isMultipleProfiles) {
     query.groupBy("profileId");
-    query.whereIn("profileId", profileIdOrProfileIds);
+    query.whereIn(
+      "transactions_profile_links.profile_id",
+      profileIdOrProfileIds,
+    );
   } else {
-    query.where({ profileId: profileIdOrProfileIds });
+    query.andWhere(
+      "transactions_profile_links.profile_id",
+      profileIdOrProfileIds,
+    );
   }
 
   return await query;
