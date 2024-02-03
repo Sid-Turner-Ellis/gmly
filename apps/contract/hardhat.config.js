@@ -30,7 +30,7 @@ module.exports = {
       chainId: 1337,
       mining: {
         auto: true,
-        interval: 5000,
+        interval: 2000,
       },
       forking: {
         enabled: true,

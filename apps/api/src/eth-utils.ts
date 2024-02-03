@@ -1,5 +1,8 @@
 import { Transaction, ethers } from "ethers";
 
+const isDev = process.env.NEXT_PUBLIC_APP_ENV === "development";
+const isStage = process.env.NEXT_PUBLIC_APP_ENV === "staging";
+
 let ethersProvider = null;
 
 const wait = (seconds: number) =>
@@ -7,9 +10,14 @@ const wait = (seconds: number) =>
 
 export const getEthersProvider = async () => {
   if (!ethersProvider) {
-    ethersProvider = new ethers.providers.JsonRpcProvider(
-      process.env.JSON_RPC_URL,
-    );
+    ethersProvider = isDev
+      ? (ethersProvider = new ethers.providers.JsonRpcProvider(
+          process.env.JSON_RPC_URL,
+        ))
+      : new ethers.providers.AlchemyProvider(
+          isStage ? "maticmum" : "matic",
+          process.env.ALCHEMY_API_KEY,
+        );
 
     await Promise.race([
       ethersProvider.ready,

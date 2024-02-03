@@ -27,7 +27,7 @@ export const processTransactions = async (currentBlockNumber: number) => {
   const requiredConfirmations = {
     allowance: isDev ? 1 : isStage ? 5 : 10,
     transaction: isDev ? 2 : isStage ? 10 : 180,
-    deletion: isDev ? 3 : isStage ? 20 : 190,
+    deletion: isDev ? 3 : isStage ? 20 : 200,
   };
 
   console.log("----- creating transactions -----");
@@ -79,30 +79,9 @@ export const processTransactions = async (currentBlockNumber: number) => {
         });
         console.log("completed update");
 
-        /**
-         * Were getting a transaction ID already exists error
-         */
         console.log("created deposit transaction", result.id);
       } catch (error) {
-        const errorData = error?.data || error?.error?.data;
-
-        console.log("error creating deposit transaction", errorData, error);
-        if (errorData) {
-          const errorName = gamerlyContract.interface.parseError(
-            errorData.data,
-          ).name;
-
-          if (errorName === "TransactionIdAlreadyExists") {
-            console.log("transaction already exists", result.id);
-            await strapi
-              .service("api::transaction.transaction")
-              .update(result.id, {
-                data: {
-                  onChainSinceBlockNumber: currentBlockNumber,
-                },
-              });
-          }
-        }
+        console.log("error creating deposit transaction", error);
       }
     }),
   );
@@ -110,6 +89,7 @@ export const processTransactions = async (currentBlockNumber: number) => {
   console.log("----- confirming transactions -----");
 
   // Transaction confirmation
+  // TODO: This page size limit could become restrictive
   const transactionsToConfirm = await strapi
     .service("api::transaction.transaction")
     .find({
@@ -142,6 +122,7 @@ export const processTransactions = async (currentBlockNumber: number) => {
   await Promise.all(
     transactionsToConfirm.results.map(async (result) => {
       try {
+        // Note that we don't need to check the receipt here because if the transaction is on the blockchain after X confirmations we know it's valid
         const onChainTransaction = await gamerlyContract.getTransaction(
           result.id,
         );
@@ -252,6 +233,7 @@ export const processTransactions = async (currentBlockNumber: number) => {
           .service("api::profile.profile")
           .findOneByWalletAddress(profileAddress);
 
+        // TODO: Start doing this validation in the confirm block instead
         console.log({
           onChainSinceBlockNumber: currentBlockNumber,
           transactionType: transactionType === 0 ? "deposit" : "withdraw",

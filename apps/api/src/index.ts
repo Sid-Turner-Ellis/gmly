@@ -25,16 +25,16 @@ export default {
     let isProcessing = false;
 
     provider.on("block", async (blockNumber) => {
-      // console.log("new block", {
-      //   isProcessing,
-      //   blockNumber,
-      //   nextBlockToProcess,
-      // });
+      console.log("new block", {
+        isProcessing,
+        blockNumber,
+        nextBlockToProcess,
+      });
 
       if (blockNumber < nextBlockToProcess || isProcessing) {
         return;
       }
-      console.log("new block is being processed");
+      console.log("new block is being processed!");
       nextBlockToProcess = blockNumber + processInterval;
       isProcessing = true;
 
