@@ -187,6 +187,7 @@ export const processTransactions = async (currentBlockNumber: number) => {
           {
             txHash: { $null: true },
             txBlockNumber: { $null: true },
+            onChainSinceBlockNumber: { $null: true },
             allowanceTxBlockNumber: {
               $lte: currentBlockNumber - requiredConfirmations.deletion,
             },
