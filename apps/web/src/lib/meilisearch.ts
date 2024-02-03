@@ -11,7 +11,7 @@ export type GlobalIndexHit = {
 
 const meilisearchClient = new MeiliSearch({
   host: process.env.NEXT_PUBLIC_MEILISEARCH_URL!,
-  apiKey: process.env.NEXT_PUBLIC_MEILISEARCH_MASTER_KEY!,
+  apiKey: process.env.NEXT_PUBLIC_MEILISEARCH_PUBLIC_API_KEY!,
 });
 
 export const globalMelilisearchIndex =
