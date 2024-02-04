@@ -1,21 +1,39 @@
 import { useAuth } from "@/hooks/use-auth";
 import { useAuthenticatedQuery } from "@/hooks/use-authenticated-query";
-import { NotificationService } from "./notification-service";
-import { useMemo } from "react";
+import {
+  NotificationResponse,
+  NotificationService,
+} from "./notification-service";
+import { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useOptimisticMutation } from "@/hooks/use-optimistic-mutation";
 
 export const useNotifications = () => {
   const { user } = useAuth();
   const profileId = user?.data.profile.id;
   const queryClient = useQueryClient();
+  const queryKey = ["notifications", profileId];
 
   const { data: notificationsData } = useAuthenticatedQuery(
-    ["notifications", profileId],
+    queryKey,
     () => NotificationService.getNotificationsForProfile(profileId!),
     {
       enabled: !!profileId,
+      staleTime: 1000 * 60 * 1,
     }
   );
+
+  const setCacheNotificationsAsSeen = () => {
+    queryClient.setQueryData<typeof notificationsData>(
+      queryKey,
+      (previousCacheValue) => {
+        previousCacheValue?.data.forEach((v) => {
+          v.attributes.seen = true;
+        });
+        return previousCacheValue;
+      }
+    );
+  };
 
   const notifications = useMemo(
     () =>
@@ -33,10 +51,10 @@ export const useNotifications = () => {
   };
 
   const markAllAsRead = async () => {
+    setCacheNotificationsAsSeen();
     await Promise.all(
       notifications.map((n) => NotificationService.markAsRead(n.id))
     );
-
     invalidateNotifications();
   };
 
@@ -46,14 +64,15 @@ export const useNotifications = () => {
   };
 
   const markAllAsSeen = async () => {
+    setCacheNotificationsAsSeen();
     await NotificationService.markAllAsSeen(profileId!);
     invalidateNotifications();
   };
 
-  const hasUnseenNotifications = useMemo(
-    () => (notifications ?? []).some((n) => n.attributes.seen === false),
-    [notifications]
+  const hasUnseenNotifications = (notificationsData?.data ?? []).some(
+    (n) => n.attributes.seen === false
   );
+
   return {
     notifications,
     markAllAsRead,

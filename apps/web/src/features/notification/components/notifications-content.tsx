@@ -41,8 +41,6 @@ export const NotificationsContent = ({
     }
   }, []);
 
-  console.log(notifications);
-
   return (
     <>
       <div

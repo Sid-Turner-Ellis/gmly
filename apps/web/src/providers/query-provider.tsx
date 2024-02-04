@@ -6,6 +6,7 @@ import {
 } from "@tanstack/react-query";
 
 export const queryClient = new QueryClient({
+  defaultOptions: {},
   queryCache: new QueryCache({
     onError: (error) => console.log(error),
   }),
