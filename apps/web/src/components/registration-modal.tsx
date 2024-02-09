@@ -18,6 +18,7 @@ import { StrapiError } from "@/utils/strapi-error";
 import { Text, textVariantClassnames } from "./text";
 import { AuthenticatedUser, useAuth } from "@/hooks/use-auth";
 import { InputLayout } from "./input-layout";
+import { USER_QUERY_KEY } from "@/constants";
 
 type FormInputs = {
   username: string;
@@ -57,7 +58,7 @@ export const RegistrationModal = () => {
         }
       },
       onSuccess(data) {
-        queryClient.setQueryData(["tw-cache", "user"], (oldData: any) => {
+        queryClient.setQueryData(USER_QUERY_KEY, (oldData: any) => {
           const thirdWebUserData = oldData as AuthenticatedUser;
 
           const { region, username } = data.attributes;

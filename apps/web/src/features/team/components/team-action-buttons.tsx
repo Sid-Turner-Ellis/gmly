@@ -11,6 +11,7 @@ import { TeamMemberEdit } from "./team-member-edit";
 import { useOptimisticMutation } from "@/hooks/use-optimistic-mutation";
 import { StrapiError } from "@/utils/strapi-error";
 import { createFakeTeamProfile } from "../util";
+import { USER_QUERY_KEY } from "@/constants";
 
 // TODO: Might move all logic regarding whether team is deletable or player can leave to the backend and return errors
 
@@ -117,7 +118,7 @@ export const TeamActionButtons = ({
   const { mutate: leaveTeamMutation, isLoading: isLeaveTeamMutationLoading } =
     useMutation((id: number) => TeamService.leaveTeam(id), {
       onSuccess() {
-        queryClient.invalidateQueries(["tw-cache", "user"]);
+        queryClient.invalidateQueries(USER_QUERY_KEY);
         addToast({ type: "success", message: "You have left the team" });
         router.replace("/");
       },
@@ -129,7 +130,7 @@ export const TeamActionButtons = ({
   const { mutate: deleteTeamMutation, isLoading: deleteTeamMutationIsLoading } =
     useMutation(({ id }: { id: number }) => TeamService.deleteTeam(id), {
       onSuccess() {
-        queryClient.invalidateQueries(["tw-cache", "user"]);
+        queryClient.invalidateQueries(USER_QUERY_KEY);
         addToast({ type: "success", message: "Team deleted" });
         router.replace("/");
       },

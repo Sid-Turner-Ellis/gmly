@@ -13,6 +13,7 @@ import { InviteTeamModalStep } from "./invite-team-modal-step";
 import { validateTeamName } from "../../util";
 import { MAX_TEAM_MEMBERS } from "../../constants";
 import { useGameSelect } from "@/features/game/components/game-select";
+import { USER_QUERY_KEY } from "@/constants";
 
 // TODO: start using the modal component
 
@@ -124,7 +125,7 @@ export const CreateTeamModal = ({
     },
     {
       onSuccess(data) {
-        queryClient.invalidateQueries(["tw-cache", "user"]);
+        queryClient.invalidateQueries(USER_QUERY_KEY);
         addToast({ type: "success", message: "Team created!" });
         router.push(`/team/${data}`);
       },

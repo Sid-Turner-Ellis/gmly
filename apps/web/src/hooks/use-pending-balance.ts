@@ -2,11 +2,12 @@ import { useIsFetching, useQuery } from "@tanstack/react-query";
 import { useAuth } from "./use-auth";
 import { TransactionService } from "@/features/transaction/transaction-service";
 import { useEffect, useMemo } from "react";
+import { USER_QUERY_KEY } from "@/constants";
 
 export const usePendingBalance = () => {
   const { user, isUserLoading } = useAuth();
   const balance = user?.data.profile.balance ?? 0;
-  const isFetching = useIsFetching(["tw-cache", "user"]);
+  const isFetching = useIsFetching(USER_QUERY_KEY);
   const userId = user?.data.profile.id;
   const {
     data: pendingBalanceData,

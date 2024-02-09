@@ -11,6 +11,7 @@ import {
   NOTIFICATION_TYPES,
   isTeamInviteReceivedNotification,
 } from "@/features/notification/notification-service";
+import { USER_QUERY_KEY } from "@/constants";
 
 // TODO: redirect to the team page if accepts
 
@@ -72,7 +73,7 @@ export const TeamInviteReceivedModal = ({
     },
     {
       onSuccess(data, variables, context) {
-        queryClient.invalidateQueries(["tw-cache", "user"]);
+        queryClient.invalidateQueries(USER_QUERY_KEY);
         queryClient.invalidateQueries(["team", teamId]);
 
         onRespondToInvite?.();

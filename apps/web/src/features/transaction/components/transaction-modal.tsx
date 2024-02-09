@@ -12,6 +12,7 @@ import { TransactionService } from "../transaction-service";
 import { StrapiError } from "@/utils/strapi-error";
 import { toUsdString } from "@/utils/to-usd-string";
 import { useQueryClient } from "@tanstack/react-query";
+import { USER_QUERY_KEY } from "@/constants";
 
 /**
  * So the auth is switching when I change wallets correctly,
@@ -90,7 +91,7 @@ export const TransactionModal = ({
         await TransactionService.withdraw(amount);
       }
       setIsPendingTransactionModalOpen(true);
-      queryClient.invalidateQueries(["tw-cache", "user"]);
+      queryClient.invalidateQueries(USER_QUERY_KEY);
     } catch (error) {
       let toastMessage = "Something went wrong";
       let toastType: BasicToast["type"] = "error";

@@ -9,12 +9,13 @@ import { useOptimisticMutation } from "@/hooks/use-optimistic-mutation";
 import { useToast } from "@/providers/toast-provider";
 import { validateTeamName } from "../util";
 import { StrapiError } from "@/utils/strapi-error";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { TeamMembersTable } from "./team-members-table";
 import { TeamActionButtons } from "./team-action-buttons";
 import { useGlobalModal } from "@/providers/global-modal-provider";
 import { TeamInviteReceivedModal } from "./team-invite-recieved-modal";
 import { Text } from "@/components/text";
+import { USER_QUERY_KEY } from "@/constants";
 
 type TeamPageContent = {
   team: TeamResponse;
@@ -110,7 +111,7 @@ export const TeamPageContent = ({ team, teamProfile }: TeamPageContent) => {
             message: "Profile updated",
           });
 
-          queryClient.invalidateQueries(["tw-cache", "user"]);
+          queryClient.invalidateQueries(USER_QUERY_KEY);
         },
       }
     );
