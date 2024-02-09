@@ -1,21 +1,16 @@
 import { Button } from "@/components/button";
 import { Image } from "@/components/image";
 import { ImageInput } from "@/components/image-input";
-import { Select } from "@/components/select";
 import { TextInput } from "@/components/text-input";
 import { useStrapiImageUpload } from "@/hooks/use-strapi-image-upload";
 import { UseFormReturn } from "react-hook-form";
 import { validateTeamName } from "../../util";
+import {
+  GameSelect,
+  GameSelectProps,
+} from "@/features/game/components/game-select";
 
-type ContentProps = {
-  stringifiedGameId: string | null;
-  setStringifiedGameId: React.Dispatch<React.SetStateAction<string | null>>;
-  gameQueryIsLoading: boolean;
-  gameQueryIsError: boolean;
-  gameSelectError?: string | boolean;
-  stringifiedGameOptionIds: string[];
-  getGameSelectLabelFromStringifiedGameId: (id: string) => string;
-} & Omit<
+type ContentProps = Omit<
   ReturnType<typeof useStrapiImageUpload>,
   "resetFileState" | "resetUploadState"
 > &
@@ -27,6 +22,14 @@ type ContentProps = {
     | "getValues"
     | "setError"
     | "formState"
+  > &
+  Pick<
+    GameSelectProps,
+    | "setSelectedGame"
+    | "isDisabled"
+    | "gameIdsToExclude"
+    | "gameSelectError"
+    | "selectedGame"
   >;
 
 type FooterProps = {
@@ -37,15 +40,12 @@ type FooterProps = {
 const Content = ({
   fileObjectUrl,
   onFileInputChange,
-  gameQueryIsError,
-  gameQueryIsLoading,
-  stringifiedGameId,
-  setStringifiedGameId,
-  stringifiedGameOptionIds,
-  gameSelectError,
-  getGameSelectLabelFromStringifiedGameId,
   register,
   formState: { errors },
+  setSelectedGame,
+  gameIdsToExclude,
+  selectedGame,
+  gameSelectError,
 }: ContentProps) => {
   return (
     <div className="relative z-0">
@@ -71,13 +71,11 @@ const Content = ({
           </div>
         </div>
         <div className="">
-          <Select
-            disabled={gameQueryIsLoading || gameQueryIsError}
-            options={stringifiedGameOptionIds}
-            setValue={setStringifiedGameId}
-            error={gameSelectError}
-            value={stringifiedGameId}
-            getLabel={getGameSelectLabelFromStringifiedGameId}
+          <GameSelect
+            selectedGame={selectedGame}
+            setSelectedGame={setSelectedGame}
+            gameIdsToExclude={gameIdsToExclude}
+            gameSelectError={!!gameSelectError}
           />
         </div>
       </div>

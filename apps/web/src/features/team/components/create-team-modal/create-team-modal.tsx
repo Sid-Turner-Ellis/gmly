@@ -1,21 +1,18 @@
-import { Button } from "@/components/button";
-import { ErrorPage } from "@/components/error-page";
-import { Modal, ModalProps } from "@/components/modal/modal";
-import { GameService } from "@/features/game/game-service";
+import { Modal } from "@/components/modal/modal";
 import { useStrapiImageUpload } from "@/hooks/use-strapi-image-upload";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { SubmitHandler, set, useForm } from "react-hook-form";
-import { TeamRoles, TeamService } from "../../team-service";
-import { AuthenticatedUser, useAuth } from "@/hooks/use-auth";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { TeamService } from "../../team-service";
+import { AuthenticatedUser } from "@/hooks/use-auth";
 import { useRouter } from "next/router";
 import { useToast } from "@/providers/toast-provider";
 import { CreateTeamModalStep } from "./create-team-modal-step";
 import { TeamMemberUpdate } from "../../types";
 import { InviteTeamModalStep } from "./invite-team-modal-step";
-import { profanity } from "@2toad/profanity";
 import { validateTeamName } from "../../util";
 import { MAX_TEAM_MEMBERS } from "../../constants";
+import { useGameSelect } from "@/features/game/components/game-select";
 
 // TODO: start using the modal component
 
@@ -31,11 +28,10 @@ export const CreateTeamModal = ({
   user,
 }: CreateTeamModalProps) => {
   const [isFirstStep, setIsFirstStep] = useState(true);
-  const [stringifiedGameId, setStringifiedGameId] = useState<string | null>(
-    null
-  );
+
   const { addToast } = useToast();
-  const [gameSelectError, setGameSelectError] = useState(false);
+  const { selectedGame, setSelectedGame, gameSelectError, setGameSelectError } =
+    useGameSelect();
   const router = useRouter();
   const initialTeamMembers: TeamMemberUpdate[] = [
     {
@@ -48,15 +44,6 @@ export const CreateTeamModal = ({
   ];
   const [teamMemberInvites, setTeamMemberInvites] =
     useState(initialTeamMembers);
-  const {
-    data: gamesQueryData,
-    isLoading: gameQueryIsLoading,
-    isError: gameQueryIsError,
-  } = useQuery(["recursive-games"], () => GameService.recursivelyGetGames(), {
-    cacheTime: 1000 * 60 * 60 * 24,
-    staleTime: 1000 * 60 * 60 * 24,
-    enabled: isOpen,
-  });
 
   const queryClient = useQueryClient();
   const {
@@ -77,37 +64,17 @@ export const CreateTeamModal = ({
   } = useStrapiImageUpload();
 
   useEffect(() => {
-    setGameSelectError(false);
-  }, [stringifiedGameId]);
+    if (selectedGame) {
+      setGameSelectError(false);
+    }
+  }, [selectedGame]);
 
   const gameIdsProfileIsOnTeamFor = useMemo(
     () =>
-      user.data.profile.team_profiles.data?.map(
-        (tp) => tp.attributes.team.data?.attributes.game.data?.id
-      ),
+      (user.data.profile.team_profiles.data
+        ?.map((tp) => tp.attributes.team.data?.attributes.game.data?.id ?? null)
+        .filter(Boolean) as number[]) || [],
     [user.data.profile.team_profiles.data]
-  );
-
-  const stringifiedGameOptionIds = useMemo(() => {
-    const gamesQueryDataWithoutGamesProfileIsOnTeamFor = gamesQueryData
-      ? gamesQueryData?.filter(
-          (game) => !gameIdsProfileIsOnTeamFor?.includes(game.id)
-        )
-      : [];
-
-    return gamesQueryDataWithoutGamesProfileIsOnTeamFor.map((game) =>
-      game.id.toString()
-    );
-  }, [gamesQueryData, gameIdsProfileIsOnTeamFor]);
-
-  const getGameSelectLabelFromStringifiedGameId = useCallback(
-    (stringId: string) => {
-      const id = parseInt(stringId);
-      const game = gamesQueryData?.find((game) => game.id === id);
-
-      return game?.attributes.title ?? "";
-    },
-    [gamesQueryData]
   );
 
   const onTeamDetailsSubmit = handleSubmit(({ teamName }) => {
@@ -119,8 +86,8 @@ export const CreateTeamModal = ({
       });
       return;
     }
-    if (!stringifiedGameId) {
-      setGameSelectError(true);
+    if (!selectedGame) {
+      setGameSelectError("Please select a game");
       return;
     }
     setIsFirstStep(false);
@@ -141,11 +108,10 @@ export const CreateTeamModal = ({
 
       const newlyCreatedTeam = await TeamService.createTeam({
         name: teamName,
-        gameId: parseInt(stringifiedGameId!),
+        gameId: selectedGame?.id!,
         image: imageId,
       });
 
-      console.log({ teamMemberInvites });
       await TeamService.bulkUpdateTeamMembers(
         newlyCreatedTeam.data.id,
         teamMemberInvites.map((tmi) => ({
@@ -170,7 +136,8 @@ export const CreateTeamModal = ({
 
   const resetState = () => {
     setIsOpen(false);
-    setStringifiedGameId(null);
+    setSelectedGame(null);
+    setGameSelectError(false);
     setIsFirstStep(true);
     resetFileState();
     resetUploadState();
@@ -184,11 +151,11 @@ export const CreateTeamModal = ({
   };
 
   useEffect(() => {
-    if (createTeamMutationIsError || gameQueryIsError) {
+    if (createTeamMutationIsError) {
       closeModal();
       router.push("/500");
     }
-  }, [createTeamMutationIsError, gameQueryIsError]);
+  }, [createTeamMutationIsError]);
 
   return (
     <Modal
@@ -196,7 +163,7 @@ export const CreateTeamModal = ({
       isOpen={isOpen}
       isClosable
       closeModal={() => closeModal()}
-      isLoading={createTeamMutationIsLoading || gameQueryIsLoading}
+      isLoading={createTeamMutationIsLoading}
       size={"md"}
       description={
         isFirstStep
@@ -232,17 +199,12 @@ export const CreateTeamModal = ({
             register={register}
             formState={formState}
             getValues={getValues}
-            stringifiedGameId={stringifiedGameId}
-            setStringifiedGameId={setStringifiedGameId}
             gameSelectError={gameSelectError}
-            stringifiedGameOptionIds={stringifiedGameOptionIds}
-            getGameSelectLabelFromStringifiedGameId={
-              getGameSelectLabelFromStringifiedGameId
-            }
-            gameQueryIsError={gameQueryIsError}
-            gameQueryIsLoading={gameQueryIsLoading}
+            setSelectedGame={setSelectedGame}
+            gameIdsToExclude={gameIdsProfileIsOnTeamFor}
             reset={resetFormState}
             setError={setError}
+            selectedGame={selectedGame}
           />
         )}
         {!isFirstStep && (

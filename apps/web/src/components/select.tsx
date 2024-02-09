@@ -15,6 +15,7 @@ export type SelectProps = {
   error?: string | boolean;
   disabled?: boolean;
   getLabel?: (id: string) => string;
+  disabledOptions?: string[];
 };
 
 export const Select = ({
@@ -26,8 +27,10 @@ export const Select = ({
   disabled,
   getLabel = (value) => value,
   error,
+  disabledOptions = [],
 }: SelectProps) => {
   const ref = useRef<HTMLDivElement>(null);
+  const isOptionDisabled = (option: string) => disabledOptions.includes(option);
 
   return (
     <SelectPrimitive.Root
@@ -77,11 +80,12 @@ export const Select = ({
           <SelectPrimitive.Viewport className="w-full h-full overflow-hidden rounded bg-brand-navy max-h-56">
             {options.map((option) => (
               <SelectPrimitive.Item
+                disabled={isOptionDisabled(option)}
                 value={option}
                 key={option}
                 className={cn(
                   textVariantClassnames.p,
-                  "w-full gap-12 px-4 py-2 border-2 border-transparent transition-all bg-brand-navy  data-[highlighted]:outline-none data-[highlighted]:bg-whiteAlpha-50 outline-none text-brand-white"
+                  "w-full gap-12 px-4 py-2 border-2 border-transparent transition-all bg-brand-navy  data-[highlighted]:outline-none data-[highlighted]:bg-whiteAlpha-50 outline-none text-brand-white data-[disabled]:opacity-70"
                 )}
               >
                 <SelectPrimitive.ItemText>
