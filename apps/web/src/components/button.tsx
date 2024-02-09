@@ -40,7 +40,7 @@ export const buttonVariants = cva(
 // TODO: start accepting html attributes
 type ButtonProps = {
   className?: ClassValue;
-  icon?: IconType | ReactNode;
+  icon?: ReactNode | IconType;
   children?: ReactNode;
   title?: string;
   onClick?: () => void;

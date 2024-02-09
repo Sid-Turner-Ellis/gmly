@@ -24,12 +24,16 @@ export class StrapiError {
   }
 
   static isStrapiError(error: unknown): error is StrapiError {
-    const e = error as StrapiError;
-    const hasData = e.data;
-    const hasStatus = e.error?.status !== undefined;
-    const hasName = e.error?.name !== undefined;
-    const hasMessage = e.error?.message !== undefined;
-    const hasDetails = e.error?.details !== undefined;
-    return !hasData && hasStatus && hasName && hasMessage && hasDetails;
+    try {
+      const e = error as StrapiError;
+      const hasData = e.data;
+      const hasStatus = e.error?.status !== undefined;
+      const hasName = e.error?.name !== undefined;
+      const hasMessage = e.error?.message !== undefined;
+      const hasDetails = e.error?.details !== undefined;
+      return !hasData && hasStatus && hasName && hasMessage && hasDetails;
+    } catch (error) {
+      return false;
+    }
   }
 }

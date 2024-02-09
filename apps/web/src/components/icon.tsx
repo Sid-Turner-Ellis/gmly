@@ -22,7 +22,8 @@ const ICONS = [
   "image",
   "search",
   "crown",
-  "plus",
+  "square-plus",
+  "round-plus",
 ] as const;
 
 export type IconType = (typeof ICONS)[number];
@@ -502,7 +503,7 @@ const ICON_MAP: Record<
       <path d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z" />
     </svg>
   ),
-  plus: ({ boxSize }) => (
+  "square-plus": ({ boxSize }) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
@@ -589,6 +590,22 @@ const ICON_MAP: Record<
           height={100}
         />
       </defs>
+    </svg>
+  ),
+  "round-plus": ({ boxSize }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 16 16"
+      {...getWidthAndHeight({ width: 16, height: 16, size: boxSize })}
+    >
+      <path
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={1.5}
+        d="M7.667 14.333A6.667 6.667 0 1 0 7.667 1a6.667 6.667 0 0 0 0 13.333ZM10.495 7.666H4.84M7.667 4.838v5.657"
+      />
     </svg>
   ),
 };

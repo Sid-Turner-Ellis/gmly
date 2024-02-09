@@ -78,21 +78,34 @@ export const Select = ({
             <ChevronUpIcon />
           </SelectPrimitive.ScrollUpButton>
           <SelectPrimitive.Viewport className="w-full h-full overflow-hidden rounded bg-brand-navy max-h-56">
-            {options.map((option) => (
+            {options.length > 0 ? (
+              options.map((option) => (
+                <SelectPrimitive.Item
+                  disabled={isOptionDisabled(option)}
+                  value={option}
+                  key={option}
+                  className={cn(
+                    textVariantClassnames.p,
+                    "w-full gap-12 px-4 py-2 border-2 border-transparent transition-all bg-brand-navy  data-[highlighted]:outline-none data-[highlighted]:bg-whiteAlpha-50 outline-none text-brand-white data-[disabled]:opacity-70"
+                  )}
+                >
+                  <SelectPrimitive.ItemText>
+                    {getLabel(option)}
+                  </SelectPrimitive.ItemText>
+                </SelectPrimitive.Item>
+              ))
+            ) : (
               <SelectPrimitive.Item
-                disabled={isOptionDisabled(option)}
-                value={option}
-                key={option}
+                disabled={true}
+                value={"no-option-selected"}
                 className={cn(
                   textVariantClassnames.p,
                   "w-full gap-12 px-4 py-2 border-2 border-transparent transition-all bg-brand-navy  data-[highlighted]:outline-none data-[highlighted]:bg-whiteAlpha-50 outline-none text-brand-white data-[disabled]:opacity-70"
                 )}
               >
-                <SelectPrimitive.ItemText>
-                  {getLabel(option)}
-                </SelectPrimitive.ItemText>
+                <SelectPrimitive.ItemText>No options</SelectPrimitive.ItemText>
               </SelectPrimitive.Item>
-            ))}
+            )}
           </SelectPrimitive.Viewport>
           <SelectPrimitive.ScrollDownButton className="absolute flex w-full items-center bottom-0 border-t-brand-navy-accent-light rounded-b border-t justify-center h-[30px] bg-brand-navy text-brand-gray cursor-default z-20">
             <ChevronDownIcon />

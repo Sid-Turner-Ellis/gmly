@@ -53,7 +53,7 @@ export const Sidebar = ({
 
     const createTeamButton: SidebarButtonProps = {
       label: "Create Team",
-      icon: "plus",
+      icon: "square-plus",
       action: () => {
         if (user) {
           setIsCreateTeamModalOpen((p) => !p);

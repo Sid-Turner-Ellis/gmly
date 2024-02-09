@@ -55,126 +55,18 @@ export const getServerSideProps = async () => {
   };
 };
 
-type TeamMemberEdit = {
-  teamMemberInvites: TeamMemberUpdate[];
-  allowOwnershipTransfer?: boolean;
-  setTeamMemberInvites: React.Dispatch<
-    React.SetStateAction<TeamMemberUpdate[]>
-  >;
-};
-
-const mockData: TeamMemberUpdate[] = [
-  {
-    image: null,
-    username: "test",
-    userId: 1,
-    isPending: false,
-    role: "founder",
-  },
-  {
-    image: null,
-    username: "test2",
-    userId: 2,
-    isPending: false,
-    role: "member",
-  },
-  {
-    image: null,
-    username: "test3",
-    userId: 3,
-    isPending: false,
-    role: "member",
-  },
-];
-
-type LogOutModalProps = {
-  closeModal: () => void;
-};
-
-export const LogOutModal = ({ closeModal }: LogOutModalProps) => {
-  const { logout } = useAuth();
-  return (
-    <ModalCard
-      size={"sm"}
-      title="Log out"
-      description="Are you sure you want to log out?"
-      Footer={
-        <div className="flex items-center justify-end gap-3">
-          <Button
-            title="Cancel"
-            variant={"secondary"}
-            onClick={() => {
-              closeModal();
-            }}
-          />
-          <Button
-            title="Log out"
-            variant={"delete"}
-            onClick={() => {
-              // logout();
-              closeModal();
-            }}
-          />
-        </div>
-      }
-    />
-  );
-};
-
 export default function Page() {
   const p = useAuth();
-  const qc = useQueryClient();
-  console.log(p);
-  const [isOpen, setIsOpen] = useState(false);
 
-  const router = useRouter();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const { openModal, closeModal } = useGlobalModal();
+  useEffect(() => {
+    async function exec() {
+      const t = await ProfileService.getProfile(
+        "0x5F5E88C273260D8D3AF3dB8026551daE05838dE2"
+      );
+      console.log("profile", t);
+    }
 
-  return (
-    <div>
-      <PopoverPrimitives.Root open={isOpen} onOpenChange={setIsOpen}>
-        <PopoverPrimitives.Trigger>
-          <Button
-            className="h-full px-3.5"
-            variant={"secondary"}
-            onClick={() => {}}
-            title="User profile"
-          />
-        </PopoverPrimitives.Trigger>
-        <PopoverPrimitives.Portal>
-          <PopoverPrimitives.Content
-            className="will-change-[transform,opacity] data-[state=open]:data-[side=top]:animate-slideDownAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade"
-            sideOffset={14}
-          >
-            <div className="bg-brand-navy-light w-[var(--radix-popover-trigger-width)] rounded overflow-hidden cursor-pointer">
-              <button
-                className="py-2 px-3.5 text-left w-full group transition"
-                onClick={() => {
-                  setIsOpen(false);
-                  router.push("/profile");
-                }}
-              >
-                <Text className={"group-hover:text-brand-white"}>Profile</Text>
-              </button>
-              <button
-                className="py-2 px-3.5 text-left w-full  bg-brand-red hover:bg-brand-red-dark transition"
-                onClick={() => {
-                  setIsOpen(false);
-                  openModal(<LogOutModal closeModal={closeModal} />, {
-                    isClosable: true,
-                  });
-                }}
-              >
-                <Text className={"text-brand-white"}>Log out</Text>
-              </button>
-            </div>
-            <PopoverPrimitives.Arrow className="fill-brand-navy-light" />
-          </PopoverPrimitives.Content>
-        </PopoverPrimitives.Portal>
-      </PopoverPrimitives.Root>
-
-      <div className="mb-40" />
-    </div>
-  );
+    exec();
+  }, []);
+  return <div></div>;
 }

@@ -12,11 +12,6 @@ export type GameSelectProps = {
   gameSelectError?: boolean | string;
 };
 
-/**
- * The state we need to keep:
- * - the stringified game ID
- */
-
 export const useGameSelect = () => {
   const [selectedGame, setSelectedGame] = useState<GameResponse | null>(null);
   const [gameSelectError, setGameSelectError] = useState<boolean | string>(

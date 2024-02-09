@@ -1,7 +1,7 @@
 import { ErrorPage } from "@/components/error-page";
 import { Heading } from "@/components/heading";
-import { ProfilePageContent } from "@/features/profile/components/profile-page-content";
-import { ProfilePageSkeleton } from "@/features/profile/components/profile-page-skeleton";
+import { ProfilePageContent } from "@/features/profile/components/profile-page/profile-page-content";
+import { ProfilePageSkeleton } from "@/features/profile/components/profile-page/profile-page-skeleton";
 import { ProfileService } from "@/features/profile/profile-service";
 import { useAuth } from "@/hooks/use-auth";
 import { useQuery } from "@tanstack/react-query";

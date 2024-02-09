@@ -55,6 +55,7 @@ export const { ThirdwebAuthHandler, getUser } = ThirdwebAuth({
 
       try {
         const profileResponse = await ProfileService.getProfile(address);
+
         const {
           username,
           wallet_address,
@@ -65,6 +66,7 @@ export const { ThirdwebAuthHandler, getUser } = ThirdwebAuth({
           createdAt,
           avatar,
           balance,
+          gamer_tags,
           team_profiles,
         } = profileResponse.attributes;
 
@@ -77,6 +79,7 @@ export const { ThirdwebAuthHandler, getUser } = ThirdwebAuth({
           trust_mode,
           createdAt,
           bio,
+          gamer_tags,
           balance,
           avatar,
           team_profiles,
@@ -92,6 +95,7 @@ export const { ThirdwebAuthHandler, getUser } = ThirdwebAuth({
           profile = {
             id: newProfileResponse.id,
             wallet_address: address,
+            gamer_tags: { data: [] },
             region: null,
             username: null,
             wager_mode: false,

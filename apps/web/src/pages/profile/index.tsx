@@ -1,5 +1,5 @@
-import { ProfilePageContent } from "@/features/profile/components/profile-page-content";
-import { ProfilePageSkeleton } from "@/features/profile/components/profile-page-skeleton";
+import { ProfilePageContent } from "@/features/profile/components/profile-page/profile-page-content";
+import { ProfilePageSkeleton } from "@/features/profile/components/profile-page/profile-page-skeleton";
 import { useAuth } from "@/hooks/use-auth";
 import { useMemo } from "react";
 
