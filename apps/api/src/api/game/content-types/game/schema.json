@@ -49,6 +49,12 @@
       "relation": "oneToMany",
       "target": "api::team.team",
       "mappedBy": "game"
+    },
+    "gamer_tags": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::gamer-tag.gamer-tag",
+      "mappedBy": "game"
     }
   }
 }

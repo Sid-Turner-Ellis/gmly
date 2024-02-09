@@ -699,6 +699,11 @@ export interface ApiGameGame extends Schema.CollectionType {
       'api::game-mode.game-mode'
     >;
     teams: Attribute.Relation<'api::game.game', 'oneToMany', 'api::team.team'>;
+    gamer_tags: Attribute.Relation<
+      'api::game.game',
+      'oneToMany',
+      'api::gamer-tag.gamer-tag'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<'api::game.game', 'oneToOne', 'admin::user'> &
@@ -735,6 +740,46 @@ export interface ApiGameModeGameMode extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::game-mode.game-mode',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiGamerTagGamerTag extends Schema.CollectionType {
+  collectionName: 'gamer_tags';
+  info: {
+    singularName: 'gamer-tag';
+    pluralName: 'gamer-tags';
+    displayName: 'Gamer Tag';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    game: Attribute.Relation<
+      'api::gamer-tag.gamer-tag',
+      'manyToOne',
+      'api::game.game'
+    >;
+    profile: Attribute.Relation<
+      'api::gamer-tag.gamer-tag',
+      'manyToOne',
+      'api::profile.profile'
+    >;
+    tag: Attribute.String & Attribute.Required;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::gamer-tag.gamer-tag',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::gamer-tag.gamer-tag',
       'oneToOne',
       'admin::user'
     > &
@@ -832,6 +877,11 @@ export interface ApiProfileProfile extends Schema.CollectionType {
       'api::transaction.transaction'
     >;
     balance: Attribute.Integer & Attribute.DefaultTo<0>;
+    gamer_tags: Attribute.Relation<
+      'api::profile.profile',
+      'oneToMany',
+      'api::gamer-tag.gamer-tag'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -993,6 +1043,7 @@ declare module '@strapi/types' {
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'api::game.game': ApiGameGame;
       'api::game-mode.game-mode': ApiGameModeGameMode;
+      'api::gamer-tag.gamer-tag': ApiGamerTagGamerTag;
       'api::notification.notification': ApiNotificationNotification;
       'api::profile.profile': ApiProfileProfile;
       'api::team.team': ApiTeamTeam;
