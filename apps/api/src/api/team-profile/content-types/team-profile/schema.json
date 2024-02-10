@@ -42,6 +42,11 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::profile.profile"
+    },
+    "gamer_tag": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::gamer-tag.gamer-tag"
     }
   }
 }

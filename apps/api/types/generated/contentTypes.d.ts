@@ -960,6 +960,11 @@ export interface ApiTeamProfileTeamProfile extends Schema.CollectionType {
       'oneToOne',
       'api::profile.profile'
     >;
+    gamer_tag: Attribute.Relation<
+      'api::team-profile.team-profile',
+      'oneToOne',
+      'api::gamer-tag.gamer-tag'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<

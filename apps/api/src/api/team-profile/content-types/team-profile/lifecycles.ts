@@ -30,11 +30,7 @@ export default {
 
   // TODO: Consider the markAsRead notification logic here instead  - when the team profile goes from pending to not pending we can delete the notification
   async afterCreate({ params: { data }, result }) {
-    // const ctx = strapi.requestContext.get();
-    // const profile = await strapi
-    //   .service("api::profile.profile")
-    //   .findOneByWalletAddress(ctx.state.wallet_address);
-
+    // Send out a notification to the user
     if (result.is_pending) {
       await strapi.service("api::notification.notification").create({
         data: {
@@ -44,6 +40,37 @@ export default {
         },
       });
     }
+  },
+
+  async beforeCreate({ params }) {
+    const setGamerTagForTeamsGame = async () => {
+      const teamId = params.data.team;
+      const profileId = params.data.profile;
+
+      const gameForTeam = await strapi.db.query("api::team.team").findOne({
+        where: {
+          id: teamId,
+        },
+        populate: {
+          game: true,
+        },
+      });
+
+      const gameId = gameForTeam.game.id;
+
+      const gamerTagForTeamsGame = await strapi.db
+        .query("api::gamer-tag.gamer-tag")
+        .findOne({
+          where: {
+            game: gameId,
+            profile: profileId,
+          },
+        });
+
+      params.data.gamer_tag = gamerTagForTeamsGame?.id;
+    };
+
+    await setGamerTagForTeamsGame();
   },
 
   async beforeDeleteMany(ev) {

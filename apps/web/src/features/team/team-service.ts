@@ -7,6 +7,7 @@ import {
 import { StrapiError } from "@/utils/strapi-error";
 import { Game, GameWithoutRelations } from "../game/game-service";
 import { Profile, ProfileWithoutRelations } from "../profile/profile-service";
+import { GamerTagWithoutRelations } from "../gamer-tag/gamer-tag-service";
 
 const transformTeamResponse = (tr: TeamResponse) => {
   tr.attributes.team_profiles.data?.forEach((tp) => {
@@ -33,6 +34,7 @@ export type TeamProfile = TeamProfileWithoutRelations & {
     StrapiEntity<ProfileWithoutRelations & Pick<Profile, "avatar">>
   >;
   invited_by: StrapiRelation<StrapiEntity<ProfileWithoutRelations>>;
+  gamer_tag: StrapiRelation<StrapiEntity<GamerTagWithoutRelations>>;
 };
 
 export type TeamWithoutRelations = {
@@ -55,6 +57,7 @@ export type TeamResponse = StrapiEntity<Team>;
 
 const populate = [
   "team_profiles.profile.avatar",
+  "team_profiles.gamer_tag",
   "game.cover_image",
   "game.card_image",
   "image",

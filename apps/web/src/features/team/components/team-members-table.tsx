@@ -81,7 +81,11 @@ const DesktopTableRows = ({
             </TableCell>
 
             <TableCell className="w-[14%]" isCentered>
-              <GamerTag tag="gamerTag" />
+              {profile.attributes.gamer_tag.data?.attributes.tag && (
+                <GamerTag
+                  tag={profile.attributes.gamer_tag.data.attributes.tag}
+                />
+              )}
             </TableCell>
 
             <TableCell className="w-[14%]" isCentered>
@@ -139,7 +143,11 @@ const MobileTableRows = ({
                   {profile.attributes.profile.data?.attributes.username!}
                 </Text>
                 <Text className="justify-self-end">
-                  <GamerTag tag="gamerTag" />
+                  {profile.attributes.gamer_tag.data?.attributes.tag && (
+                    <GamerTag
+                      tag={profile.attributes.gamer_tag.data.attributes.tag}
+                    />
+                  )}
                 </Text>
                 <Text className={"justify-end"}>
                   {convertToOrdinal(profile.attributes.rank)}
