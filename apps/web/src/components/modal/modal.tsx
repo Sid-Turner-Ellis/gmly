@@ -43,7 +43,9 @@ export const Modal = ({
                 onOverlayClick?.();
 
                 if (isClosable) {
-                  closeModal();
+                  if (!isLoading) {
+                    closeModal();
+                  }
                 }
               }}
             />
@@ -52,6 +54,7 @@ export const Modal = ({
               {isClosable && (
                 <DialogPrimitives.Close asChild>
                   <button
+                    disabled={isLoading}
                     onClick={() => closeModal()}
                     className="absolute top-[10px] right-[10px] inline-flex h-7 w-7  appearance-none items-center transition justify-center rounded-full focus:outline-none text-brand-gray hover:bg-white/10 z-10"
                     aria-label="Close"

@@ -31,14 +31,23 @@ export class GamerTagService {
     );
     return gamerTagResponse;
   }
-  //   static async getProfileById(profileId: number) {
-  //     const profileResponse = await strapiApi.findOne<ProfileResponse>(
-  //       "profiles",
-  //       profileId,
-  //       {
-  //         populate,
-  //       }
-  //     );
-  //     return profileResponse;
-  //   }
+
+  static async updateGamerTag(gamerTagId: number, tag: string) {
+    const gamerTagResponse = await strapiApi.update<GamerTagResponse>(
+      "gamer-tags",
+      gamerTagId,
+      {
+        tag,
+      }
+    );
+    return gamerTagResponse;
+  }
+
+  static async deleteGamerTag(gamerTagId: number) {
+    const gamerTagResponse = await strapiApi.delete<GamerTagResponse>(
+      "gamer-tags",
+      gamerTagId
+    );
+    return gamerTagResponse;
+  }
 }

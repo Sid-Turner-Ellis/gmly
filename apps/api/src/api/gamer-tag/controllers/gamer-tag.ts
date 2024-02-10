@@ -3,10 +3,45 @@
  */
 
 import { factories } from "@strapi/strapi";
+import { errors } from "@strapi/utils";
+
+enum GamerTagErrors {
+  TagCannotBeEmpty = "GamerTagCannotBeEmpty",
+  TagTakenForGame = "GamerTagTakenForGame",
+  InTeamForGamerTagGame = "GamerTagRequiredIfInTeamForGame",
+  AlreadyHaveGamerTag = "AlreadyHaveGamerTagForGame",
+}
+
+const formatGamerTag = (tag?: string) => (tag ?? "").trim();
+const getSharedGamerTagError = async (tag: string, game: number) => {
+  if (tag.length < 1) {
+    return GamerTagErrors.TagCannotBeEmpty;
+  }
+
+  const gamerTagIsUniqueForGame = await strapi
+    .service("api::gamer-tag.gamer-tag")
+    .isUniqueForGame(game, tag);
+
+  if (!gamerTagIsUniqueForGame) {
+    return GamerTagErrors.TagTakenForGame;
+  }
+
+  return null;
+};
 
 export default factories.createCoreController("api::gamer-tag.gamer-tag", {
   async create(ctx) {
     const requestData = ctx.request.body.data ?? {};
+    const formattedTag = formatGamerTag(requestData.tag);
+
+    const gamerTagError = await getSharedGamerTagError(
+      formattedTag,
+      requestData.game,
+    );
+
+    if (gamerTagError) {
+      return ctx.badRequest(gamerTagError);
+    }
 
     const profile = await strapi
       .service("api::profile.profile")
@@ -25,26 +60,22 @@ export default factories.createCoreController("api::gamer-tag.gamer-tag", {
     );
 
     if (hasGamerTagForGame) {
-      ctx.badRequest("AlreadyHaveGamerTagForGame");
+      ctx.badRequest(GamerTagErrors.AlreadyHaveGamerTag);
       return;
     }
 
-    // Gamer tag must be unique per game
-    const gamerTagIsUniqueForGame = await strapi
-      .service("api::gamer-tag.gamer-tag")
-      .isUniqueForGame(requestData.game, requestData.tag);
-
-    if (!gamerTagIsUniqueForGame) {
-      ctx.badRequest("GamerTagTakenForGame");
-      return;
-    }
+    ctx.request.body.data.tag = formattedTag;
     ctx.request.body.data.profile = profile.id;
+
     const newlyCreatedGamerTag = await super.create(ctx);
     return newlyCreatedGamerTag;
   },
+
   async update(ctx) {
     const requestData = ctx.request.body.data ?? {};
     const gamerTagId = parseInt(ctx.params.id);
+    const formattedTag = formatGamerTag(requestData.tag);
+
     const profile = await strapi
       .service("api::profile.profile")
       .findOneByWalletAddress(ctx.state.wallet_address);
@@ -54,38 +85,37 @@ export default factories.createCoreController("api::gamer-tag.gamer-tag", {
       .findOne(gamerTagId, { populate: { game: true, profile: true } });
 
     if (profile.id !== gamerTag.profile.id) {
-      ctx.badRequest("Cannot update a gamer tag that does not belong to you");
-      return;
+      throw new errors.UnauthorizedError();
     }
 
-    // Can only update the tag value
-    if (requestData.game && requestData.game !== gamerTag.game.id) {
-      ctx.badRequest("Cannot update the game for a gamer tag");
-      return;
-    }
-
-    if (requestData.profile && requestData.profile !== gamerTag.profile.id) {
-      ctx.badRequest("Cannot update the profile for a gamer tag");
-      return;
-    }
-
-    // The new tag must be unique
     const tagWasChanged = requestData.tag && requestData.tag !== gamerTag.tag;
 
     if (tagWasChanged) {
-      const gamerTagIsUniqueForGame = await strapi
-        .service("api::gamer-tag.gamer-tag")
-        .isUniqueForGame(gamerTag.game.id, requestData.tag);
+      const gamerTagError = await getSharedGamerTagError(
+        formattedTag,
+        gamerTag.game.id,
+      );
 
-      if (!gamerTagIsUniqueForGame) {
-        ctx.badRequest("Gamer tag is already taken for this game");
-        return;
+      if (gamerTagError) {
+        return ctx.badRequest(gamerTagError);
       }
+    }
+
+    const didUpdateGame =
+      requestData.game && requestData.game !== gamerTag.game.id;
+    const didUpdateProfile =
+      requestData.profile && requestData.profile !== gamerTag.profile.id;
+
+    if (didUpdateGame || didUpdateProfile) {
+      ctx.badRequest("Cannot update the game or profile for a gamer tag");
+      return;
     }
 
     // TODO: Cannot update a gamer tag if the users team for that game has pending results
 
+    ctx.request.body.data.tag = formattedTag;
     const updatedGamerTag = await super.update(ctx);
+
     return updatedGamerTag;
   },
   async delete(ctx) {
@@ -115,13 +145,10 @@ export default factories.createCoreController("api::gamer-tag.gamer-tag", {
       (gamerTag) => gamerTag.id === gamerTagId,
     );
 
-    // Validate the gamer tag is for that profile
     if (!gamerTagToDelete) {
-      ctx.badRequest("Cannot delete a gamer tag that does not belong to you");
-      return;
+      throw new errors.NotFoundError();
     }
 
-    // Validate the gamer tag is not for a game they are in a team for
     const gamerTagGameId = gamerTagToDelete.game.id;
 
     const teamProfileForGame = profile.team_profiles
@@ -129,9 +156,7 @@ export default factories.createCoreController("api::gamer-tag.gamer-tag", {
       .find((teamProfile) => teamProfile.team.game.id === gamerTagGameId);
 
     if (teamProfileForGame) {
-      ctx.badRequest(
-        "Cannot delete a gamer tag for a game you are in a team for",
-      );
+      ctx.badRequest(GamerTagErrors.InTeamForGamerTagGame);
       return;
     }
 

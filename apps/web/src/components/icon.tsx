@@ -24,6 +24,7 @@ const ICONS = [
   "crown",
   "square-plus",
   "round-plus",
+  "edit",
 ] as const;
 
 export type IconType = (typeof ICONS)[number];
@@ -605,6 +606,30 @@ const ICON_MAP: Record<
         strokeLinejoin="round"
         strokeWidth={1.5}
         d="M7.667 14.333A6.667 6.667 0 1 0 7.667 1a6.667 6.667 0 0 0 0 13.333ZM10.495 7.666H4.84M7.667 4.838v5.657"
+      />
+    </svg>
+  ),
+
+  edit: ({ boxSize }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 16 16"
+      {...getWidthAndHeight({ width: 16, height: 16, size: boxSize })}
+      fill="none"
+    >
+      <path
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={1.5}
+        d="M7 2.414H2.333A1.333 1.333 0 0 0 1 3.747v9.334a1.333 1.333 0 0 0 1.333 1.333h9.334A1.333 1.333 0 0 0 13 13.081V8.414"
+      />
+      <path
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={1.5}
+        d="M12 1.414a1.414 1.414 0 1 1 2 2L7.667 9.748 5 10.414l.667-2.666L12 1.414Z"
       />
     </svg>
   ),

@@ -2,17 +2,12 @@ import {
   GameSelect,
   useGameSelect,
 } from "@/features/game/components/game-select";
-import { useToast } from "@/providers/toast-provider";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { GamerTagService } from "../gamer-tag-service";
-import { StrapiError } from "@/utils/strapi-error";
-import { USER_QUERY_KEY } from "@/constants";
-import { useCallback, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { Modal } from "@/components/modal/modal";
+import { useCallback, useEffect, useState } from "react";
+import { useForm, UseFormRegisterReturn } from "react-hook-form";
 import { Button } from "@/components/button";
-import { TextInput } from "@/components/text-input";
-import { Text } from "@/components/text";
+import { useGamerTagMutation } from "../hooks/use-gamer-tag-mutation";
+import { GamerTagModal } from "./gamer-tag-modal";
 
 export const CreateGamerTagModal = ({
   isOpen,
@@ -25,50 +20,15 @@ export const CreateGamerTagModal = ({
 }) => {
   const { selectedGame, setSelectedGame, setGameSelectError, gameSelectError } =
     useGameSelect();
-  const { addToast } = useToast();
-  const queryClient = useQueryClient();
-  const {
-    mutate: createTagMutation,
-    isLoading: createTagIsLoading,
-    error: createTagError,
-    isError: createTagIsError,
-    data: createTagData,
-    reset: resetCreateTagMutation,
-  } = useMutation(
+
+  const { mutate, userError, isLoading, reset } = useGamerTagMutation(
     ({ tagName }: { tagName: string }) =>
       GamerTagService.createGamerTag(selectedGame?.id!, tagName),
     {
-      onError(error) {
-        const isKnownError =
-          StrapiError.isStrapiError(error) &&
-          error.error.message === "GamerTagTakenForGame";
-
-        if (!isKnownError) {
-          addToast({
-            message: "Something went wrong",
-            type: "error",
-          });
-
-          closeModal();
-        }
-      },
-      onSuccess() {
-        // TODO: Consider adding the new gamer tag to the users cache
-        addToast({
-          message: "Gamer tag created successfully",
-          type: "success",
-        });
-        queryClient.invalidateQueries(USER_QUERY_KEY);
-        closeModal();
-      },
+      successMessage: "Gamer tag created successfully",
+      closeModal,
     }
   );
-
-  const closeModalIfNotLoading = useCallback(() => {
-    if (!createTagIsLoading) {
-      closeModal();
-    }
-  }, [createTagIsLoading]);
 
   const {
     handleSubmit,
@@ -90,13 +50,13 @@ export const CreateGamerTagModal = ({
     }
 
     handleSubmit(({ tagName }) => {
-      createTagMutation({ tagName });
+      mutate({ tagName });
     })();
   };
 
   useEffect(() => {
     return () => {
-      resetCreateTagMutation();
+      reset();
       setSelectedGame(null);
       setGameSelectError(false);
       resetFormState();
@@ -106,36 +66,29 @@ export const CreateGamerTagModal = ({
   const errorMessage =
     (gameSelectError && "Please select a game") ||
     (formState.errors["tagName"] && "Please enter a gamer tag") ||
-    (createTagIsError &&
-      (StrapiError.isStrapiError(createTagError) &&
-      createTagError.error.message === "GamerTagTakenForGame"
+    (userError &&
+      (userError === "GamerTagTakenForGame"
         ? "Gamer tag already taken for this game"
         : "Something went wrong"));
 
   return (
-    <Modal
-      closeModal={closeModalIfNotLoading}
+    <GamerTagModal
+      closeModal={closeModal}
       isOpen={isOpen}
-      isClosable
-      isLoading={createTagIsLoading}
-      size={"sm"}
+      isLoading={isLoading}
       title="New Gamer Tag"
+      isTagNameInputError={!!formState.errors["tagName"]}
+      tagNameInputRegister={register("tagName", { required: true })}
+      errorMessage={errorMessage}
       description="Create a gamer tag so that the other team can find you in the game"
-      Footer={
-        <div className="flex justify-end gap-4">
-          <Button
-            title="Cancel"
-            variant="secondary"
-            onClick={closeModalIfNotLoading}
-          />
-          <Button
-            title="Create"
-            variant="primary"
-            onClick={() => {
-              onSubmit();
-            }}
-          />
-        </div>
+      FooterButton={
+        <Button
+          title="Create"
+          variant="primary"
+          onClick={() => {
+            onSubmit();
+          }}
+        />
       }
     >
       <div className="flex flex-col gap-2 max-w-80">
@@ -145,16 +98,7 @@ export const CreateGamerTagModal = ({
           gameIdsToExclude={gameIdsToExclude}
           gameSelectError={gameSelectError}
         />
-        <TextInput
-          error={!!formState.errors["tagName"]}
-          {...register("tagName", { required: true })}
-        />
-        {!!errorMessage && (
-          <Text className="font-semibold text-brand-status-error">
-            {errorMessage}
-          </Text>
-        )}
       </div>
-    </Modal>
+    </GamerTagModal>
   );
 };
