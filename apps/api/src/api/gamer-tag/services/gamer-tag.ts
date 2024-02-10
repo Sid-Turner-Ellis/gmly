@@ -14,4 +14,11 @@ export default factories.createCoreService("api::gamer-tag.gamer-tag", {
 
     return matchingTags.length === 0;
   },
+  async doesProfileHaveGamerTagForGame(profile: number, game: number) {
+    const matchingTags = await strapi.db
+      .query("api::gamer-tag.gamer-tag")
+      .findMany({ where: { profile, game } });
+
+    return matchingTags.length > 0;
+  },
 });

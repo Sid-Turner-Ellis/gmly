@@ -47,6 +47,16 @@ export default factories.createCoreController(
           },
         });
 
+      const profileHasGamerTagForTeamsGame = await strapi
+        .service("api::gamer-tag.gamer-tag")
+        .doesProfileHaveGamerTagForGame(profile.id, ctx.request.body.data.game);
+
+      if (!profileHasGamerTagForTeamsGame) {
+        return ctx.badRequest(
+          "You need a gamer tag for this game to create a team",
+        );
+      }
+
       const gameIdsProfileHasTeamsFor = profile.team_profiles.map(
         (tp) => tp.team.game.id,
       );

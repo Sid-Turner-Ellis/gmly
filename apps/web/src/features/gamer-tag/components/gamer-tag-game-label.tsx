@@ -17,7 +17,7 @@ export const GamerTagGameLabel = ({ game }: GamerTagGameLabelProps) => {
   return (
     <div className="flex gap-6 items-center w-full">
       <Image
-        className={"rounded-sm overflow-hidden w-8 h-8 bg-whiteAlpha-900"}
+        className={"rounded-sm overflow-hidden w-8 h-8"}
         alt={`Tag image for ${gameName}`}
         src={gameImage}
       />

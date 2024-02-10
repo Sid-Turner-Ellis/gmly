@@ -75,7 +75,6 @@ class Strapi {
     axiosConfig: AxiosRequestConfig
   ): Promise<T> {
     try {
-      console.log({ url, axiosConfig });
       const response: AxiosResponse<T> = await this._api.request<T>({
         method,
         url,

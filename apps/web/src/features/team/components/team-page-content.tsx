@@ -12,12 +12,11 @@ import { StrapiError } from "@/utils/strapi-error";
 import { useQueryClient } from "@tanstack/react-query";
 import { TeamMembersTable } from "./team-members-table";
 import { TeamActionButtons } from "./team-action-buttons";
-import { useGlobalModal } from "@/providers/global-modal-provider";
 import { TeamInviteReceivedModal } from "./team-invite-recieved-modal";
 import { Text } from "@/components/text";
 import { USER_QUERY_KEY } from "@/constants";
 
-type TeamPageContent = {
+export type TeamPageContent = {
   team: TeamResponse;
   teamProfile:
     | NonNullable<
@@ -36,33 +35,8 @@ export const TeamPageContent = ({ team, teamProfile }: TeamPageContent) => {
     team.attributes.name
   );
   const isInvitationPending = teamProfile?.attributes.is_pending;
-  const { openModal: openTeamInviteModal, closeModal: closeTeamInviteModal } =
-    useGlobalModal();
-
-  useEffect(() => {
-    if (isInvitationPending) {
-      openTeamInviteModal(
-        <TeamInviteReceivedModal
-          gameName="NOT IMPLEMENTED"
-          teamId={team.id}
-          gameId={team.attributes.game.data?.id!}
-          teamProfileId={teamProfile.id}
-          teamName={team.attributes.name}
-          invitedBy={
-            teamProfile.attributes.invited_by.data?.attributes.username ??
-            "User"
-          }
-          onRespondToInvite={() => {
-            queryClient.invalidateQueries(["team", team.id]);
-          }}
-          closeModal={() => closeTeamInviteModal()}
-        />,
-        {
-          isClosable: true,
-        }
-      );
-    }
-  }, [isInvitationPending]);
+  const [isTeamInviteReceivedModalOpen, setIsTeamInviteReceivedModalOpen] =
+    useState(!!isInvitationPending);
 
   const { mutate: updateTeamMutation, isError: updateTeamErrorIsError } =
     useOptimisticMutation<
@@ -138,6 +112,11 @@ export const TeamPageContent = ({ team, teamProfile }: TeamPageContent) => {
 
   return (
     <div className="">
+      <TeamInviteReceivedModal
+        isOpen={isTeamInviteReceivedModalOpen}
+        closeModal={() => setIsTeamInviteReceivedModalOpen(false)}
+        teamProfile={teamProfile}
+      />
       <EditableImagePageSection
         isEditMode={isEditMode}
         onSave={onSave}

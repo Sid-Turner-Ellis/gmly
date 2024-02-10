@@ -18,12 +18,14 @@ export const useGamerTagMutation = <
   mutationFn: TMutationFn,
   {
     successMessage,
+    onSuccess,
     closeModal,
     onUserError,
   }: {
     successMessage: string;
     closeModal: () => void;
     onUserError?: (error: UserError) => void;
+    onSuccess?: () => void;
   }
 ) => {
   const queryClient = useQueryClient();
@@ -59,6 +61,7 @@ export const useGamerTagMutation = <
         type: "success",
       });
 
+      onSuccess?.();
       closeModal();
     },
   });

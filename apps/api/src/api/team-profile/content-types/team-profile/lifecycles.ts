@@ -1,6 +1,5 @@
 import { errors } from "@strapi/utils";
 const { ApplicationError } = errors;
-import merge from "deepmerge";
 
 export default {
   async afterCreateMany({ params: { data }, result }) {
@@ -42,6 +41,25 @@ export default {
     }
   },
 
+  async beforeUpdate({ params: { where, data } }) {
+    const teamProfileToBeUpdated = await strapi.db
+      .query("api::team-profile.team-profile")
+      .findOne({
+        where,
+        populate: { team: { populate: { game: true } }, profile: true },
+      });
+    const gameId = teamProfileToBeUpdated.team.game.id;
+    const profileId = teamProfileToBeUpdated.profile.id;
+    const gamerTagForTeamsGame = await strapi.db
+      .query("api::gamer-tag.gamer-tag")
+      .findOne({
+        where: {
+          game: gameId,
+          profile: profileId,
+        },
+      });
+    data.gamer_tag = gamerTagForTeamsGame?.id;
+  },
   async beforeCreate({ params }) {
     const setGamerTagForTeamsGame = async () => {
       const teamId = params.data.team;

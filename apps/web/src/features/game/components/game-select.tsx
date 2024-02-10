@@ -3,12 +3,14 @@ import { GameResponse, GameService } from "../game-service";
 import { Select } from "@/components/select";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
+import { useGetAllGames } from "@/features/gamer-tag/hooks/use-get-all-games";
 
 export type GameSelectProps = {
   selectedGame: GameResponse | null;
   setSelectedGame: React.Dispatch<React.SetStateAction<GameResponse | null>>;
   gameIdsToExclude?: number[];
   isDisabled?: boolean;
+  fixedGameId?: number;
   gameSelectError?: boolean | string;
 };
 
@@ -30,22 +32,16 @@ export const GameSelect = ({
   selectedGame,
   setSelectedGame,
   gameIdsToExclude,
+  fixedGameId,
   gameSelectError,
   isDisabled = false,
 }: GameSelectProps) => {
   const [stringifiedGameId, setStringifiedGameId] = useState<string | null>(
-    () => selectedGame?.id.toString() ?? null
+    () => fixedGameId?.toString() ?? selectedGame?.id.toString() ?? null
   );
 
-  const {
-    data: gamesQueryData,
-    isLoading: gameQueryIsLoading,
-    isError: gameQueryIsError,
-  } = useQuery(["recursive-games"], () => GameService.recursivelyGetGames(), {
-    cacheTime: 1000 * 60 * 60 * 24,
-    staleTime: 1000 * 60 * 60 * 24,
-    enabled: !isDisabled,
-  });
+  const { gamesQueryData, gameQueryIsLoading, gameQueryIsError } =
+    useGetAllGames(!isDisabled);
   const router = useRouter();
 
   useEffect(() => {
@@ -54,15 +50,20 @@ export const GameSelect = ({
     }
   }, [gameQueryIsError]);
 
+  const setSelectedGameFromId = (id: number) => {
+    const selectedGame = gamesQueryData?.find((game) => game.id === id) ?? null;
+    setSelectedGame(selectedGame);
+  };
+
   useEffect(() => {
-    console.log("stringified game id change", stringifiedGameId);
-    if (stringifiedGameId) {
-      const selectedGameId = parseInt(stringifiedGameId);
-      const selectedGame =
-        gamesQueryData?.find((game) => game.id === selectedGameId) ?? null;
-      setSelectedGame(selectedGame);
+    if (!gamesQueryData) return;
+
+    if (stringifiedGameId || fixedGameId) {
+      setSelectedGameFromId(
+        fixedGameId ? fixedGameId : parseInt(stringifiedGameId!)
+      );
     }
-  }, [stringifiedGameId]);
+  }, [stringifiedGameId, gamesQueryData]);
 
   const stringifiedGameOptionIds = useMemo(() => {
     const gamesQueryWithoutExcludedGames = gamesQueryData
@@ -84,7 +85,9 @@ export const GameSelect = ({
 
   return (
     <Select
-      disabled={gameQueryIsLoading || gameQueryIsError || isDisabled}
+      disabled={
+        gameQueryIsLoading || gameQueryIsError || isDisabled || !!fixedGameId
+      }
       options={stringifiedGameOptionIds}
       setValue={setStringifiedGameId}
       error={gameSelectError}

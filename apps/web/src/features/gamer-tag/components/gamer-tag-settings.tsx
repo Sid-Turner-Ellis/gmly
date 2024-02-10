@@ -5,6 +5,7 @@ import { Heading } from "@/components/heading";
 import { IconButton } from "@/components/icon-button";
 import { GamerTagEditRow } from "./gamer-tag-edit-row";
 import { EditGamerTagModal } from "./edit-gamer-tag-modal";
+import { useGameSelect } from "@/features/game/components/game-select";
 
 export type GamerTagSettingsProps = {
   gamerTags: AuthenticatedUser["data"]["profile"]["gamer_tags"];
@@ -13,6 +14,7 @@ export type GamerTagSettingsProps = {
 export const GamerTagSettings = ({ gamerTags }: GamerTagSettingsProps) => {
   const [isCreateGamerTagModalOpen, setIsCreateGamerTagModalOpen] =
     useState(false);
+  const gameSelectProps = useGameSelect();
   const [editGamerTag, setEditGamerTag] = useState<
     NonNullable<GamerTagSettingsProps["gamerTags"]["data"]>[number] | null
   >(null);
@@ -30,6 +32,7 @@ export const GamerTagSettings = ({ gamerTags }: GamerTagSettingsProps) => {
         isOpen={isCreateGamerTagModalOpen}
         closeModal={() => setIsCreateGamerTagModalOpen(false)}
         gameIdsToExclude={gameIdsUserHasGamerTagsFor}
+        {...gameSelectProps}
       />
       <EditGamerTagModal
         closeModal={() => setEditGamerTag(null)}
@@ -46,16 +49,16 @@ export const GamerTagSettings = ({ gamerTags }: GamerTagSettingsProps) => {
             onClick={() => setIsCreateGamerTagModalOpen(true)}
           />
         </div>
-        <div className="mt-4 flex flex-col gap-3">
-          {gamerTags.data?.map((gamerTag) => (
+        {gamerTags.data?.map((gamerTag) => (
+          <div key={gamerTag.id} className="mt-4 flex flex-col gap-3">
             <GamerTagEditRow
               onEditClick={() => {
                 setEditGamerTag(gamerTag);
               }}
               gamerTag={gamerTag}
             />
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   );

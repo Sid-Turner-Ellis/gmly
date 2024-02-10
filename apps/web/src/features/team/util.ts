@@ -37,6 +37,15 @@ export const createFakeTeamProfile = (
     xp: 0,
     earnings: 0,
     rank: 0,
+    gamer_tag: {
+      data: {
+        id: 0,
+        attributes: {
+          tag: "",
+          createdAt: "",
+        },
+      },
+    },
     profile: {
       data: {
         id: 0,

@@ -14,8 +14,7 @@ import { validateTeamName } from "../../util";
 import { MAX_TEAM_MEMBERS } from "../../constants";
 import { useGameSelect } from "@/features/game/components/game-select";
 import { USER_QUERY_KEY } from "@/constants";
-
-// TODO: start using the modal component
+import { CreateGamerTagModal } from "@/features/gamer-tag/components/create-gamer-tag-modal";
 
 export type CreateTeamModalProps = {
   user: AuthenticatedUser;
@@ -29,8 +28,9 @@ export const CreateTeamModal = ({
   user,
 }: CreateTeamModalProps) => {
   const [isFirstStep, setIsFirstStep] = useState(true);
-
   const { addToast } = useToast();
+  const [isCreateGamerTagModalOpen, setIsCreateGamerTagModalOpen] =
+    useState(false);
   const { selectedGame, setSelectedGame, gameSelectError, setGameSelectError } =
     useGameSelect();
   const router = useRouter();
@@ -135,6 +135,18 @@ export const CreateTeamModal = ({
     }
   );
 
+  const onInviteTeamSubmit = () => {
+    const hasGamerTagForGame = user.data.profile.gamer_tags.data?.some(
+      (gt) => gt.attributes.game.data?.id === selectedGame?.id
+    );
+
+    if (hasGamerTagForGame) {
+      createTeamMutation();
+    } else {
+      setIsCreateGamerTagModalOpen(true);
+    }
+  };
+
   const resetState = () => {
     setIsOpen(false);
     setSelectedGame(null);
@@ -159,62 +171,73 @@ export const CreateTeamModal = ({
   }, [createTeamMutationIsError]);
 
   return (
-    <Modal
-      title={isFirstStep ? "Create team" : "Invite team"}
-      isOpen={isOpen}
-      isClosable
-      closeModal={() => closeModal()}
-      isLoading={createTeamMutationIsLoading}
-      size={"md"}
-      description={
-        isFirstStep
-          ? "Team details"
-          : `Invite team (up to ${
-              MAX_TEAM_MEMBERS - teamMemberInvites.length
-            } more players)`
-      }
-      Footer={
-        <div className="flex justify-end w-full gap-2">
-          {isFirstStep ? (
-            <CreateTeamModalStep.Footer
-              onSubmit={onTeamDetailsSubmit}
-              closeModal={closeModal}
+    <>
+      <CreateGamerTagModal
+        isOpen={isCreateGamerTagModalOpen}
+        fixedGameId={selectedGame?.id}
+        closeModal={() => setIsCreateGamerTagModalOpen(false)}
+        onSuccess={() => {
+          setIsCreateGamerTagModalOpen(false);
+          createTeamMutation();
+        }}
+      />
+      <Modal
+        title={isFirstStep ? "Create team" : "Invite team"}
+        isOpen={isOpen}
+        isClosable
+        closeModal={() => closeModal()}
+        isLoading={createTeamMutationIsLoading}
+        size={"md"}
+        description={
+          isFirstStep
+            ? "Team details"
+            : `Invite team (up to ${
+                MAX_TEAM_MEMBERS - teamMemberInvites.length
+              } more players)`
+        }
+        Footer={
+          <div className="flex justify-end w-full gap-2">
+            {isFirstStep ? (
+              <CreateTeamModalStep.Footer
+                onSubmit={onTeamDetailsSubmit}
+                closeModal={closeModal}
+                imageUploadState={imageUploadState}
+              />
+            ) : (
+              <InviteTeamModalStep.Footer
+                onSubmit={onInviteTeamSubmit}
+                setIsFirstStep={setIsFirstStep}
+              />
+            )}
+          </div>
+        }
+      >
+        <div className="relative z-0">
+          {isFirstStep && (
+            <CreateTeamModalStep.Content
               imageUploadState={imageUploadState}
+              fileObjectUrl={fileObjectUrl}
+              onFileInputChange={onFileInputChange}
+              handleSubmit={handleSubmit}
+              register={register}
+              formState={formState}
+              getValues={getValues}
+              gameSelectError={gameSelectError}
+              setSelectedGame={setSelectedGame}
+              gameIdsToExclude={gameIdsProfileIsOnTeamFor}
+              reset={resetFormState}
+              setError={setError}
+              selectedGame={selectedGame}
             />
-          ) : (
-            <InviteTeamModalStep.Footer
-              onSubmit={createTeamMutation}
-              setIsFirstStep={setIsFirstStep}
+          )}
+          {!isFirstStep && (
+            <InviteTeamModalStep.Content
+              teamMemberInvites={teamMemberInvites}
+              setTeamMemberInvites={setTeamMemberInvites}
             />
           )}
         </div>
-      }
-    >
-      <div className="relative z-0">
-        {isFirstStep && (
-          <CreateTeamModalStep.Content
-            imageUploadState={imageUploadState}
-            fileObjectUrl={fileObjectUrl}
-            onFileInputChange={onFileInputChange}
-            handleSubmit={handleSubmit}
-            register={register}
-            formState={formState}
-            getValues={getValues}
-            gameSelectError={gameSelectError}
-            setSelectedGame={setSelectedGame}
-            gameIdsToExclude={gameIdsProfileIsOnTeamFor}
-            reset={resetFormState}
-            setError={setError}
-            selectedGame={selectedGame}
-          />
-        )}
-        {!isFirstStep && (
-          <InviteTeamModalStep.Content
-            teamMemberInvites={teamMemberInvites}
-            setTeamMemberInvites={setTeamMemberInvites}
-          />
-        )}
-      </div>
-    </Modal>
+      </Modal>
+    </>
   );
 };

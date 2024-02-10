@@ -13,20 +13,26 @@ export const CreateGamerTagModal = ({
   isOpen,
   closeModal,
   gameIdsToExclude,
+  onSuccess,
+  fixedGameId,
 }: {
   isOpen: boolean;
   closeModal: () => void;
+  onSuccess?: () => void;
   gameIdsToExclude?: number[];
+  fixedGameId?: number;
 }) => {
-  const { selectedGame, setSelectedGame, setGameSelectError, gameSelectError } =
+  const { selectedGame, setSelectedGame, gameSelectError, setGameSelectError } =
     useGameSelect();
-
   const { mutate, userError, isLoading, reset } = useGamerTagMutation(
     ({ tagName }: { tagName: string }) =>
       GamerTagService.createGamerTag(selectedGame?.id!, tagName),
     {
       successMessage: "Gamer tag created successfully",
       closeModal,
+      onSuccess() {
+        onSuccess?.();
+      },
     }
   );
 
@@ -36,12 +42,6 @@ export const CreateGamerTagModal = ({
     register,
     reset: resetFormState,
   } = useForm<{ tagName: string }>();
-
-  useEffect(() => {
-    if (selectedGame) {
-      setGameSelectError(false);
-    }
-  }, [selectedGame]);
 
   const onSubmit = () => {
     if (!selectedGame) {
@@ -55,12 +55,18 @@ export const CreateGamerTagModal = ({
   };
 
   useEffect(() => {
-    return () => {
+    if (selectedGame) {
+      setGameSelectError(false);
+    }
+  }, [selectedGame]);
+
+  useEffect(() => {
+    if (!isOpen) {
       reset();
       setSelectedGame(null);
       setGameSelectError(false);
       resetFormState();
-    };
+    }
   }, [isOpen]);
 
   const errorMessage =
@@ -93,6 +99,7 @@ export const CreateGamerTagModal = ({
     >
       <div className="flex flex-col gap-2 max-w-80">
         <GameSelect
+          fixedGameId={fixedGameId}
           selectedGame={selectedGame}
           setSelectedGame={setSelectedGame}
           gameIdsToExclude={gameIdsToExclude}

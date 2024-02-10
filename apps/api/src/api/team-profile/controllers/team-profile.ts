@@ -84,7 +84,17 @@ export default factories.createCoreController(
         return ctx.badRequest("You are already on a team for this game");
       }
 
+      const profileHasGamerTagForTeamsGame = await strapi
+        .service("api::gamer-tag.gamer-tag")
+        .doesProfileHaveGamerTagForGame(profile.id, teamProfile.team.game.id);
+
+      if (!profileHasGamerTagForTeamsGame) {
+        return ctx.badRequest(
+          "You need a gamer tag for this game to join a team",
+        );
+      }
+
       return await super.update(ctx);
     },
-  }
+  },
 );
