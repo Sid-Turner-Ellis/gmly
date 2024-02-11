@@ -1,7 +1,8 @@
 {
   "collectionName": "components_general_social_links",
   "info": {
-    "displayName": "Social Links"
+    "displayName": "Social Links",
+    "description": ""
   },
   "options": {},
   "attributes": {
@@ -9,6 +10,12 @@
       "type": "string"
     },
     "twitter": {
+      "type": "string"
+    },
+    "twitch": {
+      "type": "string"
+    },
+    "youtube": {
       "type": "string"
     }
   }

@@ -5,7 +5,7 @@
 import { factories } from "@strapi/strapi";
 
 export const sharedConfig = {
-  middlewares: ["global::wallet-guard"],
+  // middlewares: ["global::wallet-guard"],
 };
 
 export default factories.createCoreRouter("api::profile.profile", {

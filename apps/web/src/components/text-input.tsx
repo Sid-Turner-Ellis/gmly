@@ -36,8 +36,8 @@ export const TextInput = forwardRef<any, TextInputProps>(
       typeof error === "boolean"
         ? undefined
         : error?.message?.length
-        ? error.message
-        : undefined;
+          ? error.message
+          : undefined;
     const wasError = !!error;
 
     return (
@@ -51,7 +51,7 @@ export const TextInput = forwardRef<any, TextInputProps>(
           autoComplete="off"
           type="text"
           defaultValue={defaultValue}
-          disabled={false}
+          disabled={disabled}
           aria-invalid={error ? "true" : "false"}
           className={cn(
             textVariantClassnames.p,

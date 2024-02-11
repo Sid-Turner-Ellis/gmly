@@ -40,7 +40,7 @@ export default factories.createCoreController(
       }
 
       if (requestData.social_links) {
-        const { id, ...existingSocialLinks } = social_links;
+        const { id, ...existingSocialLinks } = social_links ?? {};
         const updatedSocialLinks = {
           ...existingSocialLinks,
           ...requestData.social_links,

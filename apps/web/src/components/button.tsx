@@ -7,7 +7,7 @@ import { cva, VariantProps } from "class-variance-authority";
 
 // TODO: Size should also affect the icon size
 export const buttonVariants = cva(
-  "cursor-pointer inline-flex items-center justify-center gap-3 border-2 border-transparent rounded transition",
+  "cursor-pointer inline-flex  items-center justify-center gap-3 border-2 border-transparent rounded transition",
   {
     variants: {
       variant: {

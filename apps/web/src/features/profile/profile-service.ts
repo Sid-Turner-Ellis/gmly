@@ -30,6 +30,8 @@ export type ProfileWithoutRelations = {
 export type SocialLinksComponent = {
   discord: string | null;
   twitter: string | null;
+  youtube: string | null;
+  twitch: string | null;
 };
 
 export type Profile = ProfileWithoutRelations & {

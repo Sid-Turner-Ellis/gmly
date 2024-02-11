@@ -4,10 +4,13 @@ export interface GeneralSocialLinks extends Schema.Component {
   collectionName: 'components_general_social_links';
   info: {
     displayName: 'Social Links';
+    description: '';
   };
   attributes: {
     discord: Attribute.String;
     twitter: Attribute.String;
+    twitch: Attribute.String;
+    youtube: Attribute.String;
   };
 }
 

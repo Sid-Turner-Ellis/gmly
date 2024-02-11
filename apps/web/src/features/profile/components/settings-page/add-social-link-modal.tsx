@@ -30,6 +30,14 @@ const getPlaceholder = (platform: keyof SocialLinksComponent) => {
   if (platform === "twitter") {
     return "Twitter handle";
   }
+
+  if (platform === "twitch") {
+    return "Twitch channel name";
+  }
+
+  if (platform === "youtube") {
+    return "Youtube handle";
+  }
   return "Discord user ID";
 };
 
@@ -68,8 +76,6 @@ export const AddSocialLinkModal = ({
           queryClient.getQueryData<AuthenticatedUser>(USER_QUERY_KEY);
 
         const optimisticValue = produce(previousCacheValue, (draft) => {
-          const socialLinks = draft?.data.profile.social_links ?? {};
-
           if (!draft) {
             return draft;
           }
@@ -80,6 +86,8 @@ export const AddSocialLinkModal = ({
             draft.data.profile.social_links = {
               discord: null,
               twitter: null,
+              twitch: null,
+              youtube: null,
               [variables.platform]: variables.value,
             };
           }
@@ -133,7 +141,8 @@ export const AddSocialLinkModal = ({
 
   const platformError = formState.errors.platform?.message;
   const valueError = formState.errors.value?.message;
-  const shouldShowAtIcon = selectedPlatform === "twitter";
+  const shouldShowAtIcon =
+    selectedPlatform === "twitter" || selectedPlatform === "youtube";
 
   return (
     <div>
@@ -160,7 +169,7 @@ export const AddSocialLinkModal = ({
               <Select
                 value={field.value}
                 setValue={field.onChange}
-                options={["discord", "twitter"]}
+                options={["discord", "twitter", "twitch", "youtube"]}
                 error={!!formState.errors.platform}
                 getLabel={toPascalCase}
                 disabledOptions={disabledOptions}
@@ -168,7 +177,8 @@ export const AddSocialLinkModal = ({
             )}
           />
           <TextInput
-            placeholder={getPlaceholder(selectedPlatform)}
+            disabled={!selectedPlatform}
+            placeholder={selectedPlatform && getPlaceholder(selectedPlatform)}
             icon={shouldShowAtIcon ? "at" : undefined}
             error={!platformError && !!valueError}
             {...register("value", {
