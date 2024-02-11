@@ -1,5 +1,6 @@
 import { strapiApi } from "@/lib/strapi";
 import {
+  StrapiComponent,
   StrapiEntity,
   StrapiImage,
   StrapiRelation,
@@ -26,8 +27,14 @@ export type ProfileWithoutRelations = {
   bio: string | null;
 };
 
+export type SocialLinksComponent = {
+  discord: string | null;
+  twitter: string | null;
+};
+
 export type Profile = ProfileWithoutRelations & {
   avatar: StrapiRelation<StrapiEntity<StrapiImage>> | null;
+  social_links: SocialLinksComponent | null;
   gamer_tags: StrapiRelation<
     StrapiEntity<
       GamerTagWithoutRelations & {
@@ -65,7 +72,10 @@ const populate = [
   "team_profiles.team.image",
   "team_profiles.team.game",
   "team_profiles.invited_by",
+  "gamer_tags",
+  "gamer_tags.game",
   "gamer_tags.game.card_image",
+  "social_links",
 ];
 
 export class ProfileService {
@@ -125,6 +135,46 @@ export class ProfileService {
       "profiles",
       profileId,
       updateProps,
+      {
+        populate,
+      }
+    );
+
+    return profileResponse.data;
+  }
+
+  static async addSocialLink(
+    profileId: number,
+    platform: keyof SocialLinksComponent,
+    value: string
+  ) {
+    const profileResponse = await strapiApi.update<ProfileResponse>(
+      "profiles",
+      profileId,
+      {
+        social_links: {
+          [platform]: value,
+        },
+      },
+      {
+        populate,
+      }
+    );
+
+    return profileResponse.data;
+  }
+  static async removeSocialLink(
+    profileId: number,
+    platform: keyof SocialLinksComponent
+  ) {
+    const profileResponse = await strapiApi.update<ProfileResponse>(
+      "profiles",
+      profileId,
+      {
+        social_links: {
+          [platform]: null,
+        },
+      },
       {
         populate,
       }

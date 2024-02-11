@@ -81,6 +81,11 @@
       "relation": "oneToMany",
       "target": "api::gamer-tag.gamer-tag",
       "mappedBy": "profile"
+    },
+    "social_links": {
+      "type": "component",
+      "repeatable": false,
+      "component": "general.social-links"
     }
   }
 }

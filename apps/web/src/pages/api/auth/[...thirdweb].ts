@@ -67,6 +67,7 @@ export const { ThirdwebAuthHandler, getUser } = ThirdwebAuth({
           avatar,
           balance,
           gamer_tags,
+          social_links,
           team_profiles,
         } = profileResponse.attributes;
 
@@ -83,6 +84,7 @@ export const { ThirdwebAuthHandler, getUser } = ThirdwebAuth({
           balance,
           avatar,
           team_profiles,
+          social_links,
         };
       } catch (error) {
         const isProfileNotFound =
@@ -99,6 +101,7 @@ export const { ThirdwebAuthHandler, getUser } = ThirdwebAuth({
             region: null,
             username: null,
             wager_mode: false,
+            social_links: null,
             trust_mode: false,
             balance: 0,
             createdAt: newProfileResponse.attributes.createdAt,

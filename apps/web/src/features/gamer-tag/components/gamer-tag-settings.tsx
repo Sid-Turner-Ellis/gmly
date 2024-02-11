@@ -6,6 +6,7 @@ import { IconButton } from "@/components/icon-button";
 import { GamerTagEditRow } from "./gamer-tag-edit-row";
 import { EditGamerTagModal } from "./edit-gamer-tag-modal";
 import { useGameSelect } from "@/features/game/components/game-select";
+import { SubSettingLayout } from "@/features/profile/components/settings-page/sub-setting-layout";
 
 export type GamerTagSettingsProps = {
   gamerTags: AuthenticatedUser["data"]["profile"]["gamer_tags"];
@@ -20,7 +21,7 @@ export const GamerTagSettings = ({ gamerTags }: GamerTagSettingsProps) => {
   >(null);
   const gameIdsUserHasGamerTagsFor = useMemo(
     () =>
-      (gamerTags.data
+      (gamerTags?.data
         ?.map((gamerTag) => gamerTag.attributes.game.data?.id)
         .filter(Boolean) as number[]) ?? [],
     [gamerTags]
@@ -40,25 +41,21 @@ export const GamerTagSettings = ({ gamerTags }: GamerTagSettingsProps) => {
       />
 
       <div>
-        <div className="flex gap-4 items-center ">
-          <Heading variant="h3" className={"mb-0"}>
-            Gamer tags
-          </Heading>
-          <IconButton
-            icon="round-plus"
-            onClick={() => setIsCreateGamerTagModalOpen(true)}
-          />
-        </div>
-        {gamerTags.data?.map((gamerTag) => (
-          <div key={gamerTag.id} className="mt-4 flex flex-col gap-3">
-            <GamerTagEditRow
-              onEditClick={() => {
-                setEditGamerTag(gamerTag);
-              }}
-              gamerTag={gamerTag}
-            />
-          </div>
-        ))}
+        <SubSettingLayout
+          title="Gamer tags"
+          onClick={() => setIsCreateGamerTagModalOpen(true)}
+        >
+          {gamerTags?.data?.map((gamerTag) => (
+            <div key={gamerTag.id}>
+              <GamerTagEditRow
+                onEditClick={() => {
+                  setEditGamerTag(gamerTag);
+                }}
+                gamerTag={gamerTag}
+              />
+            </div>
+          ))}
+        </SubSettingLayout>
       </div>
     </div>
   );

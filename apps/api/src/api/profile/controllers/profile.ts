@@ -13,6 +13,7 @@ export default factories.createCoreController(
   ({ strapi }) => ({
     async update(ctx) {
       const id = ctx.params.id;
+
       const requestData = ctx.request.body.data ?? {};
       const fieldsToUpdate = Object.keys(requestData);
 
@@ -21,21 +22,30 @@ export default factories.createCoreController(
         return;
       }
 
-      const { wallet_address, username } = await strapi
+      const { wallet_address, username, social_links } = await strapi
         .service("api::profile.profile")
-        .findOne(id);
+        .findOne(id, { populate: { social_links: true } });
+
+      if (wallet_address !== ctx.state.wallet_address) {
+        throw new errors.UnauthorizedError();
+      }
 
       if (fieldsToUpdate.includes("username") && username) {
         ctx.badRequest("Cannot update username if already set");
         return;
       }
 
-      if (wallet_address !== ctx.state.wallet_address) {
-        throw new errors.UnauthorizedError();
-      }
-
       if (requestData.bio?.length > 248) {
         return ctx.badRequest("Bio cannot be longer than 248 characters");
+      }
+
+      if (requestData.social_links) {
+        const { id, ...existingSocialLinks } = social_links;
+        const updatedSocialLinks = {
+          ...existingSocialLinks,
+          ...requestData.social_links,
+        };
+        ctx.request.body.data.social_links = updatedSocialLinks;
       }
 
       const { data, meta } = await super.update(ctx);

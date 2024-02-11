@@ -7,11 +7,15 @@ export type StrapiEntity<T extends Record<string, any>> = {
 
 export type StrapiRelation<
   T extends StrapiEntity<any> | StrapiEntity<any>[],
-  Nullable = true
+  Nullable = true,
 > = Nullable extends true ? { data: T | null } : { data: T };
 
+export type StrapiComponent<T extends Record<string, any>> =
+  | (T & { id: number })
+  | null;
+
 export const isStrapiRelationDefined = <
-  T extends StrapiRelation<StrapiEntity<any>, any>
+  T extends StrapiRelation<StrapiEntity<any>, any>,
 >(
   relation: T
 ): relation is T & { data: NonNullable<T["data"]> } => {

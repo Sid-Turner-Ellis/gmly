@@ -882,6 +882,7 @@ export interface ApiProfileProfile extends Schema.CollectionType {
       'oneToMany',
       'api::gamer-tag.gamer-tag'
     >;
+    social_links: Attribute.Component<'general.social-links'>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
