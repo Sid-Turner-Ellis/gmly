@@ -9,6 +9,8 @@ import { Button } from "@/components/button";
 import { useGamerTagMutation } from "../hooks/use-gamer-tag-mutation";
 import { GamerTagModal } from "./gamer-tag-modal";
 
+const getTemporaryId = () => Date.now() + Math.floor(Math.random() * 1000);
+
 export const CreateGamerTagModal = ({
   isOpen,
   closeModal,
@@ -28,6 +30,19 @@ export const CreateGamerTagModal = ({
     ({ tagName }: { tagName: string }) =>
       GamerTagService.createGamerTag(selectedGame?.id!, tagName),
     {
+      getOptimisticGamerTags({ tagName }, gamerTagsInCache) {
+        gamerTagsInCache.push({
+          id: getTemporaryId(),
+          attributes: {
+            tag: tagName,
+            game: {
+              data: selectedGame,
+            },
+            createdAt: "",
+          },
+        });
+        return gamerTagsInCache;
+      },
       successMessage: "Gamer tag created successfully",
       closeModal,
       onSuccess() {

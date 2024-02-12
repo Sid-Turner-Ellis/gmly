@@ -9,7 +9,7 @@ export const SettingsPageContent = ({ user }: { user: AuthenticatedUser }) => {
   return (
     <div>
       <Heading variant="h1">Settings</Heading>
-      <div className="grid md:grid-cols-7 gap-4">
+      <div className="grid md:grid-cols-7 gap-4 items-start">
         <div className="p-4 rounded bg-brand-navy-light md:col-span-7 col-span-1">
           <MatchSettings
             profileId={user.data.profile.id}

@@ -17,7 +17,9 @@ export const SocialLinkSettingsRow = ({
 }: SocialLinkSettingRowProps) => (
   <div className="flex items-center justify-between">
     <div className="flex items-center gap-4">
-      <SocialLinkIcon platform={platform} size={25} value={value} />
+      <div className="p-1">
+        <SocialLinkIcon platform={platform} size={24} value={value} />
+      </div>
       <Text variant="label" className="">
         {toPascalCase(platform)}
       </Text>

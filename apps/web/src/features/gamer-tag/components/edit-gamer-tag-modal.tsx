@@ -41,6 +41,17 @@ export const EditGamerTagModal = ({
     {
       successMessage: "Gamer tag updated successfully",
       closeModal,
+      getOptimisticGamerTags(variables, gamerTagsInCache) {
+        const gamerTagInCache = gamerTagsInCache.find(
+          (tag) => tag.id === gamerTag?.id
+        );
+
+        if (gamerTagInCache) {
+          gamerTagInCache.attributes.tag = tagName;
+        }
+
+        return gamerTagsInCache;
+      },
       onUserError: (error) => {
         if (error === "GamerTagTakenForGame") {
           setIsTagNameTakenError(true);
@@ -57,6 +68,9 @@ export const EditGamerTagModal = ({
   } = useGamerTagMutation(GamerTagService.deleteGamerTag, {
     successMessage: "Gamer tag removed successfully",
     closeModal,
+    getOptimisticGamerTags(variables, gamerTagsInCache) {
+      return gamerTagsInCache.filter((tag) => tag.id !== gamerTag?.id);
+    },
     onUserError(error) {
       if (error === "GamerTagRequiredIfInTeamForGame") {
         setValue("tagName", gamerTag?.attributes.tag ?? "");
