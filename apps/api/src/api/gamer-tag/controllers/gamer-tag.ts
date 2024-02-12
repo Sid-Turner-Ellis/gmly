@@ -12,6 +12,7 @@ enum GamerTagErrors {
   AlreadyHaveGamerTag = "AlreadyHaveGamerTagForGame",
 }
 
+
 const formatGamerTag = (tag?: string) => (tag ?? "").trim();
 const getSharedGamerTagError = async (tag: string, game: number) => {
   if (tag.length < 1) {
@@ -103,6 +104,7 @@ export default factories.createCoreController("api::gamer-tag.gamer-tag", {
 
     const didUpdateGame =
       requestData.game && requestData.game !== gamerTag.game.id;
+
     const didUpdateProfile =
       requestData.profile && requestData.profile !== gamerTag.profile.id;
 

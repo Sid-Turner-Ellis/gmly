@@ -70,6 +70,10 @@ export default factories.createCoreController(
         throw new errors.UnauthorizedError();
       }
 
+      if (ctx.request.body.data.team_profiles) {
+        return ctx.badRequest();
+      }
+
       const createdTeam = await super.create(ctx);
 
       // Create the founder

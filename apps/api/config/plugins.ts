@@ -14,6 +14,34 @@ const getExtraSmallImageFromEntry = (entry: any, key: string) => {
 
 export default ({ env }) => {
   return {
+    "public-permissions": {
+      // Everything is public because we handle auth ourselves
+      enabled: false,
+      config: {
+        verbose: true,
+        actions: {
+          "*": [
+            "find",
+            "findOne",
+            "create",
+            "update",
+            "delete",
+            "markAllAsSeen",
+            "bulkUpdateMembers",
+            "leave",
+            "withdraw",
+            "deposit",
+          ],
+        },
+        plugins: {
+          "users-permissions.auth": [],
+          "users-permissions.permissions": [],
+          "users-permissions.role": [],
+          "users-permissions.user": [],
+          "upload.content-api": ["find", "findOne", "upload"],
+        },
+      },
+    },
     "schemas-to-ts": {
       enabled: false,
     },

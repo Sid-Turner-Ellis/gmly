@@ -71,6 +71,7 @@ export type ProfileResponse = StrapiEntity<Profile>;
 
 const populate = [
   "avatar",
+  "team_profiles",
   "team_profiles.team.image",
   "team_profiles.team.game",
   "team_profiles.invited_by",

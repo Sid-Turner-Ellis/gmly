@@ -57,32 +57,12 @@ export default factories.createCoreController(
       const updatableFields = ["seen"];
 
       for (const fieldToUpdate of fieldsToUpdate) {
-        console.log(
-          updatableFields,
-          fieldToUpdate,
-          updatableFields.includes(fieldToUpdate),
-        );
         if (!updatableFields.includes(fieldToUpdate)) {
           return ctx.badRequest(`Cannot update ${fieldToUpdate}`);
         }
       }
 
       return await super.update(ctx);
-    },
-    async find(ctx) {
-      const query = await this.sanitizeQuery(ctx);
-
-      const { profile: profileIdFromQuery } = query.filters as any;
-
-      const profile = await strapi
-        .service("api::profile.profile")
-        .findOneByWalletAddress(ctx.state.wallet_address);
-
-      if (!profile || profile.id !== parseInt(profileIdFromQuery)) {
-        throw new errors.UnauthorizedError();
-      }
-
-      return await super.find(ctx);
     },
   },
 );

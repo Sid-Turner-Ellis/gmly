@@ -1,5 +1,3 @@
-import { sharedConfig } from "./profile";
-
 module.exports = {
   routes: [
     // {

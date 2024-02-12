@@ -4,26 +4,16 @@
 
 import { factories } from "@strapi/strapi";
 
-export const sharedConfig = {
-  // middlewares: ["global::wallet-guard"],
-};
-
 export default factories.createCoreRouter("api::profile.profile", {
+  except: ["delete"],
   config: {
-    update: {
-      ...sharedConfig,
-    },
-    find: {
-      ...sharedConfig,
-    },
-    findOne: {
-      ...sharedConfig,
-    },
+    find: {},
+    findOne: {},
     create: {
-      ...sharedConfig,
+      policies: ["global::is-admin"],
     },
-    delete: {
-      ...sharedConfig,
+    update: {
+      policies: ["global::is-user"],
     },
   },
 });

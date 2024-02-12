@@ -15,5 +15,5 @@ export default [
   "strapi::session",
   "strapi::favicon",
   "strapi::public",
-  "global::authenticated-wallet",
+  "global::add-auth-state",
 ];

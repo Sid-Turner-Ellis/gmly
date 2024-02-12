@@ -1,25 +1,22 @@
-import { sharedConfig } from "./transaction";
-import merge from "deepmerge";
-
-const config = {
-  middlewares: ["api::transaction.no-reentry"],
-};
-
-const mergedConfig = merge(sharedConfig, config);
-
 module.exports = {
   routes: [
     {
       method: "POST",
       path: "/transactions/deposit",
       handler: "transaction.deposit",
-      config: mergedConfig,
+      config: {
+        middlewares: ["api::transaction.no-reentry"],
+        policies: ["global::is-user"],
+      },
     },
     {
       method: "POST",
       path: "/transactions/withdraw",
       handler: "transaction.withdraw",
-      config: mergedConfig,
+      config: {
+        middlewares: ["api::transaction.no-reentry"],
+        policies: ["global::is-user"],
+      },
     },
   ],
 };

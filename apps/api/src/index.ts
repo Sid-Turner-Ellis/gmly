@@ -9,6 +9,7 @@ export default {
   async bootstrap({ strapi }) {
     console.log("bootstraping....");
 
+    return;
     const apiModels = strapi.db.config.models.filter(
       ({ uid }) => typeof uid == "string" && uid.startsWith("api::"),
     );

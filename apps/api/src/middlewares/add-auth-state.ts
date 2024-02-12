@@ -36,17 +36,30 @@ export default (config, { strapi }: { strapi: Strapi }) => {
   return async (ctx, next) => {
     try {
       const thirdWebToken = ctx.headers["x-custom-auth"];
+      const apiToken =
+        ctx.headers.authorization &&
+        ctx.headers.authorization.split("Bearer ")[1];
 
+      console.log(ctx.headers.authorization);
       if (thirdWebToken) {
         const auth = new ThirdwebAuth(wallet, "gamerly.app");
         const { address } = await auth.authenticate(thirdWebToken);
         // TODO: make sure this is checking expiry date
         ctx.state.wallet_address = address ?? null;
+      } else if (apiToken) {
+        const apiTokenService = strapi.services["admin::api-token"];
+        const accessKey = await apiTokenService.hash(apiToken);
+        const storedToken = await apiTokenService.getBy({
+          accessKey: accessKey,
+        });
+        if (storedToken && storedToken.type === "full-access")
+          ctx.state.api_token = "full-access";
       }
     } catch (error) {
       ctx.state.wallet_address = null;
-      console.log('was error', error)
+      ctx.state.api_token = null;
     }
-    return next()
+
+    return next();
   };
 };

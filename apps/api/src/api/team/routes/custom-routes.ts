@@ -7,7 +7,7 @@ module.exports = {
       path: "/teams/:id/bulk-update-members",
       handler: "team.bulkUpdateMembers",
       config: {
-        ...sharedConfig,
+        policies: ["global::is-user"],
       },
     },
     {
@@ -15,7 +15,7 @@ module.exports = {
       path: "/teams/:id/leave",
       handler: "team.leave",
       config: {
-        ...sharedConfig,
+        policies: ["global::is-user"],
       },
     },
   ],

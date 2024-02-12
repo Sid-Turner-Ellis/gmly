@@ -56,8 +56,10 @@ export type Team = TeamWithoutRelations & {
 export type TeamResponse = StrapiEntity<Team>;
 
 const populate = [
+  "team_profiles",
   "team_profiles.profile.avatar",
   "team_profiles.gamer_tag",
+  "game",
   "game.cover_image",
   "game.card_image",
   "image",
