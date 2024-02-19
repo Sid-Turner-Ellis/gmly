@@ -62,7 +62,7 @@ export const processTransactions = async (currentBlockNumber: number) => {
         const tx = await (
           await gamerlyContract.deposit(
             result.id,
-            result.amount * 1000000,
+            result.amount * 10000,
             result.profile.wallet_address,
             {
               gasLimit,
@@ -138,7 +138,7 @@ export const processTransactions = async (currentBlockNumber: number) => {
 
           const amountMatches =
             ethers.BigNumber.isBigNumber(amount) &&
-            amount.eq(result.amount * 1000000);
+            amount.eq(result.amount * 10000);
 
           const profileMatches =
             profileAddress.toLowerCase() ===
@@ -239,7 +239,7 @@ export const processTransactions = async (currentBlockNumber: number) => {
           onChainSinceBlockNumber: currentBlockNumber,
           transactionType: transactionType === 0 ? "deposit" : "withdraw",
           profile: profile.id,
-          amount: amount.div(1000000).toNumber(),
+          amount: amount.div(10000).toNumber(),
         });
         const res = await strapi
           .service("api::transaction.transaction")
@@ -248,7 +248,7 @@ export const processTransactions = async (currentBlockNumber: number) => {
               onChainSinceBlockNumber: currentBlockNumber,
               type: transactionType === 0 ? "deposit" : "withdraw",
               profile: profile.id,
-              amount: amount.div(1000000).toNumber(),
+              amount: amount.div(10000).toNumber(),
             },
           });
 

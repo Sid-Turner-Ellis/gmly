@@ -25,9 +25,9 @@ const BasicToastComponent = ({ type, message, button }: BasicToast) => {
   }[type] as IconType;
 
   const variantTextClasses: Record<BasicToast["type"], string> = {
-    error: "border-brand-status-error bg-brand-status-error-light ",
-    success: "border-brand-status-success bg-brand-status-success-light",
-    warning: "border-brand-status-warning bg-brand-status-warning-light",
+    error: "border-brand-status-error bg-brand-status-error-transparent ",
+    success: "border-brand-status-success bg-brand-status-success-transparent",
+    warning: "border-brand-status-warning bg-brand-status-warning-transparent",
   };
   const variantIconClasses: Record<BasicToast["type"], string> = {
     error: "text-brand-status-error",

@@ -78,15 +78,19 @@ export default {
           status: {
             success: {
               DEFAULT: "#48ffc8",
-              light: "#234942",
+              transparent: "#234942",
+              dark: "#0C5132",
+              light: "#CDFEE1",
             },
             error: {
               DEFAULT: "#dd364d",
-              light: "#412129",
+              dark: "#7a1a09",
+              transparent: "#412129",
+              light: "#ED7989",
             },
             warning: {
               DEFAULT: "#dd7c36",
-              light: "#412f24",
+              transparent: "#412f24",
             },
           },
         },
