@@ -5,6 +5,105 @@
 import { factories } from "@strapi/strapi";
 import merge from "deepmerge";
 
+/**
+ * 
+ * @param profileIdOrProfileIds 
+ * @returns 
+   [
+     {
+       amount: number, // meaningless
+       confirmedBalance: number, // the sum of all confirmed transaction amounts
+       type: "withdraw", // we group by transaction type
+       profileId: 1, // we group by profile ID too
+     },
+     {
+       amount: number,
+       confirmedBalance: number,
+       type: "in",
+       profileId: 1,
+     },
+     {
+       amount: number, // meaningless
+       confirmedBalance: number, // the sum of all confirmed transaction amounts
+       type: "withdraw", // we group by transaction type
+       profileId: 2, // we group by profile ID too
+     },
+   ];
+ */
+const getSumOfTransactionsByTypeAndProfileId = async (
+  profileIdOrProfileIds: number | number[],
+) => {
+  const knex = strapi.db.connection;
+  const isMultipleProfiles = Array.isArray(profileIdOrProfileIds);
+
+  /**
+   * - Join the transaction with the profiles they are for
+   * - Select the profile Id and the transaction type
+   * - Group by the type
+   * - Filter by the profile IDs
+   */
+  const query = knex("transactions")
+    .join(
+      "transactions_profile_links",
+      "transactions.id",
+      "=",
+      "transactions_profile_links.transaction_id",
+    )
+    .select(
+      "transactions.type",
+      "transactions_profile_links.profile_id as profileId",
+    )
+    .where(function () {
+      this.where({ confirmed: true }).orWhere({ type: "withdraw" });
+    })
+    .sum("transactions.amount as confirmedBalance")
+    .groupBy("transactions.type");
+
+  if (isMultipleProfiles) {
+    query.groupBy("profileId");
+    query.whereIn(
+      "transactions_profile_links.profile_id",
+      profileIdOrProfileIds,
+    );
+  } else {
+    query.andWhere(
+      "transactions_profile_links.profile_id",
+      profileIdOrProfileIds,
+    );
+  }
+
+  return await query;
+};
+
+const calculateBalanceForProfile = (
+  profileId: number,
+  sumOfTransactionsByType: any[],
+) => {
+  const transactionsForProfile = sumOfTransactionsByType.filter(
+    (t) => t.profileId === profileId,
+  );
+
+  const withdrawSum =
+    transactionsForProfile.find(({ type }) => type === "withdraw")
+      ?.confirmedBalance ?? 0;
+
+  const depositSum =
+    transactionsForProfile.find(({ type }) => type === "deposit")
+      ?.confirmedBalance ?? 0;
+
+  const outSome =
+    transactionsForProfile.find(({ type }) => type === "out")
+      ?.confirmedBalance ?? 0;
+
+  const inSum =
+    transactionsForProfile.find(({ type }) => type === "in")
+      ?.confirmedBalance ?? 0;
+
+  const totalBalance = depositSum + inSum - (withdrawSum + outSome);
+
+  return totalBalance;
+};
+
 export default factories.createCoreService("api::profile.profile", {
   async findOneByWalletAddress(walletAddress, params: any = {}) {
     const mergedParams = merge(params, {
@@ -19,5 +118,30 @@ export default factories.createCoreService("api::profile.profile", {
     const profile = profileResults[0];
 
     return profile;
+  },
+
+  async getBalanceForProfile(profileId: number): Promise<number> {
+    const transactionSums =
+      await getSumOfTransactionsByTypeAndProfileId(profileId);
+    const totalBalance = calculateBalanceForProfile(profileId, transactionSums);
+
+    return totalBalance;
+  },
+  async getBalanceForProfiles(
+    profileIds: number[],
+  ): Promise<{ id: number; balance: number }[]> {
+    const transactionSums =
+      await getSumOfTransactionsByTypeAndProfileId(profileIds);
+
+    const balances = profileIds.map((profileId) => {
+      const balanceForProfile = calculateBalanceForProfile(
+        profileId,
+        transactionSums,
+      );
+
+      return { id: profileId, balance: balanceForProfile };
+    });
+
+    return balances;
   },
 });
