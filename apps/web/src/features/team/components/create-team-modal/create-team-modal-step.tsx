@@ -30,6 +30,7 @@ type ContentProps = Omit<
     | "gameIdsToExclude"
     | "gameSelectError"
     | "selectedGame"
+    | "fixedGameId"
   >;
 
 type FooterProps = {
@@ -46,6 +47,7 @@ const Content = ({
   gameIdsToExclude,
   selectedGame,
   gameSelectError,
+  fixedGameId,
 }: ContentProps) => {
   return (
     <div className="relative z-0">
@@ -76,6 +78,7 @@ const Content = ({
             setSelectedGame={setSelectedGame}
             gameIdsToExclude={gameIdsToExclude}
             gameSelectError={!!gameSelectError}
+            fixedGameId={fixedGameId}
           />
         </div>
       </div>

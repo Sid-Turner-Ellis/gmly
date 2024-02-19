@@ -20,12 +20,18 @@ export type CreateTeamModalProps = {
   user: AuthenticatedUser;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
+  fixedGameId?: number;
+  onTeamCreated?: (teamId: number) => void;
+  onTeamCreateError?: () => void;
 };
 
 export const CreateTeamModal = ({
   isOpen,
   setIsOpen,
+  fixedGameId,
   user,
+  onTeamCreated,
+  onTeamCreateError,
 }: CreateTeamModalProps) => {
   const [isFirstStep, setIsFirstStep] = useState(true);
   const { addToast } = useToast();
@@ -126,8 +132,13 @@ export const CreateTeamModal = ({
     {
       onSuccess(data) {
         queryClient.invalidateQueries(USER_QUERY_KEY);
-        addToast({ type: "success", message: "Team created!" });
-        router.push(`/team/${data}`);
+
+        if (onTeamCreated) {
+          onTeamCreated(data);
+        } else {
+          addToast({ type: "success", message: "Team created!" });
+          router.push(`/team/${data}`);
+        }
       },
       onSettled() {
         closeModal();
@@ -165,8 +176,12 @@ export const CreateTeamModal = ({
 
   useEffect(() => {
     if (createTeamMutationIsError) {
+      if (onTeamCreateError) {
+        onTeamCreateError();
+      } else {
+        router.push("/500");
+      }
       closeModal();
-      router.push("/500");
     }
   }, [createTeamMutationIsError]);
 
@@ -221,6 +236,7 @@ export const CreateTeamModal = ({
               handleSubmit={handleSubmit}
               register={register}
               formState={formState}
+              fixedGameId={fixedGameId}
               getValues={getValues}
               gameSelectError={gameSelectError}
               setSelectedGame={setSelectedGame}
