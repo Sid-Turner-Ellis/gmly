@@ -1,13 +1,6 @@
 import { errors } from "@strapi/utils";
+import { resolveRelationIdForHookData } from "../../../../util";
 const { ApplicationError } = errors;
-
-// The data in beforeCreate/update hooks varies based on whether the request was made via the API or the Admin UI
-const resolveRelationId = (data: number | { connect: { id: number }[] }) => {
-  if (typeof data === "number") {
-    return data;
-  }
-  return data.connect[0]?.id;
-};
 
 export default {
   async afterCreateMany({ params: { data }, result }) {
@@ -39,8 +32,8 @@ export default {
   async afterCreate({ params: { data }, result }) {
     // Send out a notification to the user
     if (result.is_pending) {
-      const profileId = resolveRelationId(data.profile);
-      const teamId = resolveRelationId(data.team);
+      const profileId = resolveRelationIdForHookData(data.profile);
+      const teamId = resolveRelationIdForHookData(data.team);
 
       console.log("after create", { profileId, teamId });
       await strapi.service("api::notification.notification").create({
@@ -76,8 +69,8 @@ export default {
 
   async beforeCreate({ params }) {
     const setGamerTagForTeamsGame = async () => {
-      const profileId = resolveRelationId(params.data.profile);
-      const teamId = resolveRelationId(params.data.team);
+      const profileId = resolveRelationIdForHookData(params.data.profile);
+      const teamId = resolveRelationIdForHookData(params.data.team);
 
       const gameForTeam = await strapi.db.query("api::team.team").findOne({
         where: {

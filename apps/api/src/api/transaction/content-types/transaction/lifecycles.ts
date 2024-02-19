@@ -1,4 +1,5 @@
 import { errors } from "@strapi/utils";
+import { resolveRelationIdForHookData } from "../../../../util";
 const { ApplicationError } = errors;
 
 // TODO: Allow these to fail without causing errors as they are not critical
@@ -11,6 +12,21 @@ export default {
     throw new ApplicationError("Cannot update many transactions");
   },
 
+  async beforeCreate({ params }) {
+    const { type, amount } = params?.data ?? {};
+
+    if (type === "withdraw" || type === "out") {
+      const balance = await strapi
+        .service("api::profile.profile")
+        .getBalanceForProfile(
+          resolveRelationIdForHookData(params.data.profile),
+        );
+
+      if (balance < amount) {
+        throw new ApplicationError("Insufficient funds");
+      }
+    }
+  },
   async beforeUpdate({
     params: {
       data,
