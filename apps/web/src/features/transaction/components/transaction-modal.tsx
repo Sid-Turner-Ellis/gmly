@@ -13,6 +13,7 @@ import { StrapiError } from "@/utils/strapi-error";
 import { toUsdString } from "@/utils/to-usd-string";
 import { useQueryClient } from "@tanstack/react-query";
 import { USER_QUERY_KEY } from "@/constants";
+import { DollarInput, useDollarInput } from "@/components/dollar-input";
 
 /**
  * So the auth is switching when I change wallets correctly,
@@ -29,7 +30,7 @@ export const TransactionModal = ({
   closeModal,
 }: TransactionModalProps) => {
   const [isWithdraw, setIsWithdraw] = useState(false);
-  const [amount, setAmount] = useState(0);
+  const { amountInCents, ...dollarInputProps } = useDollarInput();
   const queryClient = useQueryClient();
   const [isPendingTransactionModalOpen, setIsPendingTransactionModalOpen] =
     useState(false);
@@ -62,11 +63,11 @@ export const TransactionModal = ({
   const availableBalance = isWithdraw ? gamerlyBalance : usdcBalance;
 
   useEffect(() => {
-    setAmount(0);
+    dollarInputProps.setValue("0.00");
   }, [isWithdraw]);
 
   useEffect(() => {
-    setAmount(0);
+    dollarInputProps.setValue("0.00");
     setIsWithdraw(false);
   }, [isOpen]);
 
@@ -75,20 +76,21 @@ export const TransactionModal = ({
     try {
       setIsLoading(true);
       const isDeposit = !isWithdraw;
+      console.log({ amountInCents });
 
       if (isDeposit) {
         const { receipt } = await usdcContract?.call("approve", [
           GAMERLY_CONTRACT.address,
-          amount * Math.pow(10, 6),
+          amountInCents * Math.pow(10, 4),
         ]);
 
         const txHash = receipt?.transactionHash;
         if (!txHash) {
           throw new Error("AllowanceFailed");
         }
-        await TransactionService.deposit(amount);
+        await TransactionService.deposit(amountInCents);
       } else {
-        await TransactionService.withdraw(amount);
+        await TransactionService.withdraw(amountInCents);
       }
       setIsPendingTransactionModalOpen(true);
       queryClient.invalidateQueries(USER_QUERY_KEY);
@@ -187,9 +189,9 @@ export const TransactionModal = ({
               title="Confirm"
               variant={"primary"}
               disabled={
-                amount < 1 ||
+                amountInCents < 100 ||
                 (typeof availableBalance === "number" &&
-                  amount > availableBalance)
+                  amountInCents > availableBalance)
               }
               onClick={onConfirm}
             />
@@ -197,36 +199,13 @@ export const TransactionModal = ({
         }
       >
         <div className="flex items-end gap-2">
-          <div className="inline-flex p-[2px] bg-brand-navy rounded overflow-hidden">
-            <div>
-              <Text className="py-2 px-2.5 font-medium bg-brand-navy-accent-light rounded-l">
-                $
-              </Text>
-            </div>
-            <input
-              onChange={(e) => {
-                const inputWithNumbersOnly = e.target.value.replace(
-                  /[^0-9]/g,
-                  ""
-                );
-                const parsedNumber = parseInt(inputWithNumbersOnly);
-                const number = Number.isNaN(parsedNumber) ? 0 : parsedNumber;
-                setAmount(number);
-              }}
-              value={amount}
-              className={cn(
-                textVariantClassnames.p,
-                "bg-transparent outline-none text-emerald-400 px-2.5 w-24"
-              )}
-              type="text"
-            />
+          <div className="w-36">
+            <DollarInput {...dollarInputProps} />
           </div>
           <div>
-            {typeof availableBalance === "number" && (
-              <p className="text-sm font-medium text-brand-gray-dark">
-                {toUsdString(availableBalance)} Available
-              </p>
-            )}
+            <p className="text-sm font-medium text-brand-gray-dark">
+              {toUsdString(availableBalance ?? 0)} Available
+            </p>
           </div>
         </div>
       </Modal>

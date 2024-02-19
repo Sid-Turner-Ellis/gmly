@@ -4,18 +4,15 @@
 
 import { RequestContext, factories } from "@strapi/strapi";
 import { ethers } from "ethers";
-import {
-  getEthersProvider,
-  getGamerlyContract,
-  getUsdcTransactionData,
-} from "../../../eth-utils";
+import { getEthersProvider, getGamerlyContract } from "../../../eth-utils";
 
 // TODO: Create package for sharing errors between web and api
 const getBadRequestMessage = async (
   profileId: number,
   amount: number,
 ): Promise<string | null> => {
-  if (amount <= 0 || amount % 1 !== 0) {
+  // Must be more than 1 dollar
+  if (amount <= 100 || amount % 1 !== 0) {
     return "InvalidAmount";
   }
 
@@ -109,7 +106,7 @@ export default factories.createCoreController(
           return acc + transaction.amount;
         }, 0);
 
-      if (sumOfWithdrawalsInLastTwentyFourHours + amount > 500) {
+      if (sumOfWithdrawalsInLastTwentyFourHours + amount > 50000) {
         return ctx.badRequest("WithdrawalLimitExceeded");
       }
 
@@ -131,7 +128,7 @@ export default factories.createCoreController(
         const tx = await (
           await gamerlyContract.withdraw(
             newlyCreatedTransaction.id,
-            amount * 1000000,
+            amount * 10000,
             ctx.state.wallet_address,
             {
               gasLimit: ethers.BigNumber.from(gasLimit),
