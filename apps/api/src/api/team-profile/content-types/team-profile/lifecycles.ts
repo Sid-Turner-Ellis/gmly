@@ -1,6 +1,14 @@
 import { errors } from "@strapi/utils";
 const { ApplicationError } = errors;
 
+// The data in beforeCreate/update hooks varies based on whether the request was made via the API or the Admin UI
+const resolveRelationId = (data: number | { connect: { id: number }[] }) => {
+  if (typeof data === "number") {
+    return data;
+  }
+  return data.connect[0]?.id;
+};
+
 export default {
   async afterCreateMany({ params: { data }, result }) {
     // Bulk operations don't support relations and the result doesn't contain the created relations
@@ -31,11 +39,15 @@ export default {
   async afterCreate({ params: { data }, result }) {
     // Send out a notification to the user
     if (result.is_pending) {
+      const profileId = resolveRelationId(data.profile);
+      const teamId = resolveRelationId(data.team);
+
+      console.log("after create", { profileId, teamId });
       await strapi.service("api::notification.notification").create({
         data: {
           type: "TEAM_INVITE_RECEIVED",
-          team: data.team,
-          profile: data.profile,
+          team: teamId,
+          profile: profileId,
         },
       });
     }
@@ -50,6 +62,7 @@ export default {
       });
     const gameId = teamProfileToBeUpdated.team.game.id;
     const profileId = teamProfileToBeUpdated.profile.id;
+
     const gamerTagForTeamsGame = await strapi.db
       .query("api::gamer-tag.gamer-tag")
       .findOne({
@@ -60,10 +73,11 @@ export default {
       });
     data.gamer_tag = gamerTagForTeamsGame?.id;
   },
+
   async beforeCreate({ params }) {
     const setGamerTagForTeamsGame = async () => {
-      const teamId = params.data.team;
-      const profileId = params.data.profile;
+      const profileId = resolveRelationId(params.data.profile);
+      const teamId = resolveRelationId(params.data.team);
 
       const gameForTeam = await strapi.db.query("api::team.team").findOne({
         where: {
