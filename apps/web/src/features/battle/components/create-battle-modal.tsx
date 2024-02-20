@@ -1,7 +1,7 @@
 import { Button } from "@/components/button";
 import { Modal } from "@/components/modal/modal";
 import { AuthenticatedUser } from "@/hooks/use-auth";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { BattleService, CreateBattleParams } from "../battle-service";
@@ -14,6 +14,7 @@ import { StrapiError } from "@/utils/strapi-error";
 import { getAvailableTimes, getTeamSizeNumberFromTeamOption } from "../util";
 import { CreateBattleDetailsStep } from "./create-battle-details-modal-step";
 import { ScrollArea } from "@/components/scroll-area";
+import { USER_QUERY_KEY } from "@/constants";
 
 export type CreateBattleInputs = Omit<
   CreateBattleParams,
@@ -41,6 +42,7 @@ export const CreateBattleModal = ({
   const teamId = teamProfile.attributes.team.data?.id;
   const isTeamQueryEnabled = isOpen && !isFirstStep && !!teamId;
   const { amountInCents, ...dollarInputProps } = useDollarInput();
+  const queryClient = useQueryClient();
   const { addToast } = useToast();
   const {
     data: teamData,
@@ -50,44 +52,45 @@ export const CreateBattleModal = ({
   } = useQuery(["team", teamId], () => TeamService.getTeam(teamId!), {
     enabled: isTeamQueryEnabled,
   });
-  const { mutate: createBattleMutation } = useMutation(
-    BattleService.createBattle,
-    {
-      onSuccess() {
+
+  const {
+    mutate: createBattleMutation,
+    isLoading: createBattleMutationIsLoading,
+  } = useMutation(BattleService.createBattle, {
+    onSuccess() {
+      addToast({
+        type: "success",
+        message: "Battle created successfully",
+      });
+
+      // TODO: Invalidate the battles list
+      queryClient.invalidateQueries(USER_QUERY_KEY);
+      closeModal();
+    },
+    async onError(error) {
+      const strapiError = StrapiError.isStrapiError(error) ? error : null;
+
+      const squadNotEligible =
+        strapiError?.error.message === "SquadNotEligible";
+
+      if (squadNotEligible) {
+        setTeamSelection([]);
+        await refetchTeamData();
+
         addToast({
-          type: "success",
-          message: "Battle created successfully",
+          type: "warning",
+          message: "One or more of the selected team members are not eligible",
+        });
+      } else {
+        addToast({
+          type: "error",
+          message: "An error occurred while creating the battle",
         });
 
-        // TODO: Invalidate the battles list
         closeModal();
-      },
-      async onError(error) {
-        const strapiError = StrapiError.isStrapiError(error) ? error : null;
-
-        const squadNotEligible =
-          strapiError?.error.message === "SquadNotEligible";
-
-        if (squadNotEligible) {
-          setTeamSelection([]);
-          await refetchTeamData();
-
-          addToast({
-            type: "warning",
-            message:
-              "One or more of the selected team members are not eligible",
-          });
-        } else {
-          addToast({
-            type: "error",
-            message: "An error occurred while creating the battle",
-          });
-
-          closeModal();
-        }
-      },
-    }
-  );
+      }
+    },
+  });
   const [teamSelection, setTeamSelection] = useState<number[]>([]);
   const timeOptions = useMemo(() => getAvailableTimes(), [isOpen]);
   const teamSizeOptions = useMemo(
@@ -161,7 +164,10 @@ export const CreateBattleModal = ({
       title="Create Battle"
       isOpen={isOpen}
       closeModal={closeModal}
-      isLoading={isTeamQueryEnabled && teamDataIsLoading}
+      isLoading={
+        (isTeamQueryEnabled && teamDataIsLoading) ||
+        createBattleMutationIsLoading
+      }
       description={isFirstStep ? "Match Settings" : "Select Team Members"}
       isClosable
       Footer={
@@ -207,18 +213,19 @@ export const CreateBattleModal = ({
         />
       ) : (
         <ScrollArea viewportClassName="max-h-56" type="always">
-          {teamData?.data.attributes.team_profiles.data
-            ?.filter((tp) => tp.id !== teamProfile.id)
-            .map((tp) => (
-              <TeamSelectionRow
-                key={tp.id}
-                teamSelection={teamSelection}
-                teamProfile={tp}
-                setTeamSelection={setTeamSelection}
-                teamSize={getTeamSizeNumberFromTeamOption(teamSize)}
-                totalWagerAmountInCents={amountInCents}
-              />
-            ))}
+          {teamData?.data &&
+            teamData.data.attributes.team_profiles.data
+              ?.filter((tp) => tp.id !== teamProfile.id)
+              .map((tp) => (
+                <TeamSelectionRow
+                  key={tp.id}
+                  teamSelection={teamSelection}
+                  teamProfile={tp}
+                  setTeamSelection={setTeamSelection}
+                  teamSize={getTeamSizeNumberFromTeamOption(teamSize)}
+                  totalWagerAmountInCents={amountInCents}
+                />
+              ))}
         </ScrollArea>
       )}
     </Modal>

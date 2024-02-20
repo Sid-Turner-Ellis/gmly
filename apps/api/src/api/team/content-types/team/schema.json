@@ -35,6 +35,12 @@
       "relation": "oneToMany",
       "target": "api::team-profile.team-profile",
       "mappedBy": "team"
+    },
+    "battle_invitations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::battle.battle",
+      "mappedBy": "invited_team"
     }
   }
 }

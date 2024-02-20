@@ -27,7 +27,6 @@ export const TeamSelectionRow = ({
   const wagerModeEnabled = profile?.wager_mode;
   const trustModeEnabled = profile?.trust_mode;
   const balance = profile?.balance ?? 0;
-  console.log("profile", profile);
   const isSelected = teamSelection.includes(teamProfile.id);
 
   const disabledReason = useMemo(() => {

@@ -76,7 +76,6 @@ export const TransactionModal = ({
     try {
       setIsLoading(true);
       const isDeposit = !isWithdraw;
-      console.log({ amountInCents });
 
       if (isDeposit) {
         const { receipt } = await usdcContract?.call("approve", [

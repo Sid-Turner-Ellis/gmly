@@ -7,16 +7,17 @@ import { factories } from "@strapi/strapi";
 export default factories.createCoreService("api::team.team", {
   async findOne(entityId, params) {
     const team = await super.findOne(entityId, params);
-    const profileIds = team?.team_profiles
-      .map((teamProfile) => teamProfile.profile?.id)
-      .filter(Boolean);
+    const profileIds =
+      team?.team_profiles
+        ?.map((teamProfile) => teamProfile.profile?.id)
+        .filter(Boolean) ?? [];
 
     if (profileIds.length > 0) {
       const profileBalances = await strapi
         .service("api::profile.profile")
         .getBalanceForProfiles(profileIds);
 
-      team?.team_profiles.forEach((teamProfile) => {
+      team?.team_profiles?.forEach((teamProfile) => {
         if (teamProfile.profile) {
           teamProfile.profile.balance = profileBalances.find(
             (profile) => profile.id === teamProfile.profile.id,
@@ -30,13 +31,14 @@ export default factories.createCoreService("api::team.team", {
 
   async find(params) {
     const teams = await super.find(params);
-    const profileIds = teams.results
-      ?.map(
-        (team) =>
-          team?.team_profiles.map((teamProfile) => teamProfile.profile?.id),
-      )
-      .flat()
-      .filter(Boolean);
+    const profileIds =
+      teams.results
+        ?.map(
+          (team) =>
+            team?.team_profiles?.map((teamProfile) => teamProfile.profile?.id),
+        )
+        .flat()
+        .filter(Boolean) ?? [];
 
     if (profileIds.length > 0) {
       const profileBalances = await strapi

@@ -16,7 +16,9 @@
       "type": "enumeration",
       "enum": [
         "TEAM_INVITE_RECEIVED",
-        "TRANSACTION_RESULT"
+        "TRANSACTION_RESULT",
+        "ENROLLED_IN_BATTLE",
+        "BATTLE_INVITE_RECEIVED"
       ],
       "required": true
     },
@@ -37,6 +39,12 @@
       "required": true
     },
     "transaction_result_details": {
+      "type": "json"
+    },
+    "enrolled_in_battle_details": {
+      "type": "json"
+    },
+    "battle_invite_received_details": {
       "type": "json"
     }
   }

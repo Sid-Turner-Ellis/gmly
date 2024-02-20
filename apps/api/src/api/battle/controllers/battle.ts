@@ -14,7 +14,7 @@ enum CreateBattleErrors {
 
 const createBattleInputSchema = z.object({
   total_wager_amount: z.number(),
-  invited_team_id: z.string().optional(),
+  invited_team_id: z.number().optional(),
   team_selection: z.array(z.number()),
   date: z.string().datetime(),
   match_options: z.object({
@@ -102,7 +102,11 @@ export default factories.createCoreController("api::battle.battle", {
           profile: true,
           team: {
             populate: {
-              team_profiles: true,
+              team_profiles: {
+                populate: {
+                  profile: true,
+                },
+              },
               game: {
                 populate: {
                   custom_attributes: {
@@ -135,11 +139,20 @@ export default factories.createCoreController("api::battle.battle", {
     const invitedTeam =
       reqData.invited_team_id &&
       (await strapi.service("api::team.team").findOne(reqData.invited_team_id, {
-        populate: { game: true, team_profiles: true },
+        populate: {
+          game: true,
+          team_profiles: {
+            populate: {
+              profile: true,
+            },
+          },
+        },
       }));
 
-    const isInvitedTeamInSameGame = invitedTeam?.game.id === game.id;
-    const isInvitedTeamADifferentTeam = invitedTeam?.id !== team.id;
+    const isInvitedTeamInSameGame =
+      !invitedTeam || invitedTeam?.game.id === game.id;
+    const isInvitedTeamADifferentTeam =
+      invitedTeam || invitedTeam?.id !== team.id;
 
     if (!isInvitedTeamInSameGame || !isInvitedTeamADifferentTeam) {
       return ctx.badRequest(CreateBattleErrors.InvalidInput);
@@ -168,7 +181,14 @@ export default factories.createCoreController("api::battle.battle", {
         team.team_profiles.some((tp) => tp.id === teamSelectionProfileId),
     );
 
+    const teamSelectionProfilesAreNotPending = teamSelectionProfiles.every(
+      (teamSelectionProfileId) =>
+        team.team_profiles.find((tp) => tp.id === teamSelectionProfileId)
+          ?.is_pending === false,
+    );
+
     if (
+      !teamSelectionProfilesAreNotPending ||
       !isTeamSizeValid ||
       !isSeriesValid ||
       !isWagerAmountValid ||
@@ -225,6 +245,7 @@ export default factories.createCoreController("api::battle.battle", {
     try {
       const createdBattle = await strapi.service("api::battle.battle").create({
         data: {
+          invited_team: reqData.invited_team_id ?? null,
           match_options: {
             custom_attribute_inputs:
               reqData.match_options.custom_attribute_inputs,
@@ -327,6 +348,28 @@ export default factories.createCoreController("api::battle.battle", {
 
       throw error;
     }
+
+    try {
+      // TODO: Notifications should go into a service
+      // Send out the notifications. These are non-crucial so no need to return errors
+
+      if (invitedTeam) {
+        await strapi
+          .service("api::notification.notification")
+          .createBattleInviteReceivedNotifications({
+            battleId: createdBattleId,
+            invitingTeamId: team.id,
+            invitedTeamId: invitedTeam.id,
+          });
+      }
+
+      await strapi
+        .service("api::notification.notification")
+        .createEnrolledInBattleNotification({
+          battleId: createdBattleId,
+          teamSelectionId: createdTeamSelectionId,
+        });
+    } catch (error) {}
 
     // TODO: have this just return a status code
     return strapi.service("api::battle.battle").findOne(createdBattleId);

@@ -5,7 +5,6 @@ import { GamerTagSettings } from "@/features/gamer-tag/components/gamer-tag-sett
 import { SocialLinkSettings } from "./social-link-settings";
 
 export const SettingsPageContent = ({ user }: { user: AuthenticatedUser }) => {
-  console.log(user.data.profile);
   return (
     <div>
       <Heading variant="h1">Settings</Heading>

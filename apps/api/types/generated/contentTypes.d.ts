@@ -803,6 +803,11 @@ export interface ApiBattleBattle extends Schema.CollectionType {
       'oneToOne',
       'api::match.match'
     >;
+    invited_team: Attribute.Relation<
+      'api::battle.battle',
+      'manyToOne',
+      'api::team.team'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -950,7 +955,12 @@ export interface ApiNotificationNotification extends Schema.CollectionType {
   };
   attributes: {
     type: Attribute.Enumeration<
-      ['TEAM_INVITE_RECEIVED', 'TRANSACTION_RESULT']
+      [
+        'TEAM_INVITE_RECEIVED',
+        'TRANSACTION_RESULT',
+        'ENROLLED_IN_BATTLE',
+        'BATTLE_INVITE_RECEIVED'
+      ]
     > &
       Attribute.Required;
     profile: Attribute.Relation<
@@ -965,6 +975,8 @@ export interface ApiNotificationNotification extends Schema.CollectionType {
     >;
     seen: Attribute.Boolean & Attribute.Required & Attribute.DefaultTo<false>;
     transaction_result_details: Attribute.JSON;
+    enrolled_in_battle_details: Attribute.JSON;
+    battle_invite_received_details: Attribute.JSON;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -1069,6 +1081,11 @@ export interface ApiTeamTeam extends Schema.CollectionType {
       'api::team.team',
       'oneToMany',
       'api::team-profile.team-profile'
+    >;
+    battle_invitations: Attribute.Relation<
+      'api::team.team',
+      'oneToMany',
+      'api::battle.battle'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
