@@ -32,17 +32,10 @@ export default function TeamIdPage() {
     isError: isTeamError,
     error,
     isLoadingError,
-  } = useQuery(
-    ["team", teamId],
-    async () => {
-      const teamResponse = await TeamService.getTeam(teamId!);
-      return teamResponse.data;
-    },
-    {
-      retry: false,
-      enabled: !!teamId,
-    }
-  );
+  } = useQuery(["team", teamId], async () => TeamService.getTeam(teamId!), {
+    retry: false,
+    enabled: !!teamId,
+  });
 
   if (isTeamError) {
     return <ErrorPage type="notFound" />;
@@ -51,9 +44,9 @@ export default function TeamIdPage() {
   return (
     <div className="relative z-0">
       {(isTeamLoading || isUserLoading) && <TeamPageSkeleton />}
-      {teamData && (
+      {teamData?.data && (
         <TeamPageContent
-          team={teamData}
+          team={teamData.data}
           teamProfile={getTeamProfileForTeam(user, teamId!)}
         />
       )}
