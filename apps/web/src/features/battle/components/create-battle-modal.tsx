@@ -198,6 +198,7 @@ export const CreateBattleModal = ({
           control={control}
           timeOptions={timeOptions}
           teamSizeOptions={teamSizeOptions}
+          teamSize={getTeamSizeNumberFromTeamOption(teamSize)}
           customAttributes={game.attributes.custom_attributes}
           {...dollarInputProps}
         />

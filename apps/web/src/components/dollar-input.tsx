@@ -2,6 +2,7 @@ import { cn } from "@/utils/cn";
 import { Text, textVariantClassnames } from "./text";
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { TriangleUpIcon, TriangleDownIcon } from "@radix-ui/react-icons";
+import { getCentsFromStringValue } from "@/features/battle/util";
 
 type DollarInputProps = {
   value: string;
@@ -9,11 +10,12 @@ type DollarInputProps = {
   error?: boolean;
   maxValue?: number;
   variant?: "large" | "small";
+  stepInCents?: number;
 };
 
 export const useDollarInput = () => {
   const [value, setValue] = useState("0.00");
-  const amountInCents = useMemo(() => parseFloat(value) * 100, [value]);
+  const amountInCents = useMemo(() => getCentsFromStringValue(value), [value]);
 
   return { value, setValue, amountInCents };
 };
@@ -24,6 +26,7 @@ export const DollarInput = ({
   error,
   variant,
   maxValue,
+  stepInCents = 100,
 }: DollarInputProps) => {
   return (
     <div
@@ -72,9 +75,13 @@ export const DollarInput = ({
             className="cursor-pointer pr-1.5 hover:text-brand-white"
             onClick={() => {
               setValue((p) => {
-                const dollars = parseInt(p) + 1;
-                if (maxValue && dollars > maxValue) `${maxValue}.00`;
-                return `${dollars}.00`;
+                const cents = getCentsFromStringValue(p);
+                const newValue = cents + stepInCents;
+
+                if (maxValue && newValue > maxValue * 100)
+                  return `${maxValue}.00`;
+
+                return (newValue / 100).toFixed(2);
               });
             }}
           >
@@ -84,9 +91,12 @@ export const DollarInput = ({
             className="cursor-pointer pr-1.5 hover:text-brand-white"
             onClick={() => {
               setValue((p) => {
-                const dollars = parseInt(p) - 1;
-                if (dollars < 0) return `0.00`;
-                return `${dollars}.00`;
+                const cents = getCentsFromStringValue(p);
+                const newValue = cents - stepInCents;
+
+                if (newValue < 0) return "0.00";
+
+                return (newValue / 100).toFixed(2);
               });
             }}
           >

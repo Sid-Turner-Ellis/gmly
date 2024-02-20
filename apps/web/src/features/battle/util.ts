@@ -37,3 +37,6 @@ export const getTeamSizeNumberFromTeamOption = (
 export const getSeriesNumberFromSeriesOption = (
   series: CreateBattleParams["series"]
 ) => parseInt(series.slice(2));
+
+export const getCentsFromStringValue = (value: string) =>
+  parseFloat(value) * 100;

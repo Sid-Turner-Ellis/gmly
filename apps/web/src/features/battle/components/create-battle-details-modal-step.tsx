@@ -9,7 +9,10 @@ import { CustomAttributeInput } from "./custom-attribute-input";
 import { DollarInput, useDollarInput } from "@/components/dollar-input";
 import { Button } from "@/components/button";
 import { useToast } from "@/providers/toast-provider";
-import { getTeamSizeNumberFromTeamOption } from "../util";
+import {
+  getCentsFromStringValue,
+  getTeamSizeNumberFromTeamOption,
+} from "../util";
 
 const BATTLE_REGIONS: MatchRegions[] = [
   "Europe",
@@ -24,11 +27,13 @@ const Content = ({
   customAttributes,
   setValue,
   value,
+  teamSize,
 }: {
   control: Control<CreateBattleInputs>;
   timeOptions: string[];
   teamSizeOptions: string[];
   customAttributes: SelectCustomAttribute[];
+  teamSize: number;
 } & Omit<ReturnType<typeof useDollarInput>, "amountInCents">) => {
   return (
     <div className="flex flex-col gap-3">
@@ -74,7 +79,12 @@ const Content = ({
         />
       ))}
       <CreateBattleLabelInputGroup title="Wager">
-        <DollarInput variant="small" setValue={setValue} value={value} />
+        <DollarInput
+          variant="small"
+          setValue={setValue}
+          value={value}
+          stepInCents={teamSize * 100}
+        />
       </CreateBattleLabelInputGroup>
     </div>
   );
