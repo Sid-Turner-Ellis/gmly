@@ -1,3 +1,5 @@
+import { DollarInput, useDollarInput } from "@/components/dollar-input";
+import { Heading } from "@/components/heading";
 import { useEffect, useState, useMemo } from "react";
 
 export const getServerSideProps = async () => {
@@ -9,5 +11,14 @@ export const getServerSideProps = async () => {
 };
 
 export default function Page() {
-  return <div className="w-32">Playground</div>;
+  const { amountInCents, ...inputProps } = useDollarInput();
+  return (
+    <div>
+      <Heading variant="h1"> Playground</Heading>
+
+      <div className="w-56 bg-slate-400">
+        <DollarInput {...inputProps} maxValue={5} stepInCents={33} />
+      </div>
+    </div>
+  );
 }

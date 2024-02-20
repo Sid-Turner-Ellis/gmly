@@ -50,6 +50,12 @@ const populate = [
 ];
 
 export class GameService {
+  static async getGame(id: number) {
+    const gameResponse = await strapiApi.findOne<GameResponse>("games", id, {
+      populate,
+    });
+    return gameResponse.data;
+  }
   static async getGames(
     page: number,
     options: Partial<{

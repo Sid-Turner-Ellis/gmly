@@ -134,9 +134,16 @@ export default factories.createCoreController("api::battle.battle", {
 
     const invitedTeam =
       reqData.invited_team_id &&
-      (await strapi.service("api::team.team").findOne(reqData.invited_team_id));
+      (await strapi.service("api::team.team").findOne(reqData.invited_team_id, {
+        populate: { game: true, team_profiles: true },
+      }));
 
-    // TODO: Validate that the invited team is not the same as the captains team and is for the same game
+    const isInvitedTeamInSameGame = invitedTeam?.game.id === game.id;
+    const isInvitedTeamADifferentTeam = invitedTeam?.id !== team.id;
+
+    if (!isInvitedTeamInSameGame || !isInvitedTeamADifferentTeam) {
+      return ctx.badRequest(CreateBattleErrors.InvalidInput);
+    }
 
     const teamSelectionProfiles = [
       ...reqData.team_selection.filter(

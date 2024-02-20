@@ -9,12 +9,13 @@ import { useOptimisticMutation } from "@/hooks/use-optimistic-mutation";
 import { useToast } from "@/providers/toast-provider";
 import { validateTeamName } from "../util";
 import { StrapiError } from "@/utils/strapi-error";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { TeamMembersTable } from "./team-members-table";
 import { TeamActionButtons } from "./team-action-buttons";
 import { TeamInviteReceivedModal } from "./team-invite-recieved-modal";
 import { Text } from "@/components/text";
 import { USER_QUERY_KEY } from "@/constants";
+import { CreateBattleButton } from "@/features/battle/components/create-battle-button";
 
 export type TeamPageContent = {
   team: TeamResponse;
@@ -34,6 +35,7 @@ export const TeamPageContent = ({ team, teamProfile }: TeamPageContent) => {
   const [teamNameInputValue, setTeamNameInputValue] = useState(
     team.attributes.name
   );
+
   const isInvitationPending = teamProfile?.attributes.is_pending;
   const [isTeamInviteReceivedModalOpen, setIsTeamInviteReceivedModalOpen] =
     useState(!!isInvitationPending);
@@ -160,6 +162,14 @@ export const TeamPageContent = ({ team, teamProfile }: TeamPageContent) => {
             <Text className={"text-xl"}>
               {team.attributes.game.data?.attributes.title}
             </Text>
+            {!teamProfile && (
+              <div className="mt-2">
+                <CreateBattleButton
+                  invitedTeamId={team.id}
+                  gameOrGameId={team.attributes.game.data?.id!}
+                />
+              </div>
+            )}
           </div>
         }
         {...editableImageProps}

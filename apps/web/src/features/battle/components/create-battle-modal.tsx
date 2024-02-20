@@ -26,10 +26,12 @@ export const CreateBattleModal = ({
   closeModal,
   user,
   teamProfile,
+  invitedTeamId,
 }: {
   isOpen: boolean;
   closeModal: () => void;
   user: AuthenticatedUser;
+  invitedTeamId?: number;
   game: GameResponse;
   teamProfile: NonNullable<
     AuthenticatedUser["data"]["profile"]["team_profiles"]["data"]
@@ -128,6 +130,7 @@ export const CreateBattleModal = ({
       customAttributes: formValues.customAttributes ?? {},
       teamSelection,
       teamProfileId: teamProfile.id,
+      invitedTeamId,
     });
   };
 
