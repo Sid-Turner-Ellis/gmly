@@ -15,11 +15,11 @@ import { GamerTagWithoutRelations } from "../gamer-tag/gamer-tag-service";
 
 // TODO: Consider updating the strapi service so that we don't deal with profileIDs but rather addresses
 
-export type Regions = "Europe" | "North America" | "Asia" | "Oceania";
+export type ProfileRegions = "Europe" | "North America" | "Asia" | "Oceania";
 
 export type ProfileWithoutRelations = {
   wallet_address: string;
-  region: Regions | null;
+  region: ProfileRegions | null;
   username: string | null;
   wager_mode: boolean;
   trust_mode: boolean;
@@ -128,7 +128,7 @@ export class ProfileService {
   }: {
     profileId: number;
     username?: string;
-    region?: Regions;
+    region?: ProfileRegions;
     wager_mode?: boolean;
     avatar?: number;
     bio?: string;

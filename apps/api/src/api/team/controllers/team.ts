@@ -230,7 +230,6 @@ export default factories.createCoreController(
       // Apply updates
       await Promise.all(
         teamProfilesToUpdate.map(async ({ role, id }) => {
-          console.log("update", role, id);
           await strapi.service("api::team-profile.team-profile").update(id, {
             data: {
               role,

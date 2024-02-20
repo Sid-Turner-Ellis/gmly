@@ -47,6 +47,12 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::gamer-tag.gamer-tag"
+    },
+    "team_selection_profiles": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::team-selection-profile.team-selection-profile",
+      "mappedBy": "team_profile"
     }
   }
 }

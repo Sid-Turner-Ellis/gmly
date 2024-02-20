@@ -38,12 +38,6 @@
       "unique": true,
       "required": true
     },
-    "game_modes": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::game-mode.game-mode",
-      "mappedBy": "game"
-    },
     "teams": {
       "type": "relation",
       "relation": "oneToMany",
@@ -55,6 +49,19 @@
       "relation": "oneToMany",
       "target": "api::gamer-tag.gamer-tag",
       "mappedBy": "game"
+    },
+    "custom_attributes": {
+      "type": "dynamiczone",
+      "components": [
+        "custom-attributes.pick-random",
+        "custom-attributes.select"
+      ]
+    },
+    "max_team_size": {
+      "type": "integer",
+      "unique": false,
+      "required": true,
+      "default": 4
     }
   }
 }

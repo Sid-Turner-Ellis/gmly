@@ -403,9 +403,12 @@ export interface PluginUploadFile extends Schema.CollectionType {
     folderPath: Attribute.String &
       Attribute.Required &
       Attribute.Private &
-      Attribute.SetMinMax<{
-        min: 1;
-      }>;
+      Attribute.SetMinMax<
+        {
+          min: 1;
+        },
+        number
+      >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -441,9 +444,12 @@ export interface PluginUploadFolder extends Schema.CollectionType {
   attributes: {
     name: Attribute.String &
       Attribute.Required &
-      Attribute.SetMinMax<{
-        min: 1;
-      }>;
+      Attribute.SetMinMax<
+        {
+          min: 1;
+        },
+        number
+      >;
     pathId: Attribute.Integer & Attribute.Required & Attribute.Unique;
     parent: Attribute.Relation<
       'plugin::upload.folder',
@@ -462,9 +468,12 @@ export interface PluginUploadFolder extends Schema.CollectionType {
     >;
     path: Attribute.String &
       Attribute.Required &
-      Attribute.SetMinMax<{
-        min: 1;
-      }>;
+      Attribute.SetMinMax<
+        {
+          min: 1;
+        },
+        number
+      >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -475,6 +484,100 @@ export interface PluginUploadFolder extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'plugin::upload.folder',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface PluginContentReleasesRelease extends Schema.CollectionType {
+  collectionName: 'strapi_releases';
+  info: {
+    singularName: 'release';
+    pluralName: 'releases';
+    displayName: 'Release';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: false;
+    };
+    'content-type-builder': {
+      visible: false;
+    };
+  };
+  attributes: {
+    name: Attribute.String & Attribute.Required;
+    releasedAt: Attribute.DateTime;
+    scheduledAt: Attribute.DateTime;
+    timezone: Attribute.String;
+    actions: Attribute.Relation<
+      'plugin::content-releases.release',
+      'oneToMany',
+      'plugin::content-releases.release-action'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'plugin::content-releases.release',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'plugin::content-releases.release',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface PluginContentReleasesReleaseAction
+  extends Schema.CollectionType {
+  collectionName: 'strapi_release_actions';
+  info: {
+    singularName: 'release-action';
+    pluralName: 'release-actions';
+    displayName: 'Release Action';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: false;
+    };
+    'content-type-builder': {
+      visible: false;
+    };
+  };
+  attributes: {
+    type: Attribute.Enumeration<['publish', 'unpublish']> & Attribute.Required;
+    entry: Attribute.Relation<
+      'plugin::content-releases.release-action',
+      'morphToOne'
+    >;
+    contentType: Attribute.String & Attribute.Required;
+    locale: Attribute.String;
+    release: Attribute.Relation<
+      'plugin::content-releases.release-action',
+      'manyToOne',
+      'plugin::content-releases.release'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'plugin::content-releases.release-action',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'plugin::content-releases.release-action',
       'oneToOne',
       'admin::user'
     > &
@@ -504,10 +607,13 @@ export interface PluginI18NLocale extends Schema.CollectionType {
   };
   attributes: {
     name: Attribute.String &
-      Attribute.SetMinMax<{
-        min: 1;
-        max: 50;
-      }>;
+      Attribute.SetMinMax<
+        {
+          min: 1;
+          max: 50;
+        },
+        number
+      >;
     code: Attribute.String & Attribute.Unique;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -677,6 +783,43 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
   };
 }
 
+export interface ApiBattleBattle extends Schema.CollectionType {
+  collectionName: 'battles';
+  info: {
+    singularName: 'battle';
+    pluralName: 'battles';
+    displayName: 'Battle';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    match_options: Attribute.Component<'general.match-options'> &
+      Attribute.Required;
+    date: Attribute.DateTime;
+    match: Attribute.Relation<
+      'api::battle.battle',
+      'oneToOne',
+      'api::match.match'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::battle.battle',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::battle.battle',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiGameGame extends Schema.CollectionType {
   collectionName: 'games';
   info: {
@@ -693,56 +836,23 @@ export interface ApiGameGame extends Schema.CollectionType {
     card_image: Attribute.Media & Attribute.Required;
     cover_image: Attribute.Media & Attribute.Required;
     slug: Attribute.String & Attribute.Required & Attribute.Unique;
-    game_modes: Attribute.Relation<
-      'api::game.game',
-      'oneToMany',
-      'api::game-mode.game-mode'
-    >;
     teams: Attribute.Relation<'api::game.game', 'oneToMany', 'api::team.team'>;
     gamer_tags: Attribute.Relation<
       'api::game.game',
       'oneToMany',
       'api::gamer-tag.gamer-tag'
     >;
+    custom_attributes: Attribute.DynamicZone<
+      ['custom-attributes.pick-random', 'custom-attributes.select']
+    >;
+    max_team_size: Attribute.Integer &
+      Attribute.Required &
+      Attribute.DefaultTo<4>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<'api::game.game', 'oneToOne', 'admin::user'> &
       Attribute.Private;
     updatedBy: Attribute.Relation<'api::game.game', 'oneToOne', 'admin::user'> &
-      Attribute.Private;
-  };
-}
-
-export interface ApiGameModeGameMode extends Schema.CollectionType {
-  collectionName: 'game_modes';
-  info: {
-    singularName: 'game-mode';
-    pluralName: 'game-modes';
-    displayName: 'Game Mode';
-  };
-  options: {
-    draftAndPublish: false;
-  };
-  attributes: {
-    game: Attribute.Relation<
-      'api::game-mode.game-mode',
-      'manyToOne',
-      'api::game.game'
-    >;
-    title: Attribute.String & Attribute.Required;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'api::game-mode.game-mode',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'api::game-mode.game-mode',
-      'oneToOne',
-      'admin::user'
-    > &
       Attribute.Private;
   };
 }
@@ -780,6 +890,46 @@ export interface ApiGamerTagGamerTag extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::gamer-tag.gamer-tag',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiMatchMatch extends Schema.CollectionType {
+  collectionName: 'matches';
+  info: {
+    singularName: 'match';
+    pluralName: 'matches';
+    displayName: 'Match';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    match_meta: Attribute.JSON;
+    team_selections: Attribute.Relation<
+      'api::match.match',
+      'manyToMany',
+      'api::team-selection.team-selection'
+    >;
+    battle: Attribute.Relation<
+      'api::match.match',
+      'oneToOne',
+      'api::battle.battle'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::match.match',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::match.match',
       'oneToOne',
       'admin::user'
     > &
@@ -966,6 +1116,11 @@ export interface ApiTeamProfileTeamProfile extends Schema.CollectionType {
       'oneToOne',
       'api::gamer-tag.gamer-tag'
     >;
+    team_selection_profiles: Attribute.Relation<
+      'api::team-profile.team-profile',
+      'oneToMany',
+      'api::team-selection-profile.team-selection-profile'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -976,6 +1131,87 @@ export interface ApiTeamProfileTeamProfile extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::team-profile.team-profile',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiTeamSelectionTeamSelection extends Schema.CollectionType {
+  collectionName: 'team_selections';
+  info: {
+    singularName: 'team-selection';
+    pluralName: 'team-selections';
+    displayName: 'Team Selection';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    team_selection_profiles: Attribute.Relation<
+      'api::team-selection.team-selection',
+      'oneToMany',
+      'api::team-selection-profile.team-selection-profile'
+    >;
+    matches: Attribute.Relation<
+      'api::team-selection.team-selection',
+      'manyToMany',
+      'api::match.match'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::team-selection.team-selection',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::team-selection.team-selection',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiTeamSelectionProfileTeamSelectionProfile
+  extends Schema.CollectionType {
+  collectionName: 'team_selection_profiles';
+  info: {
+    singularName: 'team-selection-profile';
+    pluralName: 'team-selection-profiles';
+    displayName: 'Team Selection Profile';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    is_captain: Attribute.Boolean &
+      Attribute.Required &
+      Attribute.DefaultTo<false>;
+    team_profile: Attribute.Relation<
+      'api::team-selection-profile.team-selection-profile',
+      'manyToOne',
+      'api::team-profile.team-profile'
+    >;
+    team_selection: Attribute.Relation<
+      'api::team-selection-profile.team-selection-profile',
+      'manyToOne',
+      'api::team-selection.team-selection'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::team-selection-profile.team-selection-profile',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::team-selection-profile.team-selection-profile',
       'oneToOne',
       'admin::user'
     > &
@@ -1002,9 +1238,12 @@ export interface ApiTransactionTransaction extends Schema.CollectionType {
       Attribute.Required;
     amount: Attribute.Integer &
       Attribute.Required &
-      Attribute.SetMinMax<{
-        min: 0;
-      }>;
+      Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
     profile: Attribute.Relation<
       'api::transaction.transaction',
       'manyToOne',
@@ -1043,17 +1282,22 @@ declare module '@strapi/types' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'plugin::upload.file': PluginUploadFile;
       'plugin::upload.folder': PluginUploadFolder;
+      'plugin::content-releases.release': PluginContentReleasesRelease;
+      'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;
       'plugin::users-permissions.permission': PluginUsersPermissionsPermission;
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
+      'api::battle.battle': ApiBattleBattle;
       'api::game.game': ApiGameGame;
-      'api::game-mode.game-mode': ApiGameModeGameMode;
       'api::gamer-tag.gamer-tag': ApiGamerTagGamerTag;
+      'api::match.match': ApiMatchMatch;
       'api::notification.notification': ApiNotificationNotification;
       'api::profile.profile': ApiProfileProfile;
       'api::team.team': ApiTeamTeam;
       'api::team-profile.team-profile': ApiTeamProfileTeamProfile;
+      'api::team-selection.team-selection': ApiTeamSelectionTeamSelection;
+      'api::team-selection-profile.team-selection-profile': ApiTeamSelectionProfileTeamSelectionProfile;
       'api::transaction.transaction': ApiTransactionTransaction;
     }
   }

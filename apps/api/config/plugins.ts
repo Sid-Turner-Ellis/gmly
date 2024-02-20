@@ -31,6 +31,7 @@ export default ({ env }) => {
             "leave",
             "withdraw",
             "deposit",
+            "createBattle",
           ],
         },
         plugins: {

@@ -1,0 +1,31 @@
+{
+  "kind": "collectionType",
+  "collectionName": "matches",
+  "info": {
+    "singularName": "match",
+    "pluralName": "matches",
+    "displayName": "Match",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "match_meta": {
+      "type": "json"
+    },
+    "team_selections": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::team-selection.team-selection",
+      "inversedBy": "matches"
+    },
+    "battle": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::battle.battle",
+      "mappedBy": "match"
+    }
+  }
+}

@@ -16,18 +16,38 @@ import { StrapiError } from "@/utils/strapi-error";
 export type GameWithoutRelations = {
   title: string;
   slug: string;
+  max_team_size: number;
+};
+
+// TODO: as we add more types we can extract out most of this
+export type SelectCustomAttribute = {
+  id: number;
+  input_type: "dropdown" | "radio" | "multi-select";
+  __component: "custom-attributes.select";
+  attribute: {
+    attribute_id: string;
+    display_name: string;
+  };
+  options: { option_id: string; display_name: string }[];
 };
 
 export type Game = GameWithoutRelations & {
   card_image: StrapiRelation<StrapiEntity<StrapiImage>>;
   cover_image: StrapiRelation<StrapiEntity<StrapiImage>>;
+  custom_attributes: SelectCustomAttribute[];
 };
 
 export type GameResponse = StrapiEntity<Game>;
 
 export type GetGamesSort = "date" | "title";
 
-const populate = ["card_image", "cover_image"];
+const populate = [
+  "card_image",
+  "cover_image",
+  "custom_attributes",
+  "custom_attributes.options",
+  "custom_attributes.attribute",
+];
 
 export class GameService {
   static async getGames(

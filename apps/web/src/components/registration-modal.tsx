@@ -7,7 +7,7 @@ import * as SelectPrimitive from "@radix-ui/react-select";
 import {
   ProfileResponse,
   ProfileService,
-  Regions,
+  ProfileRegions,
 } from "@/features/profile/profile-service";
 import { Button } from "./button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -22,10 +22,15 @@ import { USER_QUERY_KEY } from "@/constants";
 
 type FormInputs = {
   username: string;
-  region: (typeof REGIONS)[0];
+  region: (typeof PROFILE_REGIONS)[0];
 };
 
-const REGIONS: Regions[] = ["Asia", "Europe", "North America", "Oceania"];
+const PROFILE_REGIONS: ProfileRegions[] = [
+  "Asia",
+  "Europe",
+  "North America",
+  "Oceania",
+];
 
 export const RegistrationModal = () => {
   const { isOpen, close } = useRegistrationModal();
@@ -33,7 +38,7 @@ export const RegistrationModal = () => {
   const hasUsername = user?.data?.profile.username;
   const hasRegion = user?.data?.profile.region;
   const { addToast } = useToast();
-  const [region, setRegion] = useState<Regions | null>(null);
+  const [region, setRegion] = useState<ProfileRegions | null>(null);
   const queryClient = useQueryClient();
   const selectRef = useRef<HTMLDivElement>(null);
   const { mutate, isLoading, isSuccess, isError } = useMutation(
@@ -168,7 +173,7 @@ export const RegistrationModal = () => {
               <SelectPrimitive.Root
                 value={region ?? "Region"}
                 onValueChange={(v) => {
-                  setRegion(v as Regions);
+                  setRegion(v as ProfileRegions);
                 }}
               >
                 <SelectPrimitive.Trigger
@@ -205,7 +210,7 @@ export const RegistrationModal = () => {
                     side="bottom"
                   >
                     <SelectPrimitive.Viewport className="w-full overflow-hidden rounded bg-brand-navy">
-                      {REGIONS.map((region) => (
+                      {PROFILE_REGIONS.map((region) => (
                         <SelectPrimitive.Item
                           value={region}
                           key={region}

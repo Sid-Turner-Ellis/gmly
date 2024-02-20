@@ -35,6 +35,7 @@ export type TeamProfile = TeamProfileWithoutRelations & {
   >;
   invited_by: StrapiRelation<StrapiEntity<ProfileWithoutRelations>>;
   gamer_tag: StrapiRelation<StrapiEntity<GamerTagWithoutRelations>>;
+  avatar: StrapiRelation<StrapiEntity<StrapiImage>>;
 };
 
 export type TeamWithoutRelations = {

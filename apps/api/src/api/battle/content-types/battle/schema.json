@@ -1,0 +1,31 @@
+{
+  "kind": "collectionType",
+  "collectionName": "battles",
+  "info": {
+    "singularName": "battle",
+    "pluralName": "battles",
+    "displayName": "Battle",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "match_options": {
+      "type": "component",
+      "repeatable": false,
+      "component": "general.match-options",
+      "required": true
+    },
+    "date": {
+      "type": "datetime"
+    },
+    "match": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::match.match",
+      "inversedBy": "battle"
+    }
+  }
+}

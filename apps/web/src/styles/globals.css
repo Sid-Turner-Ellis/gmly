@@ -20,7 +20,6 @@
 @layer base {
   * {
     scrollbar-gutter: auto;
-
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE 10+ */
     &::-webkit-scrollbar {

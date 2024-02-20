@@ -10,8 +10,6 @@ export default factories.createCoreService("api::gamer-tag.gamer-tag", {
       .query("api::gamer-tag.gamer-tag")
       .findMany({ where: { tag, game } });
 
-    console.log({ matchingTags });
-
     return matchingTags.length === 0;
   },
   async doesProfileHaveGamerTagForGame(profile: number, game: number) {
