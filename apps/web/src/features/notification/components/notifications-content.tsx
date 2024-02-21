@@ -1,5 +1,7 @@
 import { Heading } from "@/components/heading";
 import {
+  isBattleInviteReceivedNotification,
+  isEnrolledInBattleNotification,
   isTeamInviteReceivedNotification,
   isTransactionResultNotification,
 } from "../notification-service";
@@ -12,6 +14,7 @@ import { ClassValue } from "clsx";
 import { cn } from "@/utils/cn";
 import { useAuth } from "@/hooks/use-auth";
 import { toUsdString } from "@/utils/to-usd-string";
+import { getTeamProfileForUserBy } from "@/features/profile/util";
 
 type NotificationsContent = {
   onNotificationClick?: () => void;
@@ -116,6 +119,63 @@ export const NotificationsContent = ({
                   </strong>{" "}
                   of {toUsdString(amount)}{" "}
                   <strong>{didFail ? "failed" : "succeeded"}</strong>
+                </NotificationItem>
+              );
+            }
+
+            if (isEnrolledInBattleNotification(notification)) {
+              const { battleId, teamId } =
+                notification.attributes.enrolled_in_battle_details;
+              const teamProfile = getTeamProfileForUserBy(
+                "teamId",
+                teamId,
+                user
+              );
+
+              return (
+                <NotificationItem
+                  key={notification.id}
+                  notification={notification}
+                  image={teamProfile?.attributes.team.data?.attributes.image}
+                  hideBottomBorder={isFinalNotification}
+                  onNotificationClick={() => {
+                    throw new Error("Not implemented");
+                  }}
+                >
+                  You have been selected to participate in a battle for "
+                  <strong>
+                    {teamProfile?.attributes.team.data?.attributes.name}
+                  </strong>
+                  "
+                </NotificationItem>
+              );
+            }
+
+            if (isBattleInviteReceivedNotification(notification)) {
+              const {
+                battleId,
+                invitedTeamId,
+                invitingTeamId,
+                invitingTeamName,
+              } = notification.attributes.battle_invite_received_details;
+              const teamProfile = getTeamProfileForUserBy(
+                "teamId",
+                invitedTeamId,
+                user
+              );
+
+              return (
+                <NotificationItem
+                  key={notification.id}
+                  notification={notification}
+                  image={teamProfile?.attributes.team.data?.attributes.image}
+                  hideBottomBorder={isFinalNotification}
+                  onNotificationClick={() => {
+                    throw new Error("Not implemented");
+                  }}
+                >
+                  "<strong>{invitingTeamName}</strong> has challenged you to a
+                  battle! battle
                 </NotificationItem>
               );
             }

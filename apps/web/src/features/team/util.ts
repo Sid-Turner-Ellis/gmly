@@ -34,6 +34,7 @@ export const createFakeTeamProfile = (
     createdAt: "",
     is_pending: true,
     role: val.role,
+    avatar: { data: null },
     xp: 0,
     earnings: 0,
     rank: 0,

@@ -29,7 +29,7 @@ export const NotificationsHeaderButton = () => {
       </PopoverPrimitives.Trigger>
       <PopoverPrimitives.Portal>
         <PopoverPrimitives.Content
-          className="w-96 will-change-[transform,opacity] data-[state=open]:data-[side=top]:animate-slideDownAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade "
+          className="w-[26rem] will-change-[transform,opacity] data-[state=open]:data-[side=top]:animate-slideDownAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade "
           sideOffset={14}
         >
           <NotificationsContent

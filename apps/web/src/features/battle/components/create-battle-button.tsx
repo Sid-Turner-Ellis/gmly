@@ -6,14 +6,7 @@ import { useEffect, useState } from "react";
 import { useToast } from "@/providers/toast-provider";
 import { GameResponse, GameService } from "@/features/game/game-service";
 import { useQuery } from "@tanstack/react-query";
-
-const getTeamProfileForGame = (
-  gameId: number,
-  user: AuthenticatedUser | null
-) =>
-  user?.data.profile.team_profiles.data?.find(
-    (tp) => tp.attributes.team.data?.attributes.game.data?.id === gameId
-  );
+import { getTeamProfileForUserBy } from "@/features/profile/util";
 
 export const CreateBattleButton = ({
   gameOrGameId,
@@ -34,7 +27,7 @@ export const CreateBattleButton = ({
   });
 
   const game = typeof gameOrGameId === "number" ? gameData : gameOrGameId;
-  const teamProfile = getTeamProfileForGame(gameId, user);
+  const teamProfile = getTeamProfileForUserBy("gameId", gameId, user);
   const [isCreateBattleModalOpen, setIsCreateBattleModalOpen] = useState(false);
   const [isCreateTeamModalOpen, setIsCreateTeamModalOpen] = useState(false);
   const { addToast } = useToast();

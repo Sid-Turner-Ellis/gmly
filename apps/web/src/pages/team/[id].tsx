@@ -1,23 +1,11 @@
 import { ErrorPage } from "@/components/error-page";
+import { getTeamProfileForUserBy } from "@/features/profile/util";
 import { TeamPageContent } from "@/features/team/components/team-page-content";
 import { TeamPageSkeleton } from "@/features/team/components/team-page-skeleton";
 import { TeamService } from "@/features/team/team-service";
 import { AuthenticatedUser, useAuth } from "@/hooks/use-auth";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-
-const getTeamProfileForTeam = (
-  user: AuthenticatedUser | null,
-  teamId: number
-) => {
-  if (!user || !user.data.profile.team_profiles.data) return null;
-
-  const teamProfile = user.data.profile.team_profiles.data.find(
-    (tp) => tp.attributes.team.data?.id === teamId
-  );
-
-  return teamProfile ?? null;
-};
 
 export default function TeamIdPage() {
   const router = useRouter();
@@ -47,7 +35,7 @@ export default function TeamIdPage() {
       {teamData?.data && (
         <TeamPageContent
           team={teamData.data}
-          teamProfile={getTeamProfileForTeam(user, teamId!)}
+          teamProfile={getTeamProfileForUserBy("teamId", teamId!, user)}
         />
       )}
     </div>

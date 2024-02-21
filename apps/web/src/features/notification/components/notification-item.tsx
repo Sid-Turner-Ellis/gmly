@@ -36,7 +36,7 @@ export const NotificationItem = ({
             />
           </div>
           <div className="w-full grow">
-            <Text className={"mb-1"}>{children}</Text>
+            <Text className={"mb-1.5"}>{children}</Text>
             <Text className={"text-xs text-brand-primary"}>
               {timeAgo(notification.attributes.createdAt)}
             </Text>

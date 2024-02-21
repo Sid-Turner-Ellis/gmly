@@ -5,15 +5,18 @@ import { Team, TeamWithoutRelations } from "../team/team-service";
 export enum NOTIFICATION_TYPES {
   TeamInviteReceived = "TEAM_INVITE_RECEIVED",
   TransactionResult = "TRANSACTION_RESULT",
+  EnrolledInBattle = "ENROLLED_IN_BATTLE",
+  BattleInviteReceived = "BATTLE_INVITE_RECEIVED",
 }
 
-type SharedNotificationAttributes = {
-  seen: boolean;
-  type: NOTIFICATION_TYPES;
-};
+type SharedNotificationAttributes<NotifcationType extends NOTIFICATION_TYPES> =
+  {
+    seen: boolean;
+    type: NotifcationType;
+  };
 
 export type TeamInviteReceivedNotificationResponse = StrapiEntity<
-  SharedNotificationAttributes & {
+  SharedNotificationAttributes<NOTIFICATION_TYPES.TeamInviteReceived> & {
     team: StrapiRelation<
       StrapiEntity<TeamWithoutRelations & Pick<Team, "image">>
     >;
@@ -21,11 +24,30 @@ export type TeamInviteReceivedNotificationResponse = StrapiEntity<
 >;
 
 export type TransactionResultNotificationResponse = StrapiEntity<
-  SharedNotificationAttributes & {
+  SharedNotificationAttributes<NOTIFICATION_TYPES.TransactionResult> & {
     transaction_result_details: {
       didFail: boolean;
       type: "deposit" | "withdraw";
       amount: number;
+    };
+  }
+>;
+
+export type EnrolledInBattleNotificationResponse = StrapiEntity<
+  SharedNotificationAttributes<NOTIFICATION_TYPES.EnrolledInBattle> & {
+    enrolled_in_battle_details: {
+      battleId: number;
+      teamId: number;
+    };
+  }
+>;
+export type BattleInviteReceivedNotificationResponse = StrapiEntity<
+  SharedNotificationAttributes<NOTIFICATION_TYPES.BattleInviteReceived> & {
+    battle_invite_received_details: {
+      battleId: number;
+      invitedTeamId: number;
+      invitingTeamId: number;
+      invitingTeamName: string;
     };
   }
 >;
@@ -48,7 +70,8 @@ export const isTransactionResultNotification = (
   const isCorrectType =
     value.attributes.type === NOTIFICATION_TYPES.TransactionResult;
 
-  const { amount, type, didFail } = value.attributes.transaction_result_details;
+  const { amount, type, didFail } =
+    value.attributes?.transaction_result_details ?? {};
 
   return (
     isCorrectType &&
@@ -58,9 +81,45 @@ export const isTransactionResultNotification = (
   );
 };
 
+export const isEnrolledInBattleNotification = (
+  v: unknown
+): v is EnrolledInBattleNotificationResponse => {
+  const value = v as EnrolledInBattleNotificationResponse;
+  const isCorrectType =
+    value.attributes.type === NOTIFICATION_TYPES.EnrolledInBattle;
+
+  const { battleId, teamId } =
+    value.attributes?.enrolled_in_battle_details ?? {};
+
+  return (
+    isCorrectType && typeof battleId === "number" && typeof teamId === "number"
+  );
+};
+
+export const isBattleInviteReceivedNotification = (
+  v: unknown
+): v is BattleInviteReceivedNotificationResponse => {
+  const value = v as BattleInviteReceivedNotificationResponse;
+  const isCorrectType =
+    value.attributes.type === NOTIFICATION_TYPES.BattleInviteReceived;
+
+  const { battleId, invitedTeamId, invitingTeamId, invitingTeamName } =
+    value.attributes?.battle_invite_received_details ?? {};
+
+  return (
+    isCorrectType &&
+    typeof battleId === "number" &&
+    typeof invitedTeamId === "number" &&
+    typeof invitingTeamId === "number" &&
+    typeof invitingTeamName === "string"
+  );
+};
+
 export type NotificationResponse =
   | TeamInviteReceivedNotificationResponse
-  | TransactionResultNotificationResponse;
+  | TransactionResultNotificationResponse
+  | EnrolledInBattleNotificationResponse
+  | BattleInviteReceivedNotificationResponse;
 
 const populate = ["team", "team.image"];
 
