@@ -3,7 +3,7 @@ import { Modal } from "@/components/modal/modal";
 import { AuthenticatedUser } from "@/hooks/use-auth";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, UseFormSetValue, useForm } from "react-hook-form";
 import { BattleService, CreateBattleParams } from "../battle-service";
 import { GameResponse } from "@/features/game/game-service";
 import { TeamService } from "@/features/team/team-service";
@@ -15,10 +15,13 @@ import { getAvailableTimes, getTeamSizeNumberFromTeamOption } from "../util";
 import { CreateBattleDetailsStep } from "./create-battle-details-modal-step";
 import { ScrollArea } from "@/components/scroll-area";
 import { USER_QUERY_KEY } from "@/constants";
+import { useLocalStorage } from "@/hooks/use-local-storage";
+import { cn } from "@/utils/cn";
+import { useApplyLastMatch } from "../hooks/use-apply-last-match";
 
 export type CreateBattleInputs = Omit<
   CreateBattleParams,
-  "teamProfileId" | "invitedTeamId"
+  "teamProfileId" | "invitedTeamId" | "teamSelection"
 > & { teamSize: `${number}v${number}` };
 
 export const CreateBattleModal = ({
@@ -39,9 +42,9 @@ export const CreateBattleModal = ({
   >[number];
 }) => {
   const [isFirstStep, setIsFirstStep] = useState(true);
-  const teamId = teamProfile.attributes.team.data?.id;
-  const isTeamQueryEnabled = isOpen && !isFirstStep && !!teamId;
   const { amountInCents, ...dollarInputProps } = useDollarInput();
+  const teamId = teamProfile.attributes.team.data?.id;
+  const isTeamQueryEnabled = isOpen && !!teamId;
   const queryClient = useQueryClient();
   const { addToast } = useToast();
   const {
@@ -102,16 +105,30 @@ export const CreateBattleModal = ({
     [game.attributes.max_team_size]
   );
 
-  const { control, handleSubmit, watch, trigger } = useForm<CreateBattleInputs>(
-    {
-      defaultValues: {
-        teamSize: teamSizeOptions[0],
-        series: "Bo1",
-        time: timeOptions[0],
-        region: user.data.profile.region!,
-      },
-    }
-  );
+  const {
+    control,
+    handleSubmit,
+    watch,
+    trigger,
+    setValue: setFormValue,
+  } = useForm<CreateBattleInputs>({
+    defaultValues: {
+      teamSize: teamSizeOptions[0],
+      series: "Bo1",
+      time: timeOptions[0],
+      region: user.data.profile.region!,
+    },
+  });
+
+  const { canApplyLastMatch, applyLastMatch, saveLastMatch } =
+    useApplyLastMatch(
+      game,
+      user,
+      setFormValue,
+      setTeamSelection,
+      dollarInputProps.setValue
+    );
+
   const teamSize = watch("teamSize");
 
   const onSubmit: SubmitHandler<CreateBattleInputs> = async (formValues) => {
@@ -125,7 +142,7 @@ export const CreateBattleModal = ({
       return;
     }
 
-    createBattleMutation({
+    const params = {
       time: formValues.time,
       region: formValues.region,
       series: formValues.series,
@@ -134,7 +151,10 @@ export const CreateBattleModal = ({
       teamSelection,
       teamProfileId: teamProfile.id,
       invitedTeamId,
-    });
+    } as const;
+
+    createBattleMutation(params);
+    saveLastMatch(game.id, { ...params, teamSize: formValues.teamSize });
   };
 
   useEffect(() => {
@@ -148,6 +168,19 @@ export const CreateBattleModal = ({
       dollarInputProps.setValue(wagerToTwoDp);
     }
   }, [teamSize, amountInCents]);
+
+  useEffect(() => {
+    if (teamData) {
+      const teamProfiles = teamData.data.attributes.team_profiles.data;
+
+      setTeamSelection((p) =>
+        p.filter(
+          (teamSelectionProfileId) =>
+            !!teamProfiles?.find((tp) => tp.id === teamSelectionProfileId)
+        )
+      );
+    }
+  }, [teamSelection, teamData]);
 
   useEffect(() => {
     if (teamDataIsError) {
@@ -171,34 +204,47 @@ export const CreateBattleModal = ({
       description={isFirstStep ? "Match Settings" : "Select Team Members"}
       isClosable
       Footer={
-        <div className="flex justify-end gap-3">
-          {isFirstStep ? (
-            <CreateBattleDetailsStep.Footer
-              closeModal={closeModal}
-              profileBalance={user.data.profile.balance}
-              wagerAmount={amountInCents}
-              isFormValid={trigger}
-              teamSize={teamSize}
-              nextStep={() => setIsFirstStep(false)}
-              wagerModeEnabled={user.data.profile.wager_mode}
+        <div
+          className={cn("flex justify-between", !isFirstStep && "justify-end")}
+        >
+          {isFirstStep && (
+            <Button
+              variant="secondary"
+              disabled={!canApplyLastMatch}
+              className="bg-white/5 text-brand-white"
+              title="Apply last match"
+              onClick={applyLastMatch}
             />
-          ) : (
-            <>
-              <Button
-                variant={"secondary"}
-                title="Back"
-                onClick={() => setIsFirstStep(true)}
-              />
-              <Button
-                title="Confirm"
-                disabled={
-                  teamSelection.length + 1 !==
-                  getTeamSizeNumberFromTeamOption(teamSize)
-                }
-                onClick={handleSubmit(onSubmit)}
-              />
-            </>
           )}
+          <div className="flex gap-3">
+            {isFirstStep ? (
+              <CreateBattleDetailsStep.Footer
+                closeModal={closeModal}
+                profileBalance={user.data.profile.balance}
+                wagerAmount={amountInCents}
+                isFormValid={trigger}
+                teamSize={teamSize}
+                nextStep={() => setIsFirstStep(false)}
+                wagerModeEnabled={user.data.profile.wager_mode}
+              />
+            ) : (
+              <>
+                <Button
+                  variant={"secondary"}
+                  title="Back"
+                  onClick={() => setIsFirstStep(true)}
+                />
+                <Button
+                  title="Confirm"
+                  disabled={
+                    teamSelection.length + 1 !==
+                    getTeamSizeNumberFromTeamOption(teamSize)
+                  }
+                  onClick={handleSubmit(onSubmit)}
+                />
+              </>
+            )}
+          </div>
         </div>
       }
     >
