@@ -5,6 +5,9 @@
 import { factories } from "@strapi/strapi";
 import { errors } from "@strapi/utils";
 import { z } from "zod";
+import matchOptionsSchema from "../../../components/general/match-options.json";
+
+const REGIONS = matchOptionsSchema.attributes.region.enum;
 
 enum CreateBattleErrors {
   InvalidInput = "InvalidInput",
@@ -25,7 +28,7 @@ const createBattleInputSchema = z.object({
       }),
     ),
     series: z.number(),
-    region: z.string(),
+    region: z.enum(REGIONS as any),
   }),
 });
 
