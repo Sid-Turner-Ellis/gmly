@@ -35,6 +35,7 @@ const getCurrentBreakpoint = (): Breakpoint => {
   return "2xl";
 };
 
+const useBrowserLayoutEffect = isServer() ? useEffect : useLayoutEffect;
 export const useTailwindBreakpoint = (
   targetBreakpoint: Breakpoint,
   options?: { fallback?: boolean }
@@ -44,7 +45,7 @@ export const useTailwindBreakpoint = (
     null
   );
 
-  useLayoutEffect(() => {
+  useBrowserLayoutEffect(() => {
     const handleResize = () => {
       setCurrentBreakpoint(getCurrentBreakpoint());
     };

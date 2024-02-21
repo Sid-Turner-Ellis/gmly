@@ -142,11 +142,11 @@ export const NotificationsContent = ({
                     throw new Error("Not implemented");
                   }}
                 >
-                  You have been selected to participate in a battle for "
+                  You have been selected to participate in a battle for &quot;
                   <strong>
                     {teamProfile?.attributes.team.data?.attributes.name}
                   </strong>
-                  "
+                  &quot;
                 </NotificationItem>
               );
             }
@@ -174,8 +174,8 @@ export const NotificationsContent = ({
                     throw new Error("Not implemented");
                   }}
                 >
-                  "<strong>{invitingTeamName}</strong> has challenged you to a
-                  battle! battle
+                  &quot;<strong>{invitingTeamName}</strong> has challenged you
+                  to a battle&quot;
                 </NotificationItem>
               );
             }

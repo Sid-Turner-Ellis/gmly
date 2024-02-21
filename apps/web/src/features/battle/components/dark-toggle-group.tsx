@@ -45,6 +45,7 @@ export const DarkToggleGroup = ({
           >
             {options.map((option, index) => (
               <Item
+                key={option}
                 className={cn(
                   "px-2.5 py-1 bg-brand-navy rounded",
                   "border border-solid border-transparent data-[state=on]:border-brand-gray",

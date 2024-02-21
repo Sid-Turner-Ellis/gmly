@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "@2toad/profanity": "^2.2.0",
-    "@next/font": "^14.0.2",
     "@radix-ui/react-aspect-ratio": "^1.0.3",
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-collapsible": "^1.0.3",

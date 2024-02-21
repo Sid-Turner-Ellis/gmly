@@ -16,7 +16,7 @@ export default ({ env }) => {
   return {
     "public-permissions": {
       // Everything is public because we handle auth ourselves
-      enabled: false,
+      enabled: true,
       config: {
         verbose: true,
         actions: {

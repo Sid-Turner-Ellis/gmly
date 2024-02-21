@@ -7,10 +7,9 @@ import { TokenProvider } from "@/providers/token-provider";
 import React from "react";
 import { ConditionallyWrap } from "@/components/conditionally-wrap";
 import { RegistrationModalProvider } from "@/providers/registration-modal-provider";
-// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ToastProvider } from "@/providers/toast-provider";
 import { ErrorBoundary } from "@/components/error-boundary";
-import { Inter, Bricolage_Grotesque } from "@next/font/google";
+import { Inter, Bricolage_Grotesque } from "next/font/google";
 import { cn } from "@/utils/cn";
 import { GlobalModalProvider } from "@/providers/global-modal-provider";
 
