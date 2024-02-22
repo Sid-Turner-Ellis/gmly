@@ -2,11 +2,7 @@ import {
   StrapiEntity,
   StrapiImage,
   StrapiRelation,
-  isStrapiImage,
 } from "@/types/strapi-types";
-
-const addUrl = (url: string) =>
-  `${process.env.NEXT_PUBLIC_API_PROTOCOL}://${process.env.NEXT_PUBLIC_API_HOST_NAME}${url}`;
 
 const isStrapiRelationImage = (
   v: unknown
@@ -38,10 +34,10 @@ export const resolveStrapiImage = (
   }
 
   if (!options.format) {
-    return addUrl(defaultUrl);
+    return defaultUrl;
   }
 
   // TODO: Start choosing nearest format to the requested one
   const formatUrl = imageData?.formats?.[options.format]?.url;
-  return addUrl(formatUrl || defaultUrl);
+  return formatUrl || defaultUrl;
 };

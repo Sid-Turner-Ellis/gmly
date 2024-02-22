@@ -46,12 +46,24 @@ export default ({ env }) => {
     "schemas-to-ts": {
       enabled: false,
     },
+
     upload: {
       config: {
+        provider: "cloudinary",
+        providerOptions: {
+          cloud_name: env("CLOUDINARY_CLOUD_NAME"),
+          api_key: env("CLOUDINARY_API_KEY"),
+          api_secret: env("CLOUDINARY_API_SECRET"),
+        },
         breakpoints: {
           large: 1000,
           medium: 750,
           xsmall: 64,
+        },
+        actionOptions: {
+          upload: {},
+          uploadStream: {},
+          delete: {},
         },
       },
     },
