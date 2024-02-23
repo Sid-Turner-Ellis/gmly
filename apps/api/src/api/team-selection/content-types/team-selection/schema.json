@@ -4,7 +4,8 @@
   "info": {
     "singularName": "team-selection",
     "pluralName": "team-selections",
-    "displayName": "Team Selection"
+    "displayName": "Team Selection",
+    "description": ""
   },
   "options": {
     "draftAndPublish": false
@@ -17,11 +18,23 @@
       "target": "api::team-selection-profile.team-selection-profile",
       "mappedBy": "team_selection"
     },
-    "matches": {
+    "team": {
       "type": "relation",
-      "relation": "manyToMany",
+      "relation": "manyToOne",
+      "target": "api::team.team",
+      "inversedBy": "team_selections"
+    },
+    "home_matches": {
+      "type": "relation",
+      "relation": "oneToMany",
       "target": "api::match.match",
-      "mappedBy": "team_selections"
+      "mappedBy": "home_team"
+    },
+    "away_matches": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::match.match",
+      "mappedBy": "away_team"
     }
   }
 }

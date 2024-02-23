@@ -41,6 +41,12 @@
       "relation": "oneToMany",
       "target": "api::battle.battle",
       "mappedBy": "invited_team"
+    },
+    "team_selections": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::team-selection.team-selection",
+      "mappedBy": "team"
     }
   }
 }

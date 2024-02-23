@@ -15,17 +15,23 @@
     "match_meta": {
       "type": "json"
     },
-    "team_selections": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::team-selection.team-selection",
-      "inversedBy": "matches"
-    },
     "battle": {
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::battle.battle",
       "mappedBy": "match"
+    },
+    "home_team": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::team-selection.team-selection",
+      "inversedBy": "home_matches"
+    },
+    "away_team": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::team-selection.team-selection",
+      "inversedBy": "away_matches"
     }
   }
 }

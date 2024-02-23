@@ -915,15 +915,20 @@ export interface ApiMatchMatch extends Schema.CollectionType {
   };
   attributes: {
     match_meta: Attribute.JSON;
-    team_selections: Attribute.Relation<
-      'api::match.match',
-      'manyToMany',
-      'api::team-selection.team-selection'
-    >;
     battle: Attribute.Relation<
       'api::match.match',
       'oneToOne',
       'api::battle.battle'
+    >;
+    home_team: Attribute.Relation<
+      'api::match.match',
+      'manyToOne',
+      'api::team-selection.team-selection'
+    >;
+    away_team: Attribute.Relation<
+      'api::match.match',
+      'manyToOne',
+      'api::team-selection.team-selection'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -1087,6 +1092,11 @@ export interface ApiTeamTeam extends Schema.CollectionType {
       'oneToMany',
       'api::battle.battle'
     >;
+    team_selections: Attribute.Relation<
+      'api::team.team',
+      'oneToMany',
+      'api::team-selection.team-selection'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<'api::team.team', 'oneToOne', 'admin::user'> &
@@ -1161,6 +1171,7 @@ export interface ApiTeamSelectionTeamSelection extends Schema.CollectionType {
     singularName: 'team-selection';
     pluralName: 'team-selections';
     displayName: 'Team Selection';
+    description: '';
   };
   options: {
     draftAndPublish: false;
@@ -1171,9 +1182,19 @@ export interface ApiTeamSelectionTeamSelection extends Schema.CollectionType {
       'oneToMany',
       'api::team-selection-profile.team-selection-profile'
     >;
-    matches: Attribute.Relation<
+    team: Attribute.Relation<
       'api::team-selection.team-selection',
-      'manyToMany',
+      'manyToOne',
+      'api::team.team'
+    >;
+    home_matches: Attribute.Relation<
+      'api::team-selection.team-selection',
+      'oneToMany',
+      'api::match.match'
+    >;
+    away_matches: Attribute.Relation<
+      'api::team-selection.team-selection',
+      'oneToMany',
       'api::match.match'
     >;
     createdAt: Attribute.DateTime;

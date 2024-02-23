@@ -274,7 +274,8 @@ export default factories.createCoreController("api::battle.battle", {
         .service("api::team-selection.team-selection")
         .create({
           data: {
-            matches: [createdMatchId],
+            team: team.id,
+            home_matches: [createdMatchId],
           },
         });
 
