@@ -32,6 +32,11 @@
       "relation": "manyToOne",
       "target": "api::team.team",
       "inversedBy": "battle_invitations"
+    },
+    "wager_amount": {
+      "type": "integer",
+      "required": true,
+      "default": 0
     }
   }
 }

@@ -249,6 +249,7 @@ export default factories.createCoreController("api::battle.battle", {
       const createdBattle = await strapi.service("api::battle.battle").create({
         data: {
           invited_team: reqData.invited_team_id ?? null,
+          wager_amount: reqData.total_wager_amount ?? 0,
           match_options: {
             custom_attribute_inputs:
               reqData.match_options.custom_attribute_inputs,
