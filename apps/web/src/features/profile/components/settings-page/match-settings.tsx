@@ -2,13 +2,14 @@ import { Heading } from "@/components/heading";
 import Switch from "@/components/switch";
 import { Text } from "@/components/text";
 import { useToast } from "@/providers/toast-provider";
-import * as Separator from "@radix-ui/react-separator";
+
 import { ProfileService, ProfileWithoutRelations } from "../../profile-service";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AuthenticatedUser } from "@/hooks/use-auth";
 import { produce } from "immer";
 import { useEffect } from "react";
 import { USER_QUERY_KEY } from "@/constants";
+import { Separator } from "@/components/separator";
 
 type MatchSettingsProps = {
   profileId: number;
@@ -98,7 +99,7 @@ export const MatchSettings = ({
         </div>
       </div>
 
-      <Separator.Root className="bg-brand-navy-light-accent-light data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px my-[15px]" />
+      <Separator className=" data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px my-[15px]" />
 
       <div className="flex items-center justify-between gap-8">
         <div>

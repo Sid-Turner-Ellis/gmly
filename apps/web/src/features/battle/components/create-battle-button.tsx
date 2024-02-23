@@ -9,11 +9,13 @@ import { useQuery } from "@tanstack/react-query";
 import { getTeamProfileForUserBy } from "@/features/profile/util";
 
 export const CreateBattleButton = ({
+  className,
   gameOrGameId,
   invitedTeamId,
 }: {
   gameOrGameId: GameResponse | number;
   invitedTeamId?: number;
+  className?: string;
 }) => {
   const { user } = useAuth();
   const gameId =
@@ -74,6 +76,7 @@ export const CreateBattleButton = ({
         />
       )}
       <Button
+        className={className}
         disabled={!game || isGameLoading}
         icon={invitedTeamId ? "battles" : undefined}
         title={
