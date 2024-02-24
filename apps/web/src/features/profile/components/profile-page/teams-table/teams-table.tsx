@@ -181,7 +181,7 @@ const DesktopTableRows = ({
             <TableImage
               alt={team.attributes.game.data?.attributes.title ?? "Game"}
               src={resolveStrapiImage(
-                team.attributes.game.data?.attributes.card_image
+                team.attributes.game.data?.attributes.square_image
               )}
             />
           </DesktopTableRow>

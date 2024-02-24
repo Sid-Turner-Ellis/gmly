@@ -43,7 +43,7 @@ export type Profile = ProfileWithoutRelations & {
         game: StrapiRelation<
           StrapiEntity<
             GameWithoutRelations & {
-              card_image: StrapiRelation<StrapiEntity<StrapiImage>>;
+              square_image: StrapiRelation<StrapiEntity<StrapiImage>>;
             }
           >
         >;

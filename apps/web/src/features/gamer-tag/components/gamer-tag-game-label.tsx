@@ -13,7 +13,7 @@ type GamerTagGameLabelProps = {
 
 export const GamerTagGameLabel = ({ game }: GamerTagGameLabelProps) => {
   const gameName = game.data?.attributes.title;
-  const gameImage = resolveStrapiImage(game.data?.attributes.card_image);
+  const gameImage = resolveStrapiImage(game.data?.attributes.square_image);
   return (
     <div className="flex gap-6 items-center w-full">
       <Image

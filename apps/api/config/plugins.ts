@@ -82,7 +82,7 @@ export default ({ env }) => {
               id: entry.id,
               collection_type: "games",
               name: entry.title,
-              image: entry.card_image,
+              image: entry.square_image,
               slug: entry.slug,
             };
           },

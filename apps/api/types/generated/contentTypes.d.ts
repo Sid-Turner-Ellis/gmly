@@ -808,6 +808,9 @@ export interface ApiBattleBattle extends Schema.CollectionType {
       'manyToOne',
       'api::team.team'
     >;
+    wager_amount: Attribute.Integer &
+      Attribute.Required &
+      Attribute.DefaultTo<0>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -838,8 +841,8 @@ export interface ApiGameGame extends Schema.CollectionType {
   };
   attributes: {
     title: Attribute.String & Attribute.Required;
-    card_image: Attribute.Media & Attribute.Required;
-    cover_image: Attribute.Media & Attribute.Required;
+    card_image: Attribute.Media;
+    cover_image: Attribute.Media;
     slug: Attribute.String & Attribute.Required & Attribute.Unique;
     teams: Attribute.Relation<'api::game.game', 'oneToMany', 'api::team.team'>;
     gamer_tags: Attribute.Relation<
@@ -853,6 +856,7 @@ export interface ApiGameGame extends Schema.CollectionType {
     max_team_size: Attribute.Integer &
       Attribute.Required &
       Attribute.DefaultTo<4>;
+    square_image: Attribute.Media;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<'api::game.game', 'oneToOne', 'admin::user'> &

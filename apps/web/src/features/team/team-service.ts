@@ -48,7 +48,8 @@ export type Team = TeamWithoutRelations & {
   image: StrapiRelation<StrapiEntity<StrapiImage>>;
   game: StrapiRelation<
     StrapiEntity<
-      GameWithoutRelations & Pick<Game, "card_image" | "cover_image">
+      GameWithoutRelations &
+        Pick<Game, "card_image" | "cover_image" | "square_image">
     >
   >;
   team_profiles: StrapiRelation<StrapiEntity<TeamProfile>[]>;
@@ -63,6 +64,7 @@ const populate = [
   "game",
   "game.cover_image",
   "game.card_image",
+  "game.square_image",
   "image",
 ];
 

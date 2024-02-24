@@ -34,6 +34,7 @@ export type SelectCustomAttribute = {
 export type Game = GameWithoutRelations & {
   card_image: StrapiRelation<StrapiEntity<StrapiImage>>;
   cover_image: StrapiRelation<StrapiEntity<StrapiImage>>;
+  square_image: StrapiRelation<StrapiEntity<StrapiImage>>;
   custom_attributes: SelectCustomAttribute[];
 };
 
@@ -43,6 +44,7 @@ export type GetGamesSort = "date" | "title";
 
 const populate = [
   "card_image",
+  "square_image",
   "cover_image",
   "custom_attributes",
   "custom_attributes.options",
