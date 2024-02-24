@@ -59,7 +59,7 @@ export const BattlesPageContent = ({
         )}
 
         <Tabs.Content value="ladder">
-          <BattlesLadderTab />
+          <BattlesLadderTab game={game} isMobile={isMobile} />
         </Tabs.Content>
         <Tabs.Content value="leaderboard">
           <GameLeaderboardTab />

@@ -12,6 +12,7 @@ export const Skeleton = ({
   className,
   type,
   dark,
+  children,
   ...props
 }: SkeletonProps & Omit<HTMLAttributes<HTMLDivElement>, "className">) => {
   return (
@@ -23,6 +24,7 @@ export const Skeleton = ({
       )}
       {...props}
     >
+      {children}
       {type === "image" && (
         <div className="flex items-center justify-center w-full h-full">
           <div className="relative w-10 max-w-full text-white/10">

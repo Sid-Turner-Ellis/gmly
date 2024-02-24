@@ -7,8 +7,8 @@ export const useGetAllGames = (enabled: boolean = true) => {
     isLoading: gameQueryIsLoading,
     isError: gameQueryIsError,
   } = useQuery(["recursive-games"], () => GameService.recursivelyGetGames(), {
-    cacheTime: 1000 * 60 * 60 * 24,
-    staleTime: 1000 * 60 * 60 * 24,
+    staleTime: 1000 * 60 * 10,
+    cacheTime: 1000 * 60 * 10,
     enabled,
   });
 

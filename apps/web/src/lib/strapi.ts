@@ -16,7 +16,7 @@ type StrapiBaseRequestParams = {
 };
 
 type StrapiFindRequestParams = StrapiBaseRequestParams & {
-  sort?: string | Array<string>;
+  sort?: string | Array<string> | Record<string, unknown>;
   pagination?: {
     page: number;
     pageSize: number;

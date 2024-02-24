@@ -2,7 +2,7 @@ import { Button } from "@/components/button";
 import { CreateBattleModal } from "./create-battle-modal";
 import { CreateTeamModal } from "@/features/team/components/create-team-modal/create-team-modal";
 import { AuthenticatedUser, useAuth } from "@/hooks/use-auth";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useToast } from "@/providers/toast-provider";
 import { GameResponse, GameService } from "@/features/game/game-service";
 import { useQuery } from "@tanstack/react-query";
@@ -29,7 +29,10 @@ export const CreateBattleButton = ({
   });
 
   const game = typeof gameOrGameId === "number" ? gameData : gameOrGameId;
-  const teamProfile = getTeamProfileForUserBy("gameId", gameId, user);
+  const teamProfile = useMemo(
+    () => getTeamProfileForUserBy("gameId", gameId, user),
+    [gameId, user]
+  );
   const [isCreateBattleModalOpen, setIsCreateBattleModalOpen] = useState(false);
   const [isCreateTeamModalOpen, setIsCreateTeamModalOpen] = useState(false);
   const { addToast } = useToast();

@@ -31,6 +31,7 @@ const ICONS = [
   "discord",
   "twitch",
   "youtube",
+  "clock",
 ] as const;
 
 export type IconType = (typeof ICONS)[number];
@@ -722,6 +723,27 @@ const ICON_MAP: Record<
         strokeLinejoin="round"
         strokeWidth={1.5}
         d="M7.667 14.333A6.667 6.667 0 1 0 7.667 1a6.667 6.667 0 0 0 0 13.333ZM9.666 5.666l-4 4M5.667 5.666l4 4"
+      />
+    </svg>
+  ),
+  clock: ({ boxSize }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      {...getWidthAndHeight({ width: 16, height: 16, size: boxSize })}
+      viewBox="0 0 16 16"
+      fill="none"
+    >
+      <path
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M8 15.5a7.5 7.5 0 1 0 0-15 7.5 7.5 0 0 0 0 15Z"
+      />
+      <path
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M8 3.5V8l3 1.5"
       />
     </svg>
   ),

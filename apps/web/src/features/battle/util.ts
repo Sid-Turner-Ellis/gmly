@@ -40,3 +40,21 @@ export const getSeriesNumberFromSeriesOption = (
 
 export const getCentsFromStringValue = (value: string) =>
   parseFloat(value) * 100;
+
+export const getRelativeStartTime = (date: string) => {
+  const start = new Date(date);
+  const now = new Date();
+
+  const diff = start.getTime() - now.getTime();
+
+  if (diff <= 0) return "Started";
+
+  const diffInMinutes = Math.floor(diff / 60000);
+  const diffInHours = Math.floor(diffInMinutes / 60);
+
+  if (diffInMinutes < 60) {
+    return `${diffInMinutes} minute${diffInMinutes > 1 ? "s" : ""}`;
+  } else {
+    return `${diffInHours} hour${diffInHours > 1 ? "s" : ""}`;
+  }
+};

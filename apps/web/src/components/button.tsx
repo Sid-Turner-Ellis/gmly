@@ -17,6 +17,7 @@ export const buttonVariants = cva(
           "bg-brand-navy-light text-brand-gray hover:text-white border-brand-navy-light active:border-black/40",
         delete:
           "bg-brand-red text-white hover:bg-brand-red-dark active:border-brand-red",
+        unstyled: "border-transparent",
       },
       disabled: {
         true: "opacity-70 pointer-events-none",
